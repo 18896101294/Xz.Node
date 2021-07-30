@@ -299,6 +299,9 @@ namespace Xz.Node.AdminApi
 
             app.UseHttpReports();
 
+            //注册consul服务
+            app.RegisterConsul();
+
             //可以访问根目录下面的静态文件
             var staticfile = new StaticFileOptions
             {

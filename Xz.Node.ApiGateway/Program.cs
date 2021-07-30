@@ -53,9 +53,6 @@ namespace Xz.Node.ApiGateway
                    configBuilder
                      .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                      .AddEnvironmentVariables(); //¼ÓÔØ±¾µØÅäÖÃ
-
-                   var httpHost = configRoot["AppSetting:HttpHost"];
-
                })
                .ConfigureLogging((hostingContext, logging) =>
                {

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Xz.Node.Framework.Common;
 using Xz.Node.Framework.Queue.RabbitMQ;
 using Xz.Node.Framework.Enums;
+using System.Threading;
 
 namespace Xz.Node.AdminApi.Controllers.Test
 {
@@ -255,8 +256,9 @@ namespace Xz.Node.AdminApi.Controllers.Test
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        public string OcelotGetFun()
+        public string OcelotGetFun(int time)
         {
+            Thread.Sleep(time);
             return $"Get, This is from {HttpContext.Request.Host.Value}, path: {HttpContext.Request.Path}";
         }
 
@@ -269,6 +271,17 @@ namespace Xz.Node.AdminApi.Controllers.Test
         public string OcelotPostFun()
         {
             return $"Post, This is from {HttpContext.Request.Host.Value}, path: {HttpContext.Request.Path}";
+        }
+
+        /// <summary>
+        /// 把健康检查的地址简单实现一下
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult HealthCheck()
+        {
+            return Ok();
         }
         #endregion
 
