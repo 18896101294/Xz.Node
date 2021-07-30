@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HttpReports.Dashboard" Version="2.5.14" />
+    <PackageReference Include="HttpReports.MySQL" Version="2.5.14" />
+    <PackageReference Include="HttpReports.SQLServer" Version="2.5.14" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Xz.Node.Framework\Xz.Node.Framework.csproj" />
+  </ItemGroup>
+
+</Project>
