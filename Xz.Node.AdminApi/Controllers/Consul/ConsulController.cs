@@ -38,13 +38,27 @@ namespace Xz.Node.AdminApi.Controllers.Consul
         [HttpGet]
         public IActionResult ConsulServices()
         {
-            var result = new ResultInfo<string>()
+            var result = new ResultInfo<List<string>>()
             {
                 Message = "获取成功"
             };
 
-            var resultData = _httpHelper.Get(null, "/v1/catalog/services");
+            var resultData = new List<string>();
 
+            var resultDataStr = _httpHelper.Get(null, "/v1/catalog/services");
+            
+            if (resultDataStr.Length > 3)
+            {
+                var resultDataStrLen = resultDataStr.Split(',');
+                if (resultDataStrLen.Length > 1)
+                {
+                    foreach (var resultDataStrLenItem in resultDataStrLen)
+                    {
+                        var resultDataStrLenItemValue = resultDataStrLenItem.Split(':')[0];
+                        resultData.Add(resultDataStrLenItemValue);
+                    }
+                }
+            }
             result.Data = resultData;
 
             return Ok(result);
