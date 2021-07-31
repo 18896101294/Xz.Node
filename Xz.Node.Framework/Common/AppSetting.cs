@@ -202,5 +202,10 @@ namespace Xz.Node.Framework.Common
         /// 应用程序终止时，服务是否取消注册
         /// </summary>
         public bool IsEnableStop { get; set; }
+
+        /// <summary>
+        /// consul url地址
+        /// </summary>
+        public string ConsulUrl => $"http://{this.ConsulAddress}:{this.ServicePort}/";
     }
 }

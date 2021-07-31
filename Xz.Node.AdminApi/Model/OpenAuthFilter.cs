@@ -40,8 +40,9 @@ namespace Xz.Node.AdminApi.Model
             var Controllername = description.ControllerName.ToLower();
             var Actionname = description.ActionName.ToLower();
             //匿名标识
-            var authorize = description.MethodInfo.GetCustomAttribute(typeof(AllowAnonymousAttribute));
-            if (authorize != null)
+            var methodAuthorize = description.MethodInfo.GetCustomAttribute(typeof(AllowAnonymousAttribute));
+            var controllerAuthorize = description.ControllerTypeInfo.GetCustomAttribute(typeof(AllowAnonymousAttribute));
+            if (methodAuthorize != null || controllerAuthorize != null)
             {
                 return;
             }
