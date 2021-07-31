@@ -144,4 +144,55 @@ namespace Xz.Node.Framework.Common
         /// </summary>
         public bool Enabled { get; set; }
     }
+
+    /// <summary>
+    /// Consul系统配置
+    /// </summary>
+    public class ConsulConfig
+    {
+        /// <summary>
+        /// 服务名
+        /// </summary>
+        public string ServiceName { get; set; }
+
+        /// <summary>
+        /// 服务绑定IP(也就是你这个项目运行的ip地址)
+        /// </summary>
+        public string ServiceIP { get; set; }
+
+        /// <summary>
+        /// 服务绑定端口(也就是你这个项目运行的端口)
+        /// </summary>
+        public int ServicePort { get; set; }
+
+        /// <summary>
+        /// 服务启动多久后注册(单位秒)
+        /// </summary>
+        public int RegisterSeconds { get; set; }
+
+        /// <summary>
+        /// 健康检查地址,如果健康检查失败，一段时间后，会将注册的服务移除掉
+        /// </summary>
+        public string ServiceHealthCheck { get; set; }
+
+        /// <summary>
+        /// 健康检查时间间隔(单位秒)
+        /// </summary>
+        public int HealthCheckSeconds { get; set; }
+
+        /// <summary>
+        /// 健康检查超时时间(单位秒)
+        /// </summary>
+        public int HealthCheckTimeOutSeconds { get; set; }
+
+        /// <summary>
+        /// consul 服务地址
+        /// </summary>
+        public string ConsulAddress { get; set; }
+
+        /// <summary>
+        /// 应用程序终止时，服务是否取消注册
+        /// </summary>
+        public bool IsEnableStop { get; set; }
+    }
 }

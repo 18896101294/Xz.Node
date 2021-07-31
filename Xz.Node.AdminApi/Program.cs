@@ -55,6 +55,7 @@ namespace Xz.Node.AdminApi
 
                    configBuilder
                      .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                     .AddJsonFile("consul.json", optional: true, reloadOnChange: true)
                      .AddEnvironmentVariables(); //¼ÓÔØ±¾µØÅäÖÃ
                })
                .ConfigureLogging((hostingContext, logging) =>

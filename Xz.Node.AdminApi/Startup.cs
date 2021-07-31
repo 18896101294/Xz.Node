@@ -201,9 +201,7 @@ namespace Xz.Node.AdminApi
             });
             #endregion
 
-            services.Configure<AppSetting>(Configuration.GetSection("AppSetting"));
-
-            services.AddControllers(option => 
+            services.AddControllers(option =>
             {
                 /*
                  * 这里有两种添加MVC过滤器的方法。
@@ -271,6 +269,8 @@ namespace Xz.Node.AdminApi
 
             //设置定时启动的任务
             //services.AddHostedService<QuartzService>();
+
+            this.AfterStartup(services, Configuration);
         }
 
         /// <summary>
@@ -284,7 +284,7 @@ namespace Xz.Node.AdminApi
         /// <summary>
         /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         /// </summary>
-        public void Configure(IApplicationBuilder app, IHostEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostEnvironment env, IHostApplicationLifetime lifetime, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddLog4Net(Log4netPath);
 
@@ -300,7 +300,7 @@ namespace Xz.Node.AdminApi
             app.UseHttpReports();
 
             //注册consul服务
-            app.RegisterConsul();
+            app.RegisterConsul(lifetime, this.GetConsulConfig());
 
             //可以访问根目录下面的静态文件
             var staticfile = new StaticFileOptions
@@ -353,6 +353,17 @@ namespace Xz.Node.AdminApi
 
         }
 
+        /// <summary>
+        /// 注入配置文件
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="configuration"></param>
+        public void AfterStartup(IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<AppSetting>(configuration.GetSection("AppSetting"));
+            services.Configure<ConsulConfig>(configuration.GetSection("Consul"));
+        }
+
         #region private
         /// <summary>
         /// 获取控制器对应的swagger分组值
@@ -379,6 +390,32 @@ namespace Xz.Node.AdminApi
                 .Where(type => typeof(ControllerBase).IsAssignableFrom(type))
                 .OrderBy(x => x.Name).ToList();
             return controlleractionlist;
+        }
+
+        /// <summary>
+        /// 获取Consul配置
+        /// </summary>
+        /// <returns></returns>
+        private ConsulConfig GetConsulConfig()
+        {
+            var consulSection = Configuration.GetSection("Consul");
+            if (consulSection["ServiceName"] == null)
+            {
+                return null;
+            }
+            var consulConfig = new ConsulConfig
+            {
+                ServiceName = consulSection["ServiceName"],
+                ServiceIP = consulSection["ServiceIP"],
+                ServicePort = consulSection["ServicePort"].ToInt32().Value,
+                RegisterSeconds = consulSection["RegisterSeconds"].ToInt32().Value,
+                ServiceHealthCheck = consulSection["ServiceHealthCheck"],
+                HealthCheckSeconds = consulSection["HealthCheckSeconds"].ToInt32().Value,
+                HealthCheckTimeOutSeconds = consulSection["HealthCheckTimeOutSeconds"].ToInt32().Value,
+                ConsulAddress = consulSection["ConsulAddress"],
+                IsEnableStop = consulSection["IsEnableStop"].ToBool()
+            };
+            return consulConfig;
         }
         #endregion
     }

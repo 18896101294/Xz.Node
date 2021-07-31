@@ -1,0 +1,13 @@
+{
+  "Consul": {
+    "ServiceName": "AdminApi", //服务名
+    "ServiceIP": "127.0.0.1", //服务绑定IP(也就是你这个项目运行的ip地址)
+    "ServicePort": 52789, //服务绑定端口(也就是你这个项目运行的端口)
+    "RegisterSeconds": 5, //服务启动多久后注册
+    "HealthCheckSeconds": 60, //健康检查时间间隔(单位秒)
+    "HealthCheckTimeOutSeconds": 5, //健康检查超时时间(单位秒)
+    "ServiceHealthCheck": "http://localhost:52789/api/Test/HealthCheck", //健康检查地址,如果健康检查失败，一段时间后，会将注册的服务移除掉
+    "ConsulAddress": "http://127.0.0.1:8500",
+    "IsEnableStop": false //应用程序终止时，服务是否取消注册
+  }
+}
