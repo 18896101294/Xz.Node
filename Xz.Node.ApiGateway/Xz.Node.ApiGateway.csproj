@@ -20,12 +20,15 @@
     <PackageReference Include="log4net" Version="2.0.12" />
     <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="3.1.0" />
     <PackageReference Include="Ocelot" Version="16.0.1" />
+    <PackageReference Include="Ocelot.Provider.Consul" Version="16.0.1" />
     <PackageReference Include="Ocelot.Provider.Polly" Version="16.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Xz.Node.Framework\Xz.Node.Framework.csproj" />
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties app_3data_4config_4ocelot_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 
 </Project>

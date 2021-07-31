@@ -13,6 +13,10 @@ using Xz.Node.Framework.Common;
 using Xz.Node.Framework.Queue.RabbitMQ;
 using Xz.Node.Framework.Enums;
 using System.Threading;
+using Microsoft.Extensions.Options;
+using Consul;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Xz.Node.AdminApi.Controllers.Test
 {
@@ -26,17 +30,20 @@ namespace Xz.Node.AdminApi.Controllers.Test
     {
         private readonly TestOpApp _app;
         private readonly IRabbitMQClient _rabbitMQClient;
-
+        private readonly ConsulConfig _consulConfig;
         /// <summary>
         /// 单元测试
         /// </summary>
         /// <param name="app"></param>
         /// <param name="rabbitMQClient"></param>
+        /// <param name="options"></param>
         public TestController(TestOpApp app,
-            IRabbitMQClient rabbitMQClient)
+            IRabbitMQClient rabbitMQClient,
+            IOptions<ConsulConfig> options)
         {
             _app = app;
             _rabbitMQClient = rabbitMQClient;
+            _consulConfig = options.Value;
         }
 
         #region 单表操作
@@ -256,21 +263,69 @@ namespace Xz.Node.AdminApi.Controllers.Test
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        public string OcelotGetFun(int time)
+        public IActionResult OcelotGetFun(int time)
         {
+            var result = new ResultInfo<string>()
+            {
+                Message = "调用成功",
+            };
             Thread.Sleep(time);
-            return $"Get, This is from {HttpContext.Request.Host.Value}, path: {HttpContext.Request.Path}";
+            result.Data = $"Get, This is from {HttpContext.Request.Host.Value}, path: {HttpContext.Request.Path}";
+            return Ok(result);
         }
 
         /// <summary>
         /// Ocelot post请求
         /// </summary>
         /// <returns></returns>
+        [HttpPost]
+        [AllowAnonymous]
+        public IActionResult OcelotPostFun()
+        {
+            var result = new ResultInfo<string>()
+            {
+                Message = "调用成功",
+            };
+            result.Data = $"Post, This is from {HttpContext.Request.Host.Value}, path: {HttpContext.Request.Path}";
+            return Ok(result);
+        }
+        #endregion
+
+        #region Consul
+        /// <summary>
+        /// 模拟Consul请求
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        public string OcelotPostFun()
+        public async Task<IActionResult> ConsulGetFun()
         {
-            return $"Post, This is from {HttpContext.Request.Host.Value}, path: {HttpContext.Request.Path}";
+            var result = new ResultInfo<string>()
+            {
+                Message = "调用成功",
+            };
+
+            string consulAddress = _consulConfig.ConsulAddress;
+            using var consulClient = new ConsulClient(a => a.Address = new Uri(consulAddress));
+            var catalogServices = await consulClient.Catalog.Service("AdminApi");//这里是根据服务名获取注册的服务
+            var services = catalogServices.Response;
+            if (services != null && services.Any())
+            {
+                // 模拟随机一台进行请求，这里只是测试，可以选择合适的负载均衡框架
+                var r = new Random();
+                int index = r.Next(services.Count());
+                var service = services.ElementAt(index);
+                using var client = new HttpClient();
+                var response = await client.GetAsync($"http://{service.ServiceAddress}:{service.ServicePort}/api/Test/ConsulTest");
+                string httpResult = await response.Content.ReadAsStringAsync();
+                result.Message = httpResult;
+            }
+            else
+            {
+                result.Message = "未找到服务";
+            }
+
+            return Ok(result);
         }
 
         /// <summary>
@@ -283,6 +338,18 @@ namespace Xz.Node.AdminApi.Controllers.Test
         {
             return Ok();
         }
+
+        /// <summary>
+        /// Consul测试接口
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public string ConsulTest()
+        {
+            return "嘿嘿";
+        }
+
         #endregion
 
         /// <summary>

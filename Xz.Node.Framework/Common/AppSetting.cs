@@ -150,6 +150,14 @@ namespace Xz.Node.Framework.Common
     /// </summary>
     public class ConsulConfig
     {
+        public ConsulConfig()
+        {
+            ServiceName = string.Empty;
+            ServiceIP = string.Empty;
+            ServiceHealthCheck = string.Empty;
+            ConsulAddress = string.Empty;
+        }
+
         /// <summary>
         /// 服务名
         /// </summary>

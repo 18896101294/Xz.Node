@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using Ocelot.Provider.Consul;
 using Ocelot.Provider.Polly;
 using System;
 using System.IO;
@@ -58,11 +59,11 @@ namespace Xz.Node.ApiGateway
 
             services.Configure<AppSetting>(Configuration.GetSection("AppSetting"));
 
-            //Ocelot网关,AddPolly是添加网关熔断处理
-            services.AddOcelot().AddPolly();
+            //Ocelot网关,AddConsul是添加服务发现 AddPolly是添加网关熔断处理
+            services.AddOcelot().AddConsul().AddPolly();
 
             //可视化监控
-            services.AddHttpReports().AddHttpTransport();
+            //services.AddHttpReports().AddHttpTransport();
 
             services.AddCors();
 
@@ -90,7 +91,7 @@ namespace Xz.Node.ApiGateway
             //启用Ocelot网关
             app.UseOcelot().Wait();
 
-            app.UseHttpReports();
+            //app.UseHttpReports();
 
             //可以访问根目录下面的静态文件
             var staticfile = new StaticFileOptions

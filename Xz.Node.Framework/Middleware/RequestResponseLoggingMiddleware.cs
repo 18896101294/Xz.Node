@@ -163,8 +163,8 @@ namespace Xz.Node.Framework.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
-            // 过滤，只有接口
-            if (context.Request.Path.Value.Contains("api"))
+            // 过滤，只有接口,同时不包含Consul健康检查接口
+            if (context.Request.Path.Value.Contains("api") && !context.Request.Path.Value.Contains("HealthCheck"))
             {
                 context.Request.EnableBuffering();
                 Stream originalBody = context.Response.Body;

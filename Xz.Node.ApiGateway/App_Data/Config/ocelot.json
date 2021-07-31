@@ -10,19 +10,24 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 52789 
+          "Port": 52787
+        },
+        {
+          "Host": "localhost",
+          "Port": 52788
         }
       ],
       "UpstreamPathTemplate": "/Test/{all}", //上游也就是用户输入的请求Url模板
       "UpstreamHttpMethod": [ "Get", "Post" ], //上游请求http方法，可使用数组
       //设置请求转发负载均衡。如需启用,DownstreamHostAndPorts配置项应至少有两个
       "LoadBalancerOptions": {
-        "Type": "RoundRobin" //LeastConnection:将请求发往最空闲的那个服务器，RoundRobin:轮流发送，NoLoadBalance : 不启用负载均衡，总是发往第一个请求或者服务发现的那个服务器
+        "Type": "RoundRobin" //LeastConnection:将请求发往最空闲的那个服务器，RoundRobin:轮流发送，NoLoadBalance : 不启用负载均衡，总是发往第一个请求或者服务发现的那个服务器,CookieStickySessions 使用cookie关联所有相关的请求到制定的服务
       },
-      //请求缓存配置：下游服务的URL进行缓存
-      "FileCacheOptions": {
-        "TtlSeconds": 8 //这里表示缓存时效为8秒 
-      },
+      //请求缓存配置：结果会缓存8秒,在缓存有效期内即使原始的api的返回结果发生变化，通过网关请求时，还是会返回缓存的结果。
+      //"FileCacheOptions": {
+      //  "TtlSeconds": 8, //这里表示缓存时效为8秒 
+      //  "Region": "Test" //缓存分区， 可以通过调用后台Api 来清空一个region下的缓存
+      //},
       //请求限流
       "RateLimitOptions": {
         "ClientWhitelist": [ "xz" ], // 白名单
@@ -34,16 +39,29 @@
       //熔断配置
       "QoSOptions": {
         //这里配置的意思是：如果请求接口的处理时间超过了5秒，则触发错误，提示无法请求，当出现2次超时请求时则触发5秒的熔断时间，则哪怕处理时间恢复到5秒内在5秒的熔断时间内也无法请求。
-        "ExceptionsAllowedBeforeBreaking": 2, // 允许多少个异常请求
+        "ExceptionsAllowedBeforeBreaking": 2, // 允许多少个异常请求，注意这个异常请求是对上面整个服务的，比如配置了2个服务，一个服务停机，请求为一次失败一次正常，则正常后会重新计算这个次数
         "DurationOfBreak": 5000, // 熔断的时间，单位为毫秒
-        "TimeoutValue": 5000 // 如果下游请求的处理时间超过多少则视如该请求超时
-      }
-      //"Priority": 0 //路由的优先级，数字越大，优先级越高。
+        "TimeoutValue": 3000 // 如果下游请求的处理时间超过多少则视如该请求超时
+      },
+      "Priority": 10 //路由的优先级，数字越大，优先级越高。
       //"UpstreamHost": "localhost:4023" //Ocelot就只会转发来自localhost:4023的请求
+      //"Key": "aggr_jack" //请求聚合key
+    },
+    {
+      "DownstreamPathTemplate": "/api/Test/{all}",
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/Test1/{all}",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "ServiceName": "AdminApi",
+      "UseServiceDiscovery": true,
+      "Priority": 20
     }
     //,{
     //  //所有请求都配置转发，但是优先级最低
-    //  "DownstreamPathTemplate": "/{url}",
+    //  "DownstreamPathTemplate": "/{all}",
     //  "DownstreamScheme": "http",
     //  "DownstreamHostAndPorts": [
     //    {
@@ -51,19 +69,37 @@
     //      "Port": 52789
     //    }
     //  ],
-    //  "UpstreamPathTemplate": "/{url}",
+    //  "UpstreamPathTemplate": "/{all}",
     //  "UpstreamHttpMethod": [ "Get", "Post" ]
     //}
   ],
+  //请求聚合：以json串的格式返回两个路由的返回结果
+  //"Aggregates": [
+  //  {
+  //    //请求聚合的key
+  //    "ReRouteKeys": [
+  //      "aggr_willing",
+  //      "aggr_jack"
+  //    ],
+  //    //上游路由
+  //    "UpstreamPathTemplate": "/aggrLeader"
+  //  }
+  //],
   //全局配置项
   "GlobalConfiguration": {
     "BaseUrl": "http://localhost:52000", //BaseUrl就是Ocelot服务对外暴露的Url。
     "RequestIdKey": "OcRequestId",
     "AdministrationPath": "/administration",
+    //Consul服务发现配置
+    "ServiceDiscoveryProvider": {
+      "Host": "127.0.0.1",
+      "Port": 8500,
+      "Type": "Consul"
+    },
     //限流全局配置，限流可以配置一些查询的接口，防止用户多次请求造成资源浪费
     "RateLimitOptions": {
       "DisableRateLimitHeaders": false, // Http头  X-Rate-Limit 和 Retry-After 是否禁用
-      "QuotaExceededMessage": "你的访问过于频繁请稍后在试", // 当请求过载被截断时返回的消息
+      "QuotaExceededMessage": "Your visit is too frequent please try again later", // 当请求过载被截断时返回的消息
       "HttpStatusCode": 253, // 当请求过载被截断时返回的http status
       "ClientIdHeader": "client_id" // 用来识别客户端的请求头，默认是 ClientId,如果不想被限流，则可以在请求头中加入白名单中配置项如："client_id":"xz"
     }
