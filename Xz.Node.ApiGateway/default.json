@@ -1,0 +1,7 @@
+{
+  "ConfigSetting": {
+    "AppId": "ApiGateway", //程序名称
+    "ConsulAddress": "http://127.0.0.1:8500", //是否启用Consul配置中心，不启用则为空即可
+    "HttpHost": "http://*:52000" //启动绑定地址及端口
+  }
+}

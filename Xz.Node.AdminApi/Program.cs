@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
+using Winton.Extensions.Configuration.Consul;
 using Xz.Node.Framework.Common;
 
 namespace Xz.Node.AdminApi
@@ -45,18 +46,47 @@ namespace Xz.Node.AdminApi
            Host.CreateDefaultBuilder(args)
                .ConfigureAppConfiguration((hostingContext, configBuilder) =>
                {
-                   var basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", "config");
+                   configBuilder.AddCommandLine(args);//添加命令行支持
+
                    configBuilder
-                       .SetBasePath(basePath); //手动指定配置文件的路径
-                   var configRoot = configBuilder.Build();
-                   var appId = configRoot.GetValue<string>("AppSetting:AppId");
+                        .AddJsonFile("default.json", optional: true, reloadOnChange: true);
+                   var defaultConfigRoot = configBuilder.Build();
+                   var consulAddress = defaultConfigRoot.GetValue<string>("ConfigSetting:ConsulAddress");
+                   var appId = defaultConfigRoot.GetValue<string>("ConfigSetting:AppId");
+
                    hostingContext.HostingEnvironment.ApplicationName = appId;
                    hostingContext.HostingEnvironment.ContentRootPath = AppDomain.CurrentDomain.BaseDirectory;
 
-                   configBuilder
-                     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                     .AddJsonFile("consul.json", optional: true, reloadOnChange: true)
-                     .AddEnvironmentVariables(); //加载本地配置
+                   if (!string.IsNullOrWhiteSpace(consulAddress))
+                   {
+                       configBuilder
+                        .AddConsul($"{appId}/appsettings.json", options =>
+                        {
+                            options.ConsulConfigurationOptions = cco => { cco.Address = new Uri(consulAddress); };
+                            options.Optional = true;
+                            options.ReloadOnChange = true;
+                            options.OnLoadException = exceptionContext => { exceptionContext.Ignore = true; }; //忽略异常
+                        })
+                        .AddConsul($"System/consul.json", options =>
+                        {
+                            options.ConsulConfigurationOptions = cco => { cco.Address = new Uri(consulAddress); };
+                            options.Optional = true;
+                            options.ReloadOnChange = true;
+                            options.OnLoadException = exceptionContext => { exceptionContext.Ignore = true; };
+                        })
+                        .AddEnvironmentVariables();
+                   }
+                   else
+                   {
+                       var basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", "config");
+                       configBuilder
+                           .SetBasePath(basePath); //手动指定配置文件的路径
+
+                       configBuilder
+                        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                        .AddJsonFile("consul.json", optional: true, reloadOnChange: true)
+                        .AddEnvironmentVariables(); //加载本地配置
+                   }
                })
                .ConfigureLogging((hostingContext, logging) =>
                {
@@ -73,7 +103,7 @@ namespace Xz.Node.AdminApi
                .ConfigureWebHostDefaults(webBuilder =>
                {
                    var configuration = ConfigHelper.GetConfigRoot();
-                   var httpHost = configuration["AppSetting:HttpHost"];
+                   var httpHost = configuration["ConfigSetting:HttpHost"];
 
                    webBuilder.UseUrls(httpHost).UseStartup<Startup>();
                    ConsoleHelper.WriteSuccessLine($"接口访问地址：{httpHost}/swagger/index.html");

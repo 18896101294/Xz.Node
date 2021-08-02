@@ -10,6 +10,8 @@ namespace Xz.Node.Framework.Common
     {
         public AppSetting()
         {
+            this.AppId = string.Empty;
+            this.ConsulAddress = string.Empty;
             this.HttpHost = "http://*:52789";
             this.Version = string.Empty;
             this.UploadPath = string.Empty;
@@ -17,6 +19,16 @@ namespace Xz.Node.Framework.Common
             this.Jwt = new JwtConfig();
             this.OAuth2 = new OAuth2Config();
         }
+        /// <summary>
+        /// 应用程序名称
+        /// </summary>
+        public string AppId { get; set; }
+
+        /// <summary>
+        /// 是否启用Consul配置中心
+        /// </summary>
+        public string ConsulAddress { get; set; }
+
         /// <summary>
         /// SSO地址
         /// </summary>

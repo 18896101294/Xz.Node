@@ -69,6 +69,7 @@ namespace Xz.Node.AdminApi
             {
                 builder.AddLog4Net(Log4netPath);
             });
+
             ILogger logger = loggerFactory.CreateLogger<Startup>();
 
             #region identityServer4
