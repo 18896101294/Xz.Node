@@ -64,7 +64,7 @@ namespace Xz.Node.ApiGateway
                             options.ReloadOnChange = true;
                             options.OnLoadException = exceptionContext => { exceptionContext.Ignore = true; }; //ºöÂÔÒì³£
                         })
-                        .AddConsul($"System/ocelot.json", options =>
+                        .AddConsul($"{appId}/ocelot.json", options =>
                         {
                             options.ConsulConfigurationOptions = cco => { cco.Address = new Uri(consulAddress); };
                             options.Optional = true;
