@@ -98,6 +98,23 @@ namespace Xz.Node.Framework.Common
         }
 
         /// <summary>
+        /// 以json的方式put数据 返回string类型
+        /// <para>最终以json的方式放置在http体中</para>
+        /// </summary>
+        /// <param name="entity">实体</param>
+        /// <param name="requestUri">例如/api/Files/UploadFile</param>
+        /// <returns></returns>
+        public string Put(object entity, string requestUri)
+        {
+            string request = string.Empty;
+            if (entity != null)
+                request = JsonHelper.Instance.Serialize(entity);
+            HttpContent httpContent = new StringContent(request);
+            httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            return Put(requestUri, httpContent);
+        }
+
+        /// <summary>
         /// 提交字典类型的数据
         /// <para>最终以formurlencode的方式放置在http体中</para>
         /// </summary>
@@ -149,6 +166,12 @@ namespace Xz.Node.Framework.Common
         private string Post(string requestUrl, HttpContent content)
         {
             var result = _httpClient.PostAsync(ConcatURL(requestUrl), content);
+            return result.Result.Content.ReadAsStringAsync().Result;
+        }
+
+        private string Put(string requestUrl, HttpContent content)
+        {
+            var result = _httpClient.PutAsync(ConcatURL(requestUrl), content);
             return result.Result.Content.ReadAsStringAsync().Result;
         }
 

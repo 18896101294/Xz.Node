@@ -25,7 +25,7 @@ namespace Xz.Node.AdminApi.Controllers.Test
     /// </summary>
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [ApiExplorerSettings(GroupName = "单元测试_Test")]
+    [ApiExplorerSettings(GroupName = "单元测试")]
     public class TestController : ControllerBase
     {
         private readonly TestOpApp _app;

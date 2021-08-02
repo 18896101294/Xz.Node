@@ -17,7 +17,7 @@ namespace Xz.Node.AdminApi.Controllers
     /// </summary>
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [ApiExplorerSettings(GroupName = "系统登录_Login")]
+    [ApiExplorerSettings(GroupName = "系统登录")]
     public class LoginController : ControllerBase
     {
         private string _appKey = "xznode";

@@ -13,7 +13,7 @@ namespace Xz.Node.AdminApi.Controllers
     /// </summary>
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [ApiExplorerSettings(GroupName = "应用管理_Applications")]
+    [ApiExplorerSettings(GroupName = "应用管理")]
     public class ApplicationsController : ControllerBase
     {
         private readonly AppManager _app;
