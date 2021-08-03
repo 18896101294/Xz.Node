@@ -1,6 +1,6 @@
 ﻿{
   "profiles": {
-    "IdentityServer": {
+    "IdentityServer4": {
       "commandName": "Project",
       "launchBrowser": false,
       "launchUrl": ".well-known/openid-configuration",
