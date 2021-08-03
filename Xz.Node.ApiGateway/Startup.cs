@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Ocelot.Provider.Consul;
@@ -57,7 +58,7 @@ namespace Xz.Node.ApiGateway
             });
             ILogger logger = loggerFactory.CreateLogger<Startup>();
 
-            services.Configure<AppSetting>(Configuration.GetSection("AppSetting"));
+            //services.Configure<AppSetting>(Configuration.GetSection("AppSetting"));
 
             //Ocelot网关,AddConsul是添加服务发现 AddPolly是添加网关熔断处理
             services.AddOcelot().AddConsul().AddPolly();
@@ -76,7 +77,7 @@ namespace Xz.Node.ApiGateway
         /// <summary>
         /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         /// </summary>
-        public void Configure(IApplicationBuilder app, IHostEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostEnvironment env, IHostApplicationLifetime lifetime, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddLog4Net(Log4netPath);
 
@@ -90,6 +91,9 @@ namespace Xz.Node.ApiGateway
 
             //启用Ocelot网关
             app.UseOcelot().Wait();
+
+            //注册consul服务
+            app.RegisterConsul(lifetime, ConsulHelper.GetConsulConfig(Configuration));
 
             //app.UseHttpReports();
 

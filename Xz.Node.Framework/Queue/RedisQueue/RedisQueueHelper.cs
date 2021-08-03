@@ -15,9 +15,9 @@ namespace Xz.Node.Framework.Queue.RedisQueue
         private ConnectionMultiplexer _conn { get; set; }
         private ISubscriber _subscriber { get; set; }//订阅者
         private IDatabase _database { get; set; }
-        public RedisQueueHelper(IOptions<AppSetting> options)
+        public RedisQueueHelper()
         {
-            _conn = ConnectionMultiplexer.Connect(options.Value.RedisConf);
+            _conn = ConnectionMultiplexer.Connect(ConfigHelper.GetConfigRoot()["AppSetting:RedisConf"]);
             _subscriber = _conn.GetSubscriber();
             _database = _conn.GetDatabase();
         }

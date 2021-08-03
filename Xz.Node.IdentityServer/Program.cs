@@ -1,10 +1,13 @@
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 using System;
+using System.IO;
+using Winton.Extensions.Configuration.Consul;
 using Xz.Node.Framework.Common;
 
 namespace Xz.Node.IdentityServer
@@ -13,18 +16,76 @@ namespace Xz.Node.IdentityServer
     {
         public static void Main(string[] args)
         {
-            Console.Title = "xz.node.IdentityServer4";
+
+            ConsoleHelper.WriteInfoLine($@"
+               _   _   ____        _                        
+              | \ | | / __ \      | |   
+              |  \| || |  | |  ___| |  ___ 
+              | . ` || |  | | / _ | | / _ \
+              | |\  || |__| || |_)| ||  __/
+              |_| \_| \____/  \___|_| \___|
+                                                                           
+            -------------------------------------------------------------------
+            【Author】           :  Xz
+            【Runing】           :  IdentityServer4
+            -------------------------------------------------------------------
+            【Start Time】:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}", ConsoleColor.Red);
             CreateWebHostBuilder(args).Build().Run();
         }
 
         public static IHostBuilder CreateWebHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((hostingContext, configBuilder) =>
+                {
+                    configBuilder.AddCommandLine(args);//添加命令行支持
+
+                    var basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", "config");
+                    configBuilder
+                         .SetBasePath(basePath);
+
+                    configBuilder
+                     .AddJsonFile("default.json", optional: true, reloadOnChange: true);
+
+                    var defaultConfigRoot = configBuilder.Build();
+                    var consulAddress = defaultConfigRoot.GetValue<string>("ConfigSetting:ConsulAddress");
+                    var appId = defaultConfigRoot.GetValue<string>("ConfigSetting:AppId");
+
+                    hostingContext.HostingEnvironment.ApplicationName = appId;
+                    hostingContext.HostingEnvironment.ContentRootPath = AppDomain.CurrentDomain.BaseDirectory;
+
+                    if (!string.IsNullOrWhiteSpace(consulAddress))
+                    {
+                        configBuilder
+                         .AddConsul($"{appId}/appsettings.json", options =>
+                         {
+                             options.ConsulConfigurationOptions = cco => { cco.Address = new Uri(consulAddress); };
+                             options.Optional = true;
+                             options.ReloadOnChange = true;
+                             options.OnLoadException = exceptionContext => { exceptionContext.Ignore = true; }; //忽略异常
+                         })
+                         .AddConsul($"System/consul.json", options =>
+                         {
+                             options.ConsulConfigurationOptions = cco => { cco.Address = new Uri(consulAddress); };
+                             options.Optional = true;
+                             options.ReloadOnChange = true;
+                             options.OnLoadException = exceptionContext => { exceptionContext.Ignore = true; };
+                         })
+                         .AddEnvironmentVariables();
+                    }
+                    else
+                    {
+                        configBuilder
+                         .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                         .AddJsonFile("consul.json", optional: true, reloadOnChange: true)
+                         .AddEnvironmentVariables(); //加载本地配置
+                    }
+                })
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())   //将默认ServiceProviderFactory指定为AutofacServiceProviderFactory
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     var configuration = ConfigHelper.GetConfigRoot();
-                    var httpHost = configuration["AppSetting:HttpHost"];
+                    var httpHost = configuration["ConfigSetting:HttpHost"];
                     webBuilder.UseUrls(httpHost).UseStartup<Startup>();
                 })
                 .UseSerilog((context, configuration) =>

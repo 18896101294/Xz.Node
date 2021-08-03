@@ -15,8 +15,10 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Xz.Node.App.Interface;
 using Xz.Node.App.UserManager;
 using Xz.Node.Framework.Common;
+using Xz.Node.Framework.Encryption;
 using Xz.Node.Repository.Domain.Auth;
 
 namespace Xz.Node.IdentityServer.Quickstart.Account
@@ -35,12 +37,14 @@ namespace Xz.Node.IdentityServer.Quickstart.Account
         private readonly IClientStore _clientStore;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly IEventService _events;
+        private readonly IAuth _authUtil;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IAuthenticationSchemeProvider schemeProvider,
-            IEventService events, UserManagerApp userManager)
+            IEventService events, UserManagerApp userManager,
+            IAuth authUtil)
         {
 
             _interaction = interaction;
@@ -48,6 +52,7 @@ namespace Xz.Node.IdentityServer.Quickstart.Account
             _schemeProvider = schemeProvider;
             _events = events;
             _userManager = userManager;
+            _authUtil = authUtil;
         }
 
         /// <summary>
@@ -107,6 +112,8 @@ namespace Xz.Node.IdentityServer.Quickstart.Account
 
             if (ModelState.IsValid)
             {
+                var encryptPassWord = EncryptionHelper.Encrypt(model.Password);
+
                 Auth_UserInfo user;
                 if (model.Username == Define.SYSTEM_USERNAME && model.Password == Define.SYSTEM_USERPWD)
                 {
@@ -119,10 +126,10 @@ namespace Xz.Node.IdentityServer.Quickstart.Account
                 }
                 else
                 {
-                    user = _userManager.GetByAccount(model.Username);
+                    user = _userManager.GetByAccount(model.Username, encryptPassWord);
                 }
 
-                if (user != null &&(user.Password ==model.Password))
+                if (user != null)
                 {
                     if (user.Status != 0)   //判断用户状态
                     {
@@ -380,5 +387,16 @@ namespace Xz.Node.IdentityServer.Quickstart.Account
 
             return vm;
         }
+
+
+        /// <summary>
+        /// Consul 健康检查地址
+        /// </summary>
+        [HttpGet]
+        public IActionResult HealthCheck()
+        {
+            return Ok();
+        }
+
     }
 }

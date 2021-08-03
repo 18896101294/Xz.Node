@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xz.Node.Framework.Common;
 using Xz.Node.Framework.Enums;
+using Xz.Node.Framework.Extensions;
 
 namespace Xz.Node.AdminApi.Model
 {
@@ -14,15 +15,12 @@ namespace Xz.Node.AdminApi.Model
     /// </summary>
     public class AuthResponsesOperationFilter : IOperationFilter
     {
-        private IOptions<AppSetting> _appConfiguration;
-
         /// <summary>
         /// 构造
         /// </summary>
         /// <param name="appConfiguration"></param>
-        public AuthResponsesOperationFilter(IOptions<AppSetting> appConfiguration)
+        public AuthResponsesOperationFilter()
         {
-            _appConfiguration = appConfiguration;
         }
 
         /// <summary>
@@ -32,7 +30,10 @@ namespace Xz.Node.AdminApi.Model
         /// <param name="context"></param>
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            if (_appConfiguration.Value.AuthorizationWay == AuthorizationWayEnum.OAuth2)
+            var configuration = ConfigHelper.GetConfigRoot();
+            bool isEnabledOAuth2 = configuration["AppSetting:OAuth2:Enabled"].ToBool();
+
+            if (isEnabledOAuth2)
             {
                 return;
             }

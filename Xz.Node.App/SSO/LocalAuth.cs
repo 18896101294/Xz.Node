@@ -10,6 +10,7 @@ using Xz.Node.Repository.Domain.System;
 using Xz.Node.Framework.Enums;
 using Xz.Node.Framework.Jwt;
 using Xz.Node.Framework.Extensions;
+using Microsoft.Extensions.Configuration;
 
 namespace Xz.Node.App.SSO
 {
@@ -19,13 +20,15 @@ namespace Xz.Node.App.SSO
     public class LocalAuth : IAuth
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IOptions<AppSetting> _appConfiguration;
         private readonly SysLogApp _logApp;
-
         private readonly AuthContextFactory _app;
         private readonly LoginParse _loginParse;
         private readonly ICacheContext _cacheContext;
         private readonly IJwtTokenHelper _jwtTokenHelper;
+        private readonly IConfigurationRoot _configuration;
+        private readonly bool _isEnabledId4;
+        private readonly bool _isEnabledJwt;
+
         /// <summary>
         /// 构造
         /// </summary>
@@ -33,14 +36,12 @@ namespace Xz.Node.App.SSO
         /// <param name="app"></param>
         /// <param name="loginParse"></param>
         /// <param name="cacheContext"></param>
-        /// <param name="appConfiguration"></param>
         /// <param name="logApp"></param>
         /// <param name="jwtTokenHelper"></param>
         public LocalAuth(IHttpContextAccessor httpContextAccessor,
             AuthContextFactory app,
             LoginParse loginParse,
             ICacheContext cacheContext,
-            IOptions<AppSetting> appConfiguration,
             SysLogApp logApp,
             IJwtTokenHelper jwtTokenHelper)
         {
@@ -48,9 +49,11 @@ namespace Xz.Node.App.SSO
             _app = app;
             _loginParse = loginParse;
             _cacheContext = cacheContext;
-            _appConfiguration = appConfiguration;
             _logApp = logApp;
             _jwtTokenHelper = jwtTokenHelper;
+            _configuration = ConfigHelper.GetConfigRoot();
+            _isEnabledId4 = _configuration["AppSetting:IdentityServer4:Enabled"].ToBool();
+            _isEnabledJwt = _configuration["AppSetting:Jwt:Enabled"].ToBool();
         }
 
         /// <summary>
@@ -60,12 +63,12 @@ namespace Xz.Node.App.SSO
         private string GetToken()
         {
             //如果是Identity，则返回信息为用户账号
-            if (_appConfiguration.Value.AuthorizationWay == AuthorizationWayEnum.IdentityServer4)
+            if (_isEnabledId4)
             {
                 return _httpContextAccessor.HttpContext.User.Identity.Name;
             }
 
-            if (_appConfiguration.Value.AuthorizationWay == AuthorizationWayEnum.Jwt)
+            if (_isEnabledJwt)
             {
                 return _httpContextAccessor.HttpContext.Request.Headers[Define.JWT_TOKEN_NAME].ToString() ?? string.Empty;
             }
@@ -90,7 +93,7 @@ namespace Xz.Node.App.SSO
         {
             if (!string.IsNullOrEmpty(token))
             {
-                if (_appConfiguration.Value.AuthorizationWay == AuthorizationWayEnum.Jwt)
+                if (_isEnabledJwt)
                 {
                     var userId = string.Empty;
                     var account = string.Empty;
@@ -124,7 +127,7 @@ namespace Xz.Node.App.SSO
         /// <returns></returns>
         public bool CheckLogin(string token = "", string otherInfo = "")
         {
-            if (_appConfiguration.Value.AuthorizationWay == AuthorizationWayEnum.IdentityServer4)
+            if (_isEnabledId4)
             {
                 return (!string.IsNullOrEmpty(_httpContextAccessor.HttpContext.User.Identity.Name));
             }
@@ -158,7 +161,7 @@ namespace Xz.Node.App.SSO
         /// <returns>LoginUserVM.</returns>
         public AuthStrategyContext GetCurrentUser()
         {
-            if (_appConfiguration.Value.AuthorizationWay == AuthorizationWayEnum.IdentityServer4)
+            if (_isEnabledId4)
             {
                 return _app.GetAuthStrategyContext(GetToken());
             }
@@ -183,7 +186,7 @@ namespace Xz.Node.App.SSO
         /// <returns>System.String.</returns>
         public string GetUserName(string otherInfo = "")
         {
-            if (_appConfiguration.Value.AuthorizationWay == AuthorizationWayEnum.IdentityServer4)
+            if (_isEnabledId4)
             {
                 return _httpContextAccessor.HttpContext.User.Identity.Name;
             }
@@ -208,7 +211,7 @@ namespace Xz.Node.App.SSO
         /// <returns>System.String.</returns>
         public LoginResult Login(string appKey, string username, string pwd)
         {
-            if (_appConfiguration.Value.AuthorizationWay == AuthorizationWayEnum.IdentityServer4)
+            if (_isEnabledId4)
             {
                 throw new Exception("接口启动了OAuth认证, 暂时不能使用该方式登录");
             }

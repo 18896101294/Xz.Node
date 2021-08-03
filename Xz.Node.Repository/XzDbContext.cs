@@ -22,7 +22,6 @@ namespace Xz.Node.Repository
         private readonly ILoggerFactory _LoggerFactory;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _configuration;
-        private readonly IOptions<AppSetting> _appConfiguration;
         /// <summary>
         /// 数据库连接上下文构造函数
         /// </summary>
@@ -30,17 +29,14 @@ namespace Xz.Node.Repository
         /// <param name="loggerFactory"></param>
         /// <param name="httpContextAccessor"></param>
         /// <param name="configuration"></param>
-        /// <param name="appConfiguration"></param>
         public XzDbContext(DbContextOptions<XzDbContext> options,
             ILoggerFactory loggerFactory,
             IHttpContextAccessor httpContextAccessor,
-            IConfiguration configuration,
-            IOptions<AppSetting> appConfiguration) : base(options)
+            IConfiguration configuration) : base(options)
         {
             _LoggerFactory = loggerFactory;
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
-            _appConfiguration = appConfiguration;
         }
 
         /// <summary>

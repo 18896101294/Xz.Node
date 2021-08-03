@@ -66,7 +66,7 @@ namespace Xz.Node.IdentityServer
             services.AddAuthentication();
 
             //映射配置文件
-            services.Configure<AppSetting>(Configuration.GetSection("AppSetting"));
+            //services.Configure<AppSetting>(Configuration.GetSection("AppSetting"));
 
             //在startup里面只能通过这种方式获取到appsettings里面的值，不能用IOptions??
             var dbtypes = ((ConfigurationSection)Configuration.GetSection("AppSetting:DbTypes")).GetChildren()
@@ -98,12 +98,15 @@ namespace Xz.Node.IdentityServer
             AutofacExt.InitAutofac(builder);
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            //注册consul服务
+            app.RegisterConsul(lifetime, ConsulHelper.GetConsulConfig(Configuration));
 
             app.UseCookiePolicy();
 
@@ -123,5 +126,6 @@ namespace Xz.Node.IdentityServer
                 endpoints.MapDefaultControllerRoute();
             });
         }
+
     }
 }

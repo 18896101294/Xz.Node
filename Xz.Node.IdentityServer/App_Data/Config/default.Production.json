@@ -1,0 +1,14 @@
+﻿{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "System": "Error",
+      "Microsoft": "Error"
+    }
+  },
+  "AllowedHosts": "*",
+  "DataProtection": "temp-keys/",
+  "ConnectionStrings": {
+    "XzNodeDBContext": "Data Source=.;Initial Catalog=XzNodeDB;User=sa;Password=123456"
+  }
+}

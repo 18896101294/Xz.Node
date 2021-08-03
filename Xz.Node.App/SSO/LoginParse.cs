@@ -5,9 +5,10 @@ using Xz.Node.Repository;
 using Xz.Node.Repository.Domain.Auth;
 using Xz.Node.Repository.Interface;
 using Xz.Node.App.AppManagers;
-using Microsoft.Extensions.Options;
 using Xz.Node.Framework.Jwt;
 using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
+using Xz.Node.Framework.Extensions;
 
 namespace Xz.Node.App.SSO
 {
@@ -20,20 +21,25 @@ namespace Xz.Node.App.SSO
         public readonly IRepository<Auth_UserInfo, XzDbContext> _app;
         private readonly ICacheContext _cacheContext;
         private readonly AppManager _appInfoService;
-        private readonly IOptions<AppSetting> _appConfiguration;
         private readonly IJwtTokenHelper _jwtTokenHelper;
+        private readonly IConfigurationRoot _configuration;
+        private readonly bool _isEnabledId4;
+        private readonly bool _isEnabledJwt;
+        private readonly bool _isEnabledOAuth2;
 
         public LoginParse(AppManager infoService,
             ICacheContext cacheContext,
             IRepository<Auth_UserInfo, XzDbContext> userApp,
-            IOptions<AppSetting> appConfiguration,
             IJwtTokenHelper jwtTokenHelper)
         {
             _appInfoService = infoService;
             _cacheContext = cacheContext;
             _app = userApp;
-            _appConfiguration = appConfiguration;
             _jwtTokenHelper = jwtTokenHelper;
+            _configuration = ConfigHelper.GetConfigRoot();
+            _isEnabledId4 = _configuration[$"AppSetting:IdentityServer4:Enabled"].ToBool();
+            _isEnabledJwt = _configuration[$"AppSetting:Jwt:Enabled"].ToBool();
+            _isEnabledOAuth2 = _configuration[$"AppSetting:OAuth2:Enabled"].ToBool();
         }
 
         public LoginResult Do(PassportLoginRequest model)
@@ -89,7 +95,7 @@ namespace Xz.Node.App.SSO
                 };
 
                 var timeOut = DateTime.Now.AddDays(10);
-                if (_appConfiguration.Value.AuthorizationWay == Framework.Enums.AuthorizationWayEnum.Jwt)
+                if (_isEnabledJwt)
                 {
                     //jwt的授权方式
                     var dic = new Dictionary<string, string>();
@@ -101,7 +107,7 @@ namespace Xz.Node.App.SSO
                     timeOut = tokenResult.Expires;
                 }
 
-                if (_appConfiguration.Value.AuthorizationWay == Framework.Enums.AuthorizationWayEnum.OAuth2)
+                if (_isEnabledOAuth2)
                 {
                     currentSession.Token = userInfo.Id + "_" + userInfo.Account + "_" + Guid.NewGuid().ToString().GetHashCode().ToString("x");
                 }

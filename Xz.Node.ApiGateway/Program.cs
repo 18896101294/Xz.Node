@@ -75,6 +75,13 @@ namespace Xz.Node.ApiGateway
                             options.ReloadOnChange = true;
                             options.OnLoadException = exceptionContext => { exceptionContext.Ignore = true; };
                         })
+                        .AddConsul($"System/consul.json", options =>
+                        {
+                            options.ConsulConfigurationOptions = cco => { cco.Address = new Uri(consulAddress); };
+                            options.Optional = true;
+                            options.ReloadOnChange = true;
+                            options.OnLoadException = exceptionContext => { exceptionContext.Ignore = true; };
+                        })
                         .AddEnvironmentVariables();
                    }
                    else
@@ -82,6 +89,7 @@ namespace Xz.Node.ApiGateway
                        configBuilder
                         .AddJsonFile("ocelot.json", optional: true, reloadOnChange: true)
                         .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                        .AddJsonFile("consul.json", optional: true, reloadOnChange: true)
                         .AddEnvironmentVariables(); //º”‘ÿ±æµÿ≈‰÷√
                    }
                })

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Xz.Node.Framework.Common;
 using Xz.Node.Framework.Enums;
+using Xz.Node.Framework.Extensions;
 
 namespace Xz.Node.Framework.Jwt
 {
@@ -16,10 +18,10 @@ namespace Xz.Node.Framework.Jwt
     /// </summary>
     public class JwtTokenHelper : IJwtTokenHelper
     {
-        private IOptions<AppSetting> _appConfiguration;
-        public JwtTokenHelper(IOptions<AppSetting> appConfiguration)
+        private readonly IConfigurationRoot _configuration;
+        public JwtTokenHelper()
         {
-            _appConfiguration = appConfiguration;
+            _configuration = ConfigHelper.GetConfigRoot();
         }
 
         /// <summary>
@@ -74,14 +76,14 @@ namespace Xz.Node.Framework.Jwt
         private JwtTokenResponse CreateToken(List<Claim> claims)
         {
             var now = DateTime.Now;
-            var expires = now.Add(TimeSpan.FromDays(_appConfiguration.Value.Jwt.AccessTokenExpiresDay));
+            var expires = now.Add(TimeSpan.FromDays(_configuration["AppSetting:Jwt:AccessTokenExpiresDay"].ToInt32().Value));
             var token = new JwtSecurityToken(
-                issuer: _appConfiguration.Value.Jwt.Issuer,//Token发布者
-                audience: _appConfiguration.Value.Jwt.Audience,//Token接受者
+                issuer: _configuration["AppSetting:Jwt:Issuer"],//Token发布者
+                audience: _configuration["AppSetting:Jwt:Audience"],//Token接受者
                 claims: claims,//携带的负载
                 notBefore: now,//当前时间token生成时间
                 expires: expires,//过期时间
-                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appConfiguration.Value.Jwt.Secret)), SecurityAlgorithms.HmacSha256));
+                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AppSetting:Jwt:Secret"])), SecurityAlgorithms.HmacSha256));
             return new JwtTokenResponse { TokenStr = new JwtSecurityTokenHandler().WriteToken(token), Expires = expires };
         }
 
@@ -104,7 +106,7 @@ namespace Xz.Node.Framework.Jwt
             var header = JsonHelper.Instance.Deserialize<Dictionary<string, string>>(Base64UrlEncoder.Decode(jwtArr[0]));
             var payLoad = JsonHelper.Instance.Deserialize<Dictionary<string, string>>(Base64UrlEncoder.Decode(jwtArr[1]));
             //配置文件中取出来的签名秘钥
-            var hs256 = new HMACSHA256(Encoding.ASCII.GetBytes(_appConfiguration.Value.Jwt.Secret));
+            var hs256 = new HMACSHA256(Encoding.ASCII.GetBytes(_configuration["AppSetting:Jwt:Secret"]));
             //验证签名是否正确（把用户传递的签名部分取出来和服务器生成的签名匹配即可）
             var checkSuccess = string.Equals(jwtArr[2], Base64UrlEncoder.Encode(hs256.ComputeHash(Encoding.UTF8.GetBytes(string.Concat(jwtArr[0], ".", jwtArr[1])))));
             if (!checkSuccess)

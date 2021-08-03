@@ -32,6 +32,15 @@ namespace Xz.Node.AdminApi.Controllers.Consul
             _consulConfig = options.Value;
             _httpHelper = new HttpHelper(_consulConfig.ConsulAddress);
         }
+        /// <summary>
+        /// 把健康检查的地址简单实现一下
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult HealthCheck()
+        {
+            return Ok();
+        }
 
         /// <summary>
         /// 获取Consul服务列表

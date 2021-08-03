@@ -12,9 +12,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\css\site.less" />
-    <None Include="wwwroot\js\signin-redirect.js" />
-    <None Include="wwwroot\js\signout-redirect.js" />
+    <None Include="wwwroot\css\site.less">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\js\signin-redirect.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\js\signout-redirect.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="wwwroot\lib\bootstrap\css\bootstrap-theme.css.map" />
     <None Include="wwwroot\lib\bootstrap\css\bootstrap-theme.min.css.map" />
     <None Include="wwwroot\lib\bootstrap\css\bootstrap.css.map" />

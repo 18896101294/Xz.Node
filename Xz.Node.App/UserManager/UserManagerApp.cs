@@ -18,10 +18,11 @@ namespace Xz.Node.App.UserManager
         /// 根据登录账号获取登录信息
         /// </summary>
         /// <param name="account"></param>
+        /// <param name="password"></param>
         /// <returns></returns>
-        public Auth_UserInfo GetByAccount(string account)
+        public Auth_UserInfo GetByAccount(string account, string password)
         {
-            return Repository.FirstOrDefault(u => u.Account == account);
+            return Repository.FirstOrDefault(u => u.Account == account && u.Password == password);
         }
     }
 }

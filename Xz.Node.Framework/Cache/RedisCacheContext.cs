@@ -15,10 +15,9 @@ namespace Xz.Node.Framework.Cache
         private ConnectionMultiplexer _conn { get; set; }
         private IDatabase iDatabase { get; set; }
 
-        private readonly AppSetting _appSettings;
-        public RedisCacheContext(IOptions<AppSetting> options)
+        public RedisCacheContext()
         {
-            _conn = ConnectionMultiplexer.Connect(options.Value.RedisConf);
+            _conn = ConnectionMultiplexer.Connect(ConfigHelper.GetConfigRoot()["AppSetting:RedisConf"]);
             iDatabase = _conn.GetDatabase();
         }
         /// <summary>

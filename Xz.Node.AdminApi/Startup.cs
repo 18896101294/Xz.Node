@@ -301,7 +301,7 @@ namespace Xz.Node.AdminApi
             app.UseHttpReports();
 
             //注册consul服务
-            app.RegisterConsul(lifetime, this.GetConsulConfig());
+            app.RegisterConsul(lifetime, ConsulHelper.GetConsulConfig(Configuration));
 
             //可以访问根目录下面的静态文件
             var staticfile = new StaticFileOptions
@@ -361,7 +361,8 @@ namespace Xz.Node.AdminApi
         /// <param name="configuration"></param>
         public void AfterStartup(IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<AppSetting>(configuration.GetSection("AppSetting"));
+            //系统目前已支持动态化参数配置，不应在此处进行配置注入
+            //services.Configure<AppSetting>(configuration.GetSection("AppSetting"));
             services.Configure<ConsulConfig>(configuration.GetSection("Consul"));
         }
 
@@ -391,32 +392,6 @@ namespace Xz.Node.AdminApi
                 .Where(type => typeof(ControllerBase).IsAssignableFrom(type))
                 .OrderBy(x => x.Name).ToList();
             return controlleractionlist;
-        }
-
-        /// <summary>
-        /// 获取Consul配置
-        /// </summary>
-        /// <returns></returns>
-        private ConsulConfig GetConsulConfig()
-        {
-            var consulSection = Configuration.GetSection("Consul");
-            if (consulSection["ServiceName"] == null)
-            {
-                return null;
-            }
-            var consulConfig = new ConsulConfig
-            {
-                ServiceName = consulSection["ServiceName"],
-                ServiceIP = consulSection["ServiceIP"],
-                ServicePort = consulSection["ServicePort"].ToInt32().Value,
-                RegisterSeconds = consulSection["RegisterSeconds"].ToInt32().Value,
-                ServiceHealthCheck = consulSection["ServiceHealthCheck"],
-                HealthCheckSeconds = consulSection["HealthCheckSeconds"].ToInt32().Value,
-                HealthCheckTimeOutSeconds = consulSection["HealthCheckTimeOutSeconds"].ToInt32().Value,
-                ConsulAddress = consulSection["ConsulAddress"],
-                IsEnableStop = consulSection["IsEnableStop"].ToBool()
-            };
-            return consulConfig;
         }
         #endregion
     }

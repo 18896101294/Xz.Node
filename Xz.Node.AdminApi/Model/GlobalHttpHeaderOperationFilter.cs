@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xz.Node.Framework.Common;
 using Xz.Node.Framework.Enums;
+using Xz.Node.Framework.Extensions;
 
 namespace Xz.Node.AdminApi.Model
 {
@@ -14,20 +15,21 @@ namespace Xz.Node.AdminApi.Model
     /// </summary>
     public class GlobalHttpHeaderOperationFilter : IOperationFilter
     {
-        private IOptions<AppSetting> _appConfiguration;
         /// <summary>
         ///  添加httpHeader参数
         /// </summary>
         /// <param name="appConfiguration"></param>
-        public GlobalHttpHeaderOperationFilter(IOptions<AppSetting> appConfiguration)
+        public GlobalHttpHeaderOperationFilter()
         {
-            _appConfiguration = appConfiguration;
         }
 
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
+            var configuration = ConfigHelper.GetConfigRoot();
+            bool isEnabledOAuth2 = configuration["AppSetting:OAuth2:Enabled"].ToBool();
+
             //如果是Identity认证方式，不需要界面添加x-token得输入框
-            if (_appConfiguration.Value.AuthorizationWay == AuthorizationWayEnum.OAuth2)
+            if (isEnabledOAuth2)
             {
                 if (operation.Parameters == null)
                 {

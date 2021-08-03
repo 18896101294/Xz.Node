@@ -24,17 +24,14 @@ namespace Xz.Node.App
     {
         private List<DbContext> _contexts = new List<DbContext>();
 
-        private IOptions<AppSetting> _appConfiguration;
         private IHttpContextAccessor _httpContextAccessor;
         /// <summary>
         /// 数据库扩展，获取数据库表、字段等信息
         /// </summary>
-        /// <param name="appConfiguration"></param>
         /// <param name="openAuthDbContext"></param>
         /// <param name="httpContextAccessor"></param>
-        public DbExtension(IOptions<AppSetting> appConfiguration, XzDbContext openAuthDbContext, IHttpContextAccessor httpContextAccessor)
+        public DbExtension(XzDbContext openAuthDbContext, IHttpContextAccessor httpContextAccessor)
         {
-            _appConfiguration = appConfiguration;
             _httpContextAccessor = httpContextAccessor;
             _contexts.Add(openAuthDbContext);  //如果有多个DBContext，可以按OpenAuthDBContext同样的方式添加到_contexts中
         }
@@ -115,7 +112,8 @@ namespace Xz.Node.App
         /// <returns></returns>
         public IList<SysTableColumn> GetDbTableStructure(string tableName)
         {
-            var dbtype = _appConfiguration.Value.DbTypes[_httpContextAccessor.GetTenantId()];
+            var configuration = ConfigHelper.GetConfigRoot();
+            string dbtype = configuration[$"AppSetting:DbTypes:{_httpContextAccessor.GetTenantId()}"];
             if (dbtype == Define.DBTYPE_MYSQL)
             {
                 return GetMySqlStructure(tableName);

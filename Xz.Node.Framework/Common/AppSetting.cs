@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Xz.Node.Framework.Enums;
 
 namespace Xz.Node.Framework.Common
@@ -6,6 +7,7 @@ namespace Xz.Node.Framework.Common
     /// <summary>
     /// 系统配置项
     /// </summary>
+    [Obsolete]
     public class AppSetting
     {
         public AppSetting()
