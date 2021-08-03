@@ -48,6 +48,10 @@ namespace Xz.Node.AdminApi
                {
                    configBuilder.AddCommandLine(args);//添加命令行支持
 
+                   var basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", "config");
+                   configBuilder
+                       .SetBasePath(basePath); //手动指定配置文件的路径
+
                    configBuilder
                         .AddJsonFile("default.json", optional: true, reloadOnChange: true);
                    var defaultConfigRoot = configBuilder.Build();
@@ -78,10 +82,6 @@ namespace Xz.Node.AdminApi
                    }
                    else
                    {
-                       var basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", "config");
-                       configBuilder
-                           .SetBasePath(basePath); //手动指定配置文件的路径
-
                        configBuilder
                         .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                         .AddJsonFile("consul.json", optional: true, reloadOnChange: true)

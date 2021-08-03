@@ -36,6 +36,10 @@ namespace Xz.Node.Framework.Common
         {
             var configBuilder = new ConfigurationBuilder();
 
+            var basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", "config");
+            configBuilder
+                .SetBasePath(basePath);
+
             configBuilder
                       .AddJsonFile("default.json", optional: true, reloadOnChange: true);
             var defaultConfigRoot = configBuilder.Build();
@@ -56,9 +60,7 @@ namespace Xz.Node.Framework.Common
             }
             else
             {
-                var basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", "config");
                 configBuilder
-                    .SetBasePath(basePath) //手动指定配置文件的路径
                     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                     .AddEnvironmentVariables(); //加载本地配置
             }

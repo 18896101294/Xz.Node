@@ -44,6 +44,10 @@ namespace Xz.Node.ApiGateway
                {
                    configBuilder.AddCommandLine(args);//添加命令行支持
 
+                   var basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", "config");
+                   configBuilder
+                        .SetBasePath(basePath);
+
                    configBuilder
                     .AddJsonFile("default.json", optional: true, reloadOnChange: true);
 
@@ -75,12 +79,8 @@ namespace Xz.Node.ApiGateway
                    }
                    else
                    {
-                       var basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", "config");
                        configBuilder
-                        .SetBasePath(basePath) //手动指定配置文件的路径
-                        .AddJsonFile("ocelot.json", optional: true, reloadOnChange: true);
-
-                       configBuilder
+                        .AddJsonFile("ocelot.json", optional: true, reloadOnChange: true)
                         .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                         .AddEnvironmentVariables(); //加载本地配置
                    }
