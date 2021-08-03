@@ -32,8 +32,8 @@ namespace Xz.Node.AdminApi
             -------------------------------------------------------------------
             ¡¾Author¡¿           :  Xz
             ¡¾Runing¡¿           :  AdminApi
-            -------------------------------------------------------------------
-            ¡¾Start Time¡¿:{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}", ConsoleColor.Red);
+            ¡¾StartTime¡¿        :  {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}
+            -------------------------------------------------------------------", ConsoleColor.Red);
             CreateHostBuilder(args).Build().Run();
         }
 
