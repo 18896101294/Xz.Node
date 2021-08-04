@@ -51,7 +51,7 @@ namespace Xz.Node.IdentityServer
             var host = "http://localhost";
             if (isProduction)
             {
-                host = "http://demo.me";//生产环境时，切换为正式服务器地址
+                host = "http://localhost";//生产环境时，切换为正式服务器地址,这里发布的时候一定要记得改呀
             }
             return new[]
             {
@@ -63,7 +63,10 @@ namespace Xz.Node.IdentityServer
                     AllowAccessTokensViaBrowser = true,//是否通过浏览器为此客户端传输访问令牌
                     RedirectUris =
                     {
-                        $"{host}:52789/swagger/oauth2-redirect.html", //登录成功后返回的客户端地址,可以允许多个
+                        //登录成功后返回的客户端地址,可以允许多个,如果有多个集群的服务就像这样子配置多个集群的返回地址即可
+                        $"{host}:52789/swagger/oauth2-redirect.html", 
+                        $"{host}:52788/swagger/oauth2-redirect.html",
+                        $"{host}:52787/swagger/oauth2-redirect.html",
                     },
                     AllowedScopes = { "xznodeapi" }
                 },
