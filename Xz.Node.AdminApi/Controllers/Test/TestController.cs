@@ -17,6 +17,7 @@ using Microsoft.Extensions.Options;
 using Consul;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Xz.Node.Framework.Cache;
 
 namespace Xz.Node.AdminApi.Controllers.Test
 {
@@ -31,18 +32,22 @@ namespace Xz.Node.AdminApi.Controllers.Test
         private readonly TestOpApp _app;
         private readonly IRabbitMQClient _rabbitMQClient;
         private readonly ConsulConfig _consulConfig;
+        private readonly ICacheContext _cacheContext;
         /// <summary>
         /// 单元测试
         /// </summary>
         /// <param name="app"></param>
         /// <param name="rabbitMQClient"></param>
+        /// <param name="cacheContext"></param>
         /// <param name="options"></param>
         public TestController(TestOpApp app,
             IRabbitMQClient rabbitMQClient,
+            ICacheContext cacheContext,
             IOptions<ConsulConfig> options)
         {
             _app = app;
             _rabbitMQClient = rabbitMQClient;
+            _cacheContext = cacheContext;
             _consulConfig = options.Value;
         }
 
@@ -339,6 +344,21 @@ namespace Xz.Node.AdminApi.Controllers.Test
             return "嘿嘿";
         }
 
+        #endregion
+
+        #region Redis
+        /// <summary>
+        /// Redis测试
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult RedisTest()
+        {
+            _cacheContext.Set<string>("TestKey", "嘿嘿", null);
+
+            return Ok();
+        }
         #endregion
 
         /// <summary>

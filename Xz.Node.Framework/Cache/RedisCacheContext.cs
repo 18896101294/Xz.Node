@@ -1,6 +1,7 @@
 ﻿using System;
 using Enyim.Caching;
 using Enyim.Caching.Memcached;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using Xz.Node.Framework.Common;
@@ -15,11 +16,46 @@ namespace Xz.Node.Framework.Cache
         private ConnectionMultiplexer _conn { get; set; }
         private IDatabase iDatabase { get; set; }
 
+        /// <summary>
+        /// 这里是高可用的redis集群实现，如果想不使用集群，就不要配置哨兵配置
+        /// </summary>
         public RedisCacheContext()
         {
-            _conn = ConnectionMultiplexer.Connect(ConfigHelper.GetConfigRoot()["AppSetting:RedisConf"]);
+            var configRoot = ConfigHelper.GetConfigRoot();
+
+            if (configRoot.GetSection("Redis:Sentinel").Exists())
+            {
+                //哨兵连接
+                ConfigurationOptions sentinelOptions = new ConfigurationOptions();
+                var sentinelArray = configRoot.GetSection("Redis:Sentinel").GetChildren();
+                foreach (var sentinel in sentinelArray)
+                {
+                    sentinelOptions.EndPoints.Add(sentinel.Value);
+                }
+                sentinelOptions.TieBreaker = "";
+                sentinelOptions.CommandMap = CommandMap.Sentinel;
+                sentinelOptions.AbortOnConnectFail = true;
+                // Connect!
+                var sentinelConnection = ConnectionMultiplexer.Connect(sentinelOptions);
+
+                // Get a connection to the master
+                var redisServiceOptions = new ConfigurationOptions();
+                redisServiceOptions.ServiceName = configRoot.GetSection("Redis:ServiceName").Value;   //master名称
+                redisServiceOptions.Password = configRoot.GetSection("Redis:Password").Value;     //master访问密码
+                redisServiceOptions.AbortOnConnectFail = true;
+                redisServiceOptions.AllowAdmin = true;
+                _conn = sentinelConnection.GetSentinelMasterConnection(redisServiceOptions);
+            }
+            else
+            {
+                //单机连接
+                string connectionString = configRoot.GetSection("Redis:ConnectionStrings").Value;
+                _conn = ConnectionMultiplexer.Connect(connectionString);
+            }
+            //_conn = ConnectionMultiplexer.Connect(ConfigHelper.GetConfigRoot()["AppSetting:RedisConf"]);
             iDatabase = _conn.GetDatabase();
         }
+
         /// <summary>
         /// 获取缓存
         /// </summary>
@@ -33,10 +69,10 @@ namespace Xz.Node.Framework.Cache
             {
                 return default(T);
             }
-            
+
             if (typeof(T) == typeof(string))
             {
-                return (T) Convert.ChangeType(value, typeof(T));
+                return (T)Convert.ChangeType(value, typeof(T));
             }
             else
             {
@@ -59,11 +95,11 @@ namespace Xz.Node.Framework.Cache
                 {
                     return iDatabase.StringSet(key, t.ToString());
                 }
-                return iDatabase.StringSet(key, t.ToString(), expire-DateTime.Now);
+                return iDatabase.StringSet(key, t.ToString(), expire - DateTime.Now);
             }
             else
             {
-                if(expire == null)
+                if (expire == null)
                 {
                     return iDatabase.StringSet(key, JsonHelper.Instance.Serialize(t));
                 }

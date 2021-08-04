@@ -54,7 +54,14 @@ namespace Xz.Node.Framework.Common
                         options.ConsulConfigurationOptions = cco => { cco.Address = new Uri(consulAddress); };
                         options.Optional = true;
                         options.ReloadOnChange = true;
-                        options.OnLoadException = exceptionContext => { exceptionContext.Ignore = true; }; //忽略异常
+                        options.OnLoadException = exceptionContext => { exceptionContext.Ignore = true; };
+                    })
+                    .AddConsul($"System/redis.json", options =>
+                    {
+                        options.ConsulConfigurationOptions = cco => { cco.Address = new Uri(consulAddress); };
+                        options.Optional = true;
+                        options.ReloadOnChange = true;
+                        options.OnLoadException = exceptionContext => { exceptionContext.Ignore = true; };
                     })
                     .AddEnvironmentVariables();
             }
@@ -62,6 +69,7 @@ namespace Xz.Node.Framework.Common
             {
                 configBuilder
                     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                    .AddJsonFile("redis.json", optional: true, reloadOnChange: true)
                     .AddEnvironmentVariables(); //加载本地配置
             }
             var configuration = configBuilder.Build();
