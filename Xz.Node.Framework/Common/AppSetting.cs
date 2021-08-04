@@ -5,11 +5,14 @@ using Xz.Node.Framework.Enums;
 namespace Xz.Node.Framework.Common
 {
     /// <summary>
-    /// 系统配置项
+    /// 现已支持consul配置中心，所以此配置目前已被弃用，如果是单机单服务，则可继续使用此配置进行开发
     /// </summary>
     [Obsolete]
     public class AppSetting
     {
+        /// <summary>
+        /// 现已支持consul配置中心，所以此配置目前已被弃用，如果是单机单服务，则可继续使用此配置进行开发
+        /// </summary>
         public AppSetting()
         {
             this.AppId = string.Empty;

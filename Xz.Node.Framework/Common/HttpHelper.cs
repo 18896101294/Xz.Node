@@ -61,6 +61,7 @@ namespace Xz.Node.Framework.Common
             }
 
             var result = _httpClient.GetStringAsync(requestUri);
+            _httpClient.Dispose();
             return result.Result;
         }
 
