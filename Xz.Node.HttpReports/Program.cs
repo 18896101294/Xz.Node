@@ -49,7 +49,7 @@ namespace Xz.Node.HttpReports
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    var configuration = ConfigHelper.GetConfigRoot();
+                    var configuration = ConfigHelper.GetDefaultConfigRoot();
                     var httpHost = configuration["AppSetting:HttpHost"];
                     webBuilder.UseUrls(httpHost).UseStartup<Startup>();
                 });

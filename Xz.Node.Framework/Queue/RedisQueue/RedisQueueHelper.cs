@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using System;
 using System.Threading;
@@ -12,12 +13,14 @@ namespace Xz.Node.Framework.Queue.RedisQueue
     /// </summary>
     public class RedisQueueHelper : IRedisQueueHelper
     {
+        private readonly IConfiguration _configuration;
         private ConnectionMultiplexer _conn { get; set; }
         private ISubscriber _subscriber { get; set; }//订阅者
         private IDatabase _database { get; set; }
-        public RedisQueueHelper()
+        public RedisQueueHelper(IConfiguration configuration)
         {
-            _conn = ConnectionMultiplexer.Connect(ConfigHelper.GetConfigRoot()["AppSetting:RedisConf"]);
+            _configuration = configuration;
+            _conn = ConnectionMultiplexer.Connect(_configuration["AppSetting:RedisConf"]);
             _subscriber = _conn.GetSubscriber();
             _database = _conn.GetDatabase();
         }

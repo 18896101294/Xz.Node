@@ -13,21 +13,22 @@ namespace Xz.Node.Framework.Cache
     /// </summary>
     public sealed class RedisCacheContext : ICacheContext
     {
+        private readonly IConfiguration _configuration;
         private ConnectionMultiplexer _conn { get; set; }
         private IDatabase iDatabase { get; set; }
 
         /// <summary>
         /// 这里是高可用的redis集群实现，如果想不使用集群，就不要配置哨兵配置
         /// </summary>
-        public RedisCacheContext()
+        public RedisCacheContext(IConfiguration configuration)
         {
-            var configRoot = ConfigHelper.GetConfigRoot();
+            _configuration = configuration;
 
-            if (configRoot.GetSection("Redis:Sentinel").Exists())
+            if (_configuration.GetSection("Redis:Sentinel").Exists())
             {
                 //哨兵连接
                 ConfigurationOptions sentinelOptions = new ConfigurationOptions();
-                var sentinelArray = configRoot.GetSection("Redis:Sentinel").GetChildren();
+                var sentinelArray = _configuration.GetSection("Redis:Sentinel").GetChildren();
                 foreach (var sentinel in sentinelArray)
                 {
                     sentinelOptions.EndPoints.Add(sentinel.Value);
@@ -40,8 +41,8 @@ namespace Xz.Node.Framework.Cache
 
                 // Get a connection to the master
                 var redisServiceOptions = new ConfigurationOptions();
-                redisServiceOptions.ServiceName = configRoot.GetSection("Redis:ServiceName").Value;   //master名称
-                redisServiceOptions.Password = configRoot.GetSection("Redis:Password").Value;     //master访问密码
+                redisServiceOptions.ServiceName = _configuration.GetSection("Redis:ServiceName").Value;   //master名称
+                redisServiceOptions.Password = _configuration.GetSection("Redis:Password").Value;     //master访问密码
                 redisServiceOptions.AbortOnConnectFail = true;
                 redisServiceOptions.AllowAdmin = true;
                 _conn = sentinelConnection.GetSentinelMasterConnection(redisServiceOptions);
@@ -49,7 +50,7 @@ namespace Xz.Node.Framework.Cache
             else
             {
                 //单机连接
-                string connectionString = configRoot.GetSection("Redis:ConnectionStrings").Value;
+                string connectionString = _configuration.GetSection("Redis:ConnectionStrings").Value;
                 _conn = ConnectionMultiplexer.Connect(connectionString);
             }
             //_conn = ConnectionMultiplexer.Connect(ConfigHelper.GetConfigRoot()["AppSetting:RedisConf"]);

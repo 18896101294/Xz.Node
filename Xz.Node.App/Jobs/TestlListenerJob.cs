@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using Xz.Node.Framework.Enums;
 using Xz.Node.Framework.Extensions;
@@ -11,6 +12,7 @@ namespace Xz.Node.App.Jobs
     public class TestlListenerJob : RabbitListener
     {
         private readonly ILogger<TestlListenerJob> _logger;
+        private readonly IConfiguration _configuration;
         private static string exchange = "xznode.message";
         private static string type = "topic";
         private static string routeKey = "xznoderk.test";
@@ -20,11 +22,21 @@ namespace Xz.Node.App.Jobs
         //声明死信队列
         private static string exchange_dlx = "xznode.message.dlx";//死信交换机
         private static string routeKey_dlx = "xznoderk.test.dlx";//死信路由
-        public TestlListenerJob(ILogger<TestlListenerJob> logger) : base(logger, exchange, type, routeKey, queueName, prefetchCount, ttl, exchange_dlx, routeKey_dlx)
+        /// <summary>
+        /// 构造
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="configuration"></param>
+        public TestlListenerJob(ILogger<TestlListenerJob> logger, IConfiguration configuration) : base(logger, configuration, exchange, type, routeKey, queueName, prefetchCount, ttl, exchange_dlx, routeKey_dlx)
         {
             _logger = logger;
         }
 
+        /// <summary>
+        /// 处理方法
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public override int Process(string message)
         {
             if (string.IsNullOrEmpty(message))

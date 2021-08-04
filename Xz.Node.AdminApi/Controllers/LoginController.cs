@@ -1,14 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using System;
 using Xz.Node.App.Interface;
 using Xz.Node.App.SSO.Request;
 using Xz.Node.App.SSO.Response;
-using Xz.Node.Framework.Common;
 using Xz.Node.Framework.Encryption;
-using Xz.Node.Framework.Enums;
 using Xz.Node.Framework.Extensions;
 using Xz.Node.Framework.Model;
 
@@ -24,13 +21,16 @@ namespace Xz.Node.AdminApi.Controllers
     {
         private string _appKey = "xznode";
         private readonly IAuth _authUtil;
+        private readonly IConfiguration _configuration;
         /// <summary>
         /// 系统登录
         /// </summary>
         /// <param name="authUtil"></param>
-        public LoginController(IAuth authUtil)
+        /// <param name="configuration">配置中心</param>
+        public LoginController(IAuth authUtil, IConfiguration configuration)
         {
             _authUtil = authUtil;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -88,8 +88,7 @@ namespace Xz.Node.AdminApi.Controllers
             {
                 Message = "退出登录成功",
             };
-            var configuration = ConfigHelper.GetConfigRoot();
-            bool isEnabledId4 = configuration["AppSetting:IdentityServer4:Enabled"].ToBool();
+            bool isEnabledId4 = _configuration.GetSection("AppSetting:IdentityServer4:Enabled").ToBool();
             if (isEnabledId4)
             {
                 return SignOut("Cookies", "oidc");

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
@@ -13,18 +14,20 @@ namespace Xz.Node.Framework.Queue.RabbitMQ
     {
         private readonly IModel _channel;
         private readonly ILogger<RabbitMQClient> _logger;
-        public RabbitMQClient(ILogger<RabbitMQClient> logger)
+        private readonly IConfiguration _configuration;
+        public RabbitMQClient(ILogger<RabbitMQClient> logger,
+            IConfiguration configuration)
         {
             _logger = logger;
             try
             {
-                var configuration = ConfigHelper.GetConfigRoot();
-                string hostName = configuration["RabbitMQ:HostName"];//主机名
-                int port = configuration["RabbitMQ:Port"].ToInt();//端口 
+                _configuration = configuration;
+                string hostName = _configuration["RabbitMQ:HostName"];//主机名
+                int port = _configuration["RabbitMQ:Port"].ToInt();//端口 
                 //int port =  AmqpTcpEndpoint.UseDefaultPort; 默认端口写法：默认端口为5672
-                string userName = configuration["RabbitMQ:UserName"];//用户名
-                string password = configuration["RabbitMQ:Password"];//密码
-                string virtualHost = configuration["RabbitMQ:VirtualHost"];//虚拟机
+                string userName = _configuration["RabbitMQ:UserName"];//用户名
+                string password = _configuration["RabbitMQ:Password"];//密码
+                string virtualHost = _configuration["RabbitMQ:VirtualHost"];//虚拟机
 
                 var factory = new ConnectionFactory()
                 {

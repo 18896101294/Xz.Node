@@ -11,21 +11,14 @@ namespace Xz.Node.Framework.Common
         /// 获取配置文件
         /// </summary>
         /// <returns></returns>
-        public static IConfigurationRoot GetConfigRoot1()
+        public static IConfigurationRoot GetDefaultConfigRoot()
         {
+            var configBuilder = new ConfigurationBuilder();
             var basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", "config");
-
-            var configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder
-                .SetBasePath(basePath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile(
-                    $"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development"}.json",
-                    optional: true)
-                .AddEnvironmentVariables();
-
-            var configuration = configurationBuilder.Build();
-            return configuration;
+            configBuilder.SetBasePath(basePath);
+            configBuilder.AddJsonFile("default.json", optional: true, reloadOnChange: true);
+            var defaultConfigRoot = configBuilder.Build();
+            return defaultConfigRoot;
         }
 
         /// <summary>

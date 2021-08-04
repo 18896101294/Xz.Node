@@ -20,12 +20,12 @@ namespace Xz.Node.App.SSO
     public class LocalAuth : IAuth
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IConfiguration _configuration;
         private readonly SysLogApp _logApp;
         private readonly AuthContextFactory _app;
         private readonly LoginParse _loginParse;
         private readonly ICacheContext _cacheContext;
         private readonly IJwtTokenHelper _jwtTokenHelper;
-        private readonly IConfigurationRoot _configuration;
         private readonly bool _isEnabledId4;
         private readonly bool _isEnabledJwt;
 
@@ -33,12 +33,14 @@ namespace Xz.Node.App.SSO
         /// 构造
         /// </summary>
         /// <param name="httpContextAccessor"></param>
+        /// <param name="configuration"></param>
         /// <param name="app"></param>
         /// <param name="loginParse"></param>
         /// <param name="cacheContext"></param>
         /// <param name="logApp"></param>
         /// <param name="jwtTokenHelper"></param>
         public LocalAuth(IHttpContextAccessor httpContextAccessor,
+            IConfiguration configuration,
             AuthContextFactory app,
             LoginParse loginParse,
             ICacheContext cacheContext,
@@ -46,12 +48,12 @@ namespace Xz.Node.App.SSO
             IJwtTokenHelper jwtTokenHelper)
         {
             _httpContextAccessor = httpContextAccessor;
+            _configuration = configuration;
             _app = app;
             _loginParse = loginParse;
             _cacheContext = cacheContext;
             _logApp = logApp;
             _jwtTokenHelper = jwtTokenHelper;
-            _configuration = ConfigHelper.GetConfigRoot();
             _isEnabledId4 = _configuration["AppSetting:IdentityServer4:Enabled"].ToBool();
             _isEnabledJwt = _configuration["AppSetting:Jwt:Enabled"].ToBool();
         }

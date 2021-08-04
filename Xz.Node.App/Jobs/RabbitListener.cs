@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Quartz;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -20,6 +21,7 @@ namespace Xz.Node.App.Jobs
         private readonly IConnection connection;
         private readonly IModel channel;
         private readonly ILogger<RabbitListener> _logger;
+        private readonly IConfiguration _configuration;
         /// <summary>
         /// 交换机
         /// </summary>
@@ -64,7 +66,8 @@ namespace Xz.Node.App.Jobs
         /// <param name="ttl">总数</param>
         /// <param name="exchange_dlx">死信队列交换机</param>
         /// <param name="routeKey_dlx">死信队列路由键</param>
-        public RabbitListener(ILogger<RabbitListener> logger,
+        /// <param name="configuration">配置中心</param>
+        public RabbitListener(ILogger<RabbitListener> logger, IConfiguration configuration,
             string exchange, string type, string routeKey,
             string queueName, ushort prefetchCount, long ttl,
             string exchange_dlx, string routeKey_dlx)
@@ -78,16 +81,16 @@ namespace Xz.Node.App.Jobs
             _ttl = ttl;
             _exchange_dlx = exchange_dlx;
             _routeKey_dlx = routeKey_dlx;
+            _configuration = configuration;
 
             try
             {
-                var configuration = ConfigHelper.GetConfigRoot();
-                string hostName = configuration["RabbitMQ:HostName"];//主机名
-                int port = configuration["RabbitMQ:Port"].ToInt();//端口
+                string hostName = _configuration["RabbitMQ:HostName"];//主机名
+                int port = _configuration["RabbitMQ:Port"].ToInt();//端口
                 //int port =  AmqpTcpEndpoint.UseDefaultPort; 默认端口写法：默认端口为5672
-                string userName = configuration["RabbitMQ:UserName"];//用户名
-                string password = configuration["RabbitMQ:Password"];//密码
-                string virtualHost = configuration["RabbitMQ:VirtualHost"];//虚拟机
+                string userName = _configuration["RabbitMQ:UserName"];//用户名
+                string password = _configuration["RabbitMQ:Password"];//密码
+                string virtualHost = _configuration["RabbitMQ:VirtualHost"];//虚拟机
 
                 var factory = new ConnectionFactory()
                 {

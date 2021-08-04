@@ -18,25 +18,33 @@ namespace Xz.Node.App.SSO
     public class LoginParse
     {
         //这个地方使用IRepository<Auth_UserInfo> 而不使用UserManagerApp是防止循环依赖
-        public readonly IRepository<Auth_UserInfo, XzDbContext> _app;
+        private readonly IRepository<Auth_UserInfo, XzDbContext> _app;
         private readonly ICacheContext _cacheContext;
         private readonly AppManager _appInfoService;
         private readonly IJwtTokenHelper _jwtTokenHelper;
-        private readonly IConfigurationRoot _configuration;
+        private readonly IConfiguration _configuration;
         private readonly bool _isEnabledId4;
         private readonly bool _isEnabledJwt;
         private readonly bool _isEnabledOAuth2;
-
+        /// <summary>
+        /// 登录身份解析
+        /// </summary>
+        /// <param name="infoService"></param>
+        /// <param name="cacheContext"></param>
+        /// <param name="userApp"></param>
+        /// <param name="jwtTokenHelper"></param>
+        /// <param name="configuration"></param>
         public LoginParse(AppManager infoService,
             ICacheContext cacheContext,
             IRepository<Auth_UserInfo, XzDbContext> userApp,
-            IJwtTokenHelper jwtTokenHelper)
+            IJwtTokenHelper jwtTokenHelper,
+            IConfiguration configuration)
         {
             _appInfoService = infoService;
             _cacheContext = cacheContext;
             _app = userApp;
             _jwtTokenHelper = jwtTokenHelper;
-            _configuration = ConfigHelper.GetConfigRoot();
+            _configuration = configuration;
             _isEnabledId4 = _configuration[$"AppSetting:IdentityServer4:Enabled"].ToBool();
             _isEnabledJwt = _configuration[$"AppSetting:Jwt:Enabled"].ToBool();
             _isEnabledOAuth2 = _configuration[$"AppSetting:OAuth2:Enabled"].ToBool();

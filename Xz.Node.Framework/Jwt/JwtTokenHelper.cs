@@ -18,10 +18,10 @@ namespace Xz.Node.Framework.Jwt
     /// </summary>
     public class JwtTokenHelper : IJwtTokenHelper
     {
-        private readonly IConfigurationRoot _configuration;
-        public JwtTokenHelper()
+        private readonly IConfiguration _configuration;
+        public JwtTokenHelper(IConfiguration configuration)
         {
-            _configuration = ConfigHelper.GetConfigRoot();
+            _configuration = configuration;
         }
 
         /// <summary>

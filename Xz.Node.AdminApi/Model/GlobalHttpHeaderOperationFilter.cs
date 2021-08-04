@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -15,18 +16,24 @@ namespace Xz.Node.AdminApi.Model
     /// </summary>
     public class GlobalHttpHeaderOperationFilter : IOperationFilter
     {
+        private readonly IConfiguration _configuration;
         /// <summary>
         ///  添加httpHeader参数
         /// </summary>
-        /// <param name="appConfiguration"></param>
-        public GlobalHttpHeaderOperationFilter()
+        /// <param name="configuration">配置中心</param>
+        public GlobalHttpHeaderOperationFilter(IConfiguration configuration)
         {
+            _configuration = configuration;
         }
 
+        /// <summary>
+        /// 添加httpHeader参数
+        /// </summary>
+        /// <param name="operation"></param>
+        /// <param name="context"></param>
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            var configuration = ConfigHelper.GetConfigRoot();
-            bool isEnabledOAuth2 = configuration["AppSetting:OAuth2:Enabled"].ToBool();
+            bool isEnabledOAuth2 = _configuration.GetSection("AppSetting:OAuth2:Enabled").Value.ToBool();
 
             //如果是Identity认证方式，不需要界面添加x-token得输入框
             if (isEnabledOAuth2)

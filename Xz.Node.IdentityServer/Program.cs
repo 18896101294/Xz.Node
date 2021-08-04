@@ -71,6 +71,13 @@ namespace Xz.Node.IdentityServer
                              options.ReloadOnChange = true;
                              options.OnLoadException = exceptionContext => { exceptionContext.Ignore = true; };
                          })
+                         .AddConsul($"System/redis.json", options =>
+                         {
+                             options.ConsulConfigurationOptions = cco => { cco.Address = new Uri(consulAddress); };
+                             options.Optional = true;
+                             options.ReloadOnChange = true;
+                             options.OnLoadException = exceptionContext => { exceptionContext.Ignore = true; };
+                         })
                          .AddEnvironmentVariables();
                     }
                     else
@@ -78,13 +85,14 @@ namespace Xz.Node.IdentityServer
                         configBuilder
                          .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                          .AddJsonFile("consul.json", optional: true, reloadOnChange: true)
+                         .AddJsonFile("redis.json", optional: true, reloadOnChange: true)
                          .AddEnvironmentVariables(); //加载本地配置
                     }
                 })
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())   //将默认ServiceProviderFactory指定为AutofacServiceProviderFactory
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    var configuration = ConfigHelper.GetConfigRoot();
+                    var configuration = ConfigHelper.GetDefaultConfigRoot();
                     var httpHost = configuration["ConfigSetting:HttpHost"];
                     webBuilder.UseUrls(httpHost).UseStartup<Startup>();
                 })

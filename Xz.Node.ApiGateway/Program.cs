@@ -106,7 +106,7 @@ namespace Xz.Node.ApiGateway
                })
                .ConfigureWebHostDefaults(webBuilder =>
                {
-                   var configuration = ConfigHelper.GetConfigRoot();
+                   var configuration = ConfigHelper.GetDefaultConfigRoot();
                    var httpHost = configuration["ConfigSetting:HttpHost"];
 
                    webBuilder.UseUrls(httpHost).UseStartup<Startup>();

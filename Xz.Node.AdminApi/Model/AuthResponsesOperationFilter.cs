@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
 using System.Linq;
 using Xz.Node.Framework.Common;
-using Xz.Node.Framework.Enums;
 using Xz.Node.Framework.Extensions;
 
 namespace Xz.Node.AdminApi.Model
@@ -15,12 +14,14 @@ namespace Xz.Node.AdminApi.Model
     /// </summary>
     public class AuthResponsesOperationFilter : IOperationFilter
     {
+        private readonly IConfiguration _configuration;
         /// <summary>
-        /// 构造
+        /// swagger请求的时候，如果是Identity方式，自动加授权方式
         /// </summary>
-        /// <param name="appConfiguration"></param>
-        public AuthResponsesOperationFilter()
+        /// <param name="configuration"></param>
+        public AuthResponsesOperationFilter(IConfiguration configuration)
         {
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -30,8 +31,7 @@ namespace Xz.Node.AdminApi.Model
         /// <param name="context"></param>
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            var configuration = ConfigHelper.GetConfigRoot();
-            bool isEnabledOAuth2 = configuration["AppSetting:OAuth2:Enabled"].ToBool();
+            bool isEnabledOAuth2 = _configuration.GetSection("AppSetting:OAuth2:Enabled").Value.ToBool();
 
             if (isEnabledOAuth2)
             {
