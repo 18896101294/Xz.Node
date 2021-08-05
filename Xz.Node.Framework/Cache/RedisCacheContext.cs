@@ -24,35 +24,36 @@ namespace Xz.Node.Framework.Cache
         {
             _configuration = configuration;
 
-            if (_configuration.GetSection("Redis:Sentinel").Exists())
-            {
-                //哨兵连接
-                ConfigurationOptions sentinelOptions = new ConfigurationOptions();
-                var sentinelArray = _configuration.GetSection("Redis:Sentinel").GetChildren();
-                foreach (var sentinel in sentinelArray)
-                {
-                    sentinelOptions.EndPoints.Add(sentinel.Value);
-                }
-                sentinelOptions.TieBreaker = "";
-                sentinelOptions.CommandMap = CommandMap.Sentinel;
-                sentinelOptions.AbortOnConnectFail = true;
-                // Connect!
-                var sentinelConnection = ConnectionMultiplexer.Connect(sentinelOptions);
+            //if (_configuration.GetSection("Redis:Sentinel").Exists())
+            //{
+            //    //哨兵连接
+            //    ConfigurationOptions sentinelOptions = new ConfigurationOptions();
+            //    var sentinelArray = _configuration.GetSection("Redis:Sentinel").GetChildren();
+            //    foreach (var sentinel in sentinelArray)
+            //    {
+            //        sentinelOptions.EndPoints.Add(sentinel.Value);
+            //    }
+            //    sentinelOptions.TieBreaker = "";
+            //    sentinelOptions.CommandMap = CommandMap.Sentinel;
+            //    sentinelOptions.AbortOnConnectFail = true;
+            //    // Connect!
+            //    var sentinelConnection = ConnectionMultiplexer.Connect(sentinelOptions);
 
-                // Get a connection to the master
-                var redisServiceOptions = new ConfigurationOptions();
-                redisServiceOptions.ServiceName = _configuration.GetSection("Redis:ServiceName").Value;   //master名称
-                redisServiceOptions.Password = _configuration.GetSection("Redis:Password").Value;     //master访问密码
-                redisServiceOptions.AbortOnConnectFail = true;
-                redisServiceOptions.AllowAdmin = true;
-                _conn = sentinelConnection.GetSentinelMasterConnection(redisServiceOptions);
-            }
-            else
-            {
-                //单机连接
-                string connectionString = _configuration.GetSection("Redis:ConnectionStrings").Value;
-                _conn = ConnectionMultiplexer.Connect(connectionString);
-            }
+            //    // Get a connection to the master
+            //    var redisServiceOptions = new ConfigurationOptions();
+            //    redisServiceOptions.ServiceName = _configuration.GetSection("Redis:ServiceName").Value;   //master名称
+            //    redisServiceOptions.Password = _configuration.GetSection("Redis:Password").Value;     //master访问密码
+            //    redisServiceOptions.AbortOnConnectFail = true;
+            //    redisServiceOptions.AllowAdmin = true;
+            //    _conn = sentinelConnection.GetSentinelMasterConnection(redisServiceOptions);
+            //}
+            //else
+            //{
+            //    //单机连接
+            //    string connectionString = _configuration.GetSection("Redis:ConnectionStrings").Value;
+            //    _conn = ConnectionMultiplexer.Connect(connectionString);
+            //}
+            _conn = RedisConnectionManager.GetConnectionMultiplexer(_configuration);
             //_conn = ConnectionMultiplexer.Connect(ConfigHelper.GetConfigRoot()["AppSetting:RedisConf"]);
             iDatabase = _conn.GetDatabase();
         }
