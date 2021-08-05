@@ -82,6 +82,11 @@ namespace Xz.Node.AdminApi
                 services.AddAuthorization();
 
                 services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                    //.AddIdentityServerAuthentication(options =>
+                    //{
+                    //    //设置token过期得时间偏移量，默认是5分钟
+                    //    options.JwtValidationClockSkew = TimeSpan.FromSeconds(0);
+                    //})
                     .AddJwtBearer(options =>
                     {
                         options.Authority = identityServer;
