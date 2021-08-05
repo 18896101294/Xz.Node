@@ -46,7 +46,7 @@ namespace Xz.Node.IdentityServer
         public static IEnumerable<Client> GetClients(bool isProduction)
         {
             //获取token的方式，启动id4项目后根据config配置获取
-            //http://localhost:12796/connect/authorize?client_id=XzNode.AdminApi&redirect_uri=http://localhost:9528/dashboard&response_type=token&scope=xznodeapi
+            //http://localhost:12796/connect/authorize?client_id=XzNode.AdminApi&redirect_uri=http://localhost:52787/swagger/oauth2-redirect.html&response_type=token&scope=xznodeapi
 
             var host = "http://localhost";
             if (isProduction)

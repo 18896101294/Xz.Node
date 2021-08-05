@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
 using System.Linq;
 using Xz.Node.Framework.Common;
-using Xz.Node.Framework.Enums;
 using Xz.Node.Framework.Extensions;
 
 namespace Xz.Node.AdminApi.Model

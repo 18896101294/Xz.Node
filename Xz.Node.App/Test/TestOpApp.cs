@@ -25,7 +25,7 @@ namespace Xz.Node.App.Test
         public TestOpApp(IUnitWork<XzDbContext> unitWork, IRepository<Test_OpInfo, XzDbContext> repository,
             IAuth auth) : base(unitWork, repository, auth)
         {
-
+            //var unitWork = _autofacServiceProvider.GetService<IUnitWork<OpenAuthDBContext>>();
         }
 
         /// <summary>
