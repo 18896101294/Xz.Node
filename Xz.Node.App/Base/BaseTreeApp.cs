@@ -10,8 +10,15 @@ namespace Xz.Node.App.Base
     /// 树状结构处理
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TDbContext"></typeparam>
     public class BaseTreeApp<T, TDbContext> : BaseStringApp<T, TDbContext> where T : TreeEntity where TDbContext : DbContext
     {
+        /// <summary>
+        /// 树状结构构造
+        /// </summary>
+        /// <param name="unitWork"></param>
+        /// <param name="repository"></param>
+        /// <param name="auth"></param>
         public BaseTreeApp(IUnitWork<TDbContext> unitWork, IRepository<T, TDbContext> repository, IAuth auth)
             : base(unitWork, repository, auth)
         {

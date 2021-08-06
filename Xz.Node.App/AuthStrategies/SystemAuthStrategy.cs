@@ -18,8 +18,17 @@ namespace Xz.Node.App.AuthStrategies
     /// </summary>
     public class SystemAuthStrategy : BaseStringApp<Auth_UserInfo, XzDbContext>, IAuthStrategy
     {
+        /// <summary>
+        /// 用户信息
+        /// </summary>
         protected Auth_UserInfo _user;
         private DbExtension _dbExtension;
+        /// <summary>
+        /// 超级管理员权限
+        /// </summary>
+        /// <param name="unitWork"></param>
+        /// <param name="repository"></param>
+        /// <param name="dbExtension"></param>
         public SystemAuthStrategy(IUnitWork<XzDbContext> unitWork, IRepository<Auth_UserInfo, XzDbContext> repository, DbExtension dbExtension) : base(unitWork, repository, null)
         {
             _dbExtension = dbExtension;
@@ -31,6 +40,9 @@ namespace Xz.Node.App.AuthStrategies
             };
         }
 
+        /// <summary>
+        /// 模块数据
+        /// </summary>
         public List<ModuleView> Modules
         {
             get
@@ -60,26 +72,41 @@ namespace Xz.Node.App.AuthStrategies
             }
         }
 
+        /// <summary>
+        /// 角色数据
+        /// </summary>
         public List<Auth_RoleInfo> Roles
         {
             get { return UnitWork.Find<Auth_RoleInfo>(null).ToList(); }
         }
 
+        /// <summary>
+        /// 模块元素数据
+        /// </summary>
         public List<Auth_ModuleElementInfo> ModuleElements
         {
             get { return UnitWork.Find<Auth_ModuleElementInfo>(null).ToList(); }
         }
 
+        /// <summary>
+        /// 资源数据
+        /// </summary>
         public List<Auth_ResourceInfo> Resources
         {
             get { return UnitWork.Find<Auth_ResourceInfo>(null).ToList(); }
         }
 
+        /// <summary>
+        /// 组织数据
+        /// </summary>
         public List<Auth_OrgInfo> Orgs
         {
             get { return UnitWork.Find<Auth_OrgInfo>(null).ToList(); }
         }
 
+        /// <summary>
+        /// 用户数据
+        /// </summary>
         public Auth_UserInfo User
         {
             get { return _user; }
@@ -89,6 +116,11 @@ namespace Xz.Node.App.AuthStrategies
             }
         }
 
+        /// <summary>
+        /// 获取用户可访问的字段列表
+        /// </summary>
+        /// <param name="moduleCode"></param>
+        /// <returns></returns>
         public List<KeyDescription> GetProperties(string moduleCode)
         {
             return _dbExtension.GetProperties(moduleCode);

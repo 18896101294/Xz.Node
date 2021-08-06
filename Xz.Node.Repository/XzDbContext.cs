@@ -190,7 +190,7 @@ namespace Xz.Node.Repository
          * 
          * Add-Migration Init：这里的 Init 只是一个名字，表示这里是初始化。：添加迁移，Init是个描述
          * update-database Init：执行修改数据库
-         * Script-Migration :生成sql脚本，来手动迁移
+         * Script-Migration :生成sql脚本，来手动迁移(可以获取到自定义的注释)
          * 
          *【DB FIRST 程序包控制台执行命令】:
          * 

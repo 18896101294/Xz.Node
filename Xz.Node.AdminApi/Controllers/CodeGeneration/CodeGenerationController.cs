@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xz.Node.App.CodeGenerationManager;
+using Xz.Node.App.CodeGenerationManager.Request;
 using Xz.Node.Framework.Extensions;
 using Xz.Node.Framework.Model;
 
@@ -66,6 +67,30 @@ namespace Xz.Node.AdminApi.Controllers.CodeGeneration
             var resultData = _app.GetDbTableStructure(tableName);
             result.Data = resultData;
 
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 代码生成
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult CreateCode(CreateCodeReq req)
+        {
+            var result = new ResultInfo<object>()
+            {
+                Message = "生成成功",
+            };
+            if (string.IsNullOrWhiteSpace(req.TableName))
+            {
+                throw new InfoException("数据库表名不能为空");
+            }
+            if (string.IsNullOrWhiteSpace(req.NameSpace))
+            {
+                throw new InfoException("命名空间不能为空");
+            }
+            _app.CreateCode(req);
             return Ok(result);
         }
     }

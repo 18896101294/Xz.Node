@@ -7,7 +7,7 @@ namespace Xz.Node.App.ConsulManager.Response
     /// <summary>
     /// Consul服务实例
     /// </summary>
-    public class ConsulServiceItemViewModel
+    public class ConsulServiceItemView
     {
         /// <summary>
         /// 实例Id

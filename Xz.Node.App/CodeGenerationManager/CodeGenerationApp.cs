@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Xz.Node.App.Base;
+using Xz.Node.App.CodeGenerationManager.Request;
 using Xz.Node.Framework.Model;
 using Xz.Node.Repository;
 
@@ -41,6 +42,15 @@ namespace Xz.Node.App.CodeGenerationManager
         {
             var resultData = _dbExtension.GetDbTableStructure(tableName);
             return resultData;
+        }
+
+        /// <summary>
+        /// 生成代码
+        /// </summary>
+        /// <param name="req"></param>
+        public void CreateCode(CreateCodeReq req)
+        { 
+            
         }
     }
 }

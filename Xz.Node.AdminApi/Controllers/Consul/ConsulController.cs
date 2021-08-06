@@ -83,7 +83,7 @@ namespace Xz.Node.AdminApi.Controllers.Consul
         [HttpGet]
         public IActionResult ConsulServiceItem(string serviceName)
         {
-            var result = new ResultInfo<List<ConsulServiceItemViewModel>>()
+            var result = new ResultInfo<List<ConsulServiceItemView>>()
             {
                 Message = "获取成功"
             };
@@ -95,7 +95,7 @@ namespace Xz.Node.AdminApi.Controllers.Consul
 
             var resultDataStr = _httpHelper.Get(null, $"/v1/catalog/service/{serviceName}");
 
-            var resultData = JsonHelper.Instance.Deserialize<List<ConsulServiceItemViewModel>>(resultDataStr);
+            var resultData = JsonHelper.Instance.Deserialize<List<ConsulServiceItemView>>(resultDataStr);
 
             result.Data = resultData;
 

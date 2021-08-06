@@ -15,15 +15,26 @@ namespace Xz.Node.App.AuthStrategies
     /// </summary>
     public class NormalAuthStrategy : BaseStringApp<Auth_UserInfo, XzDbContext>, IAuthStrategy
     {
-
+        /// <summary>
+        /// 用户信息
+        /// </summary>
         protected Auth_UserInfo _user;
         private List<string> _userRoleIds;    //用户角色GUID
         private DbExtension _dbExtension;
+        /// <summary>
+        /// 普通用户授权策略
+        /// </summary>
+        /// <param name="unitWork"></param>
+        /// <param name="repository"></param>
+        /// <param name="dbExtension"></param>
         public NormalAuthStrategy(IUnitWork<XzDbContext> unitWork, IRepository<Auth_UserInfo, XzDbContext> repository, DbExtension dbExtension) : base(unitWork, repository, null)
         {
             _dbExtension = dbExtension;
         }
 
+        /// <summary>
+        /// 模块数据
+        /// </summary>
         public List<ModuleView> Modules
         {
             get
@@ -56,6 +67,9 @@ namespace Xz.Node.App.AuthStrategies
             }
         }
 
+        /// <summary>
+        /// 模块元素数据
+        /// </summary>
         public List<Auth_ModuleElementInfo> ModuleElements
         {
             get
@@ -66,11 +80,17 @@ namespace Xz.Node.App.AuthStrategies
             }
         }
 
+        /// <summary>
+        /// 角色数据
+        /// </summary>
         public List<Auth_RoleInfo> Roles
         {
             get { return UnitWork.Find<Auth_RoleInfo>(u => _userRoleIds.Contains(u.Id)).ToList(); }
         }
 
+        /// <summary>
+        /// 资源数据
+        /// </summary>
         public List<Auth_ResourceInfo> Resources
         {
             get
@@ -82,6 +102,9 @@ namespace Xz.Node.App.AuthStrategies
             }
         }
 
+        /// <summary>
+        /// 组织数据
+        /// </summary>
         public List<Auth_OrgInfo> Orgs
         {
             get
@@ -92,6 +115,9 @@ namespace Xz.Node.App.AuthStrategies
             }
         }
 
+        /// <summary>
+        /// 用户数据
+        /// </summary>
         public Auth_UserInfo User
         {
             get { return _user; }
