@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Xz.Node.Framework.Common;
+using Xz.Node.Framework.Extensions;
 using Xz.Node.Framework.Model;
 using Xz.Node.Framework.Utilities;
 using Xz.Node.Repository;
@@ -108,6 +109,80 @@ namespace Xz.Node.App
         }
 
         /// <summary>
+        /// 获取数据库DbContext中所有的实体名称。
+        /// </summary>
+        public IList<SysTable> GetDbTables()
+        {
+            string dbtype = _configuration.GetSection($"AppSetting:DbTypes:{_httpContextAccessor.GetTenantId()}").Value;
+            if (dbtype == Define.DBTYPE_ORACLE)
+            {
+                throw new InfoException("代码生成器暂不支持【Oraccle】数据库");
+            }
+            if (dbtype == Define.DBTYPE_MYSQL)
+            {
+                return GetMySqlTables();
+            }
+            else
+            {
+                return GetSqlServerTables();
+            }
+        }
+
+        /// <summary>
+        /// 获取Mysql表结构信息
+        /// </summary>
+        /// <returns></returns>
+        private IList<SysTable> GetMySqlTables()
+        {
+            foreach (var context in _contexts)
+            {
+                var sql = $@"SELECT TABLE_NAME TableName, CREATE_TIME CreateTime, TABLE_COMMENT TableDescription 
+                        FROM
+	                        INFORMATION_SCHEMA.TABLES 
+                        WHERE
+	                        TABLE_TYPE = 'BASE TABLE'
+	                        AND TABLE_SCHEMA = '{context.Database.GetDbConnection().Database}'
+                        ORDER BY
+	                        TABLE_NAME ASC";
+
+                var columns = context.Set<SysTable>().FromSqlRaw(sql);
+                var columnList = columns?.ToList();
+                if (columnList != null && columnList.Any())
+                {
+                    return columnList;
+                }
+            }
+
+            return new List<SysTable>();
+        }
+
+        /// <summary>
+        /// 获取SqlServer表结构信息
+        /// </summary>
+        /// <returns></returns>
+        private IList<SysTable> GetSqlServerTables()
+        {
+            var sql = $@"SELECT a.Name as TableName, a.crdate as CreateTime, b.Description as TableDescription FROM SYSOBJECTS a 
+                                left join(
+                                SELECT tbs.Name , ds.value Description
+                                FROM sys.extended_properties ds
+                                LEFT JOIN sysobjects tbs ON ds.major_id= tbs.id
+                                WHERE ds.minor_id= 0
+                                ) b on a.name = b.name
+                                WHERE a.XTYPE = 'U' ";
+            foreach (var context in _contexts)
+            {
+                var columns = context.Set<SysTable>().FromSqlRaw(sql);
+                var columnList = columns?.ToList();
+                if (columnList != null && columnList.Any())
+                {
+                    return columnList;
+                }
+            }
+            return new List<SysTable>();
+        }
+
+        /// <summary>
         /// 获取数据库表结构信息
         /// </summary>
         /// <param name="tableName"></param>
@@ -115,6 +190,10 @@ namespace Xz.Node.App
         public IList<SysTableColumn> GetDbTableStructure(string tableName)
         {
             string dbtype = _configuration.GetSection($"AppSetting:DbTypes:{_httpContextAccessor.GetTenantId()}").Value;
+            if (dbtype == Define.DBTYPE_ORACLE)
+            {
+                throw new InfoException("代码生成器暂不支持【Oraccle】数据库");
+            }
             if (dbtype == Define.DBTYPE_MYSQL)
             {
                 return GetMySqlStructure(tableName);
@@ -192,7 +271,6 @@ namespace Xz.Node.App
             return new List<SysTableColumn>();
 
         }
-
 
         /// <summary>
         /// 获取SqlServer表结构信息

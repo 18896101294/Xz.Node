@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Xz.Node.Repository;
 
 namespace Xz.Node.Repository.Migrations
 {
     [DbContext(typeof(XzDbContext))]
-    partial class XzDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210806035653_AddTestCode1")]
+    partial class AddTestCode1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,48 +70,37 @@ namespace Xz.Node.Repository.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Attr")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("元素附加属性");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Class")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("元素样式");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DomId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("DOM ID");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Icon")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("元素图标");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ModuleId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("功能模块Id");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Remark")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("备注");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Script")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("元素调用脚本");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Sort")
-                        .HasColumnType("int")
-                        .HasComment("排序字段");
+                        .HasColumnType("int");
 
                     b.Property<string>("TypeId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("分类ID");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TypeName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("分类名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -122,60 +113,46 @@ namespace Xz.Node.Repository.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CascadeId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("节点语义ID");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("模块标识");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HotKey")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("热键");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IconName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("节点图标文件名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsAutoExpand")
-                        .HasColumnType("bit")
-                        .HasComment("是否自动展开");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsLeaf")
-                        .HasColumnType("bit")
-                        .HasComment("是否叶子节点");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsSys")
-                        .HasColumnType("bit")
-                        .HasComment("是否系统模块");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ParentId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("父节点流水号");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ParentName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("父节点名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SortNo")
-                        .HasColumnType("int")
-                        .HasComment("排序号");
+                        .HasColumnType("int");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int")
-                        .HasComment("当前状态");
+                        .HasColumnType("int");
 
                     b.Property<string>("Url")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("主页面URL");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Vector")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("矢量图标");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -188,68 +165,52 @@ namespace Xz.Node.Repository.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("BizCode")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("业务对照码");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CascadeId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("节点语义ID");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CreateId")
-                        .HasColumnType("int")
-                        .HasComment("创建人ID");
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("创建时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("CustomCode")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("自定义扩展码");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HotKey")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("热键");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IconName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("节点图标文件名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsAutoExpand")
-                        .HasColumnType("bit")
-                        .HasComment("是否自动展开");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsLeaf")
-                        .HasColumnType("bit")
-                        .HasComment("是否叶子节点");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ParentId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("父节点流水号");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ParentName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("父节点名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SortNo")
-                        .HasColumnType("int")
-                        .HasComment("排序号");
+                        .HasColumnType("int");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int")
-                        .HasComment("当前状态");
+                        .HasColumnType("int");
 
                     b.Property<string>("TypeId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("分类ID");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TypeName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("分类名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -262,40 +223,31 @@ namespace Xz.Node.Repository.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("描述");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ExtendInfo")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("扩展信息");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("第一个表主键ID");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Key")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("映射标识");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("OperateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("授权时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("OperatorId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("授权人");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecondId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("第二个表主键ID");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int")
-                        .HasComment("状态");
+                        .HasColumnType("int");
 
                     b.Property<string>("ThirdId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("第三个主键");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -308,72 +260,55 @@ namespace Xz.Node.Repository.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AppId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("资源所属应用ID");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AppName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("所属应用名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CascadeId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("节点语义ID");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("创建时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("CreateUserId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("创建人ID");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreateUserName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("创建人");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("描述");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Disable")
-                        .HasColumnType("bit")
-                        .HasComment("是否可用");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ParentId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("父节点流水号");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ParentName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("父节点名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SortNo")
-                        .HasColumnType("int")
-                        .HasComment("排序号");
+                        .HasColumnType("int");
 
                     b.Property<string>("TypeId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("分类ID");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TypeName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("分类名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("最后更新时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UpdateUserId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("最后更新人ID");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UpdateUserName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("最后更新人");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -386,28 +321,22 @@ namespace Xz.Node.Repository.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreateId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("创建人ID");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("创建时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("角色名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int")
-                        .HasComment("当前状态");
+                        .HasColumnType("int");
 
                     b.Property<string>("TypeId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("分类ID");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TypeName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("分类名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -420,44 +349,34 @@ namespace Xz.Node.Repository.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Account")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("用户登录帐号");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BizCode")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("业务对照码");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreateId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("创建人");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("经办时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("用户姓名");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("密码");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Sex")
-                        .HasColumnType("int")
-                        .HasComment("性别");
+                        .HasColumnType("int");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int")
-                        .HasComment("用户状态");
+                        .HasColumnType("int");
 
                     b.Property<string>("TypeId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("分类ID");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TypeName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("分类名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -470,32 +389,25 @@ namespace Xz.Node.Repository.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AppSecret")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("应用密钥");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("创建日期");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("CreateUser")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("创建人");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("应用描述");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Disable")
-                        .HasColumnType("bit")
-                        .HasComment("是否可用");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Icon")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("应用图标");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("应用名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -507,67 +419,53 @@ namespace Xz.Node.Repository.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("Id")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnName("CreateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("创建时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("CreateUserId")
                         .HasColumnName("CreateUserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("创建用户Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Creater")
                         .HasColumnName("Creater")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("创建用户");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("权限描述");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Enable")
-                        .HasColumnType("bit")
-                        .HasComment("是否可用");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDelete")
                         .HasColumnName("IsDelete")
-                        .HasColumnType("bit")
-                        .HasComment("是否物理删除");
+                        .HasColumnType("bit");
 
                     b.Property<string>("PrivilegeRules")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("权限规则");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SortNo")
-                        .HasColumnType("int")
-                        .HasComment("排序号");
+                        .HasColumnType("int");
 
                     b.Property<string>("SourceCode")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("模块编号");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SubSourceCode")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("二级资源标识");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdateTime")
                         .HasColumnName("UpdateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("更新时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("UpdateUserId")
                         .HasColumnName("UpdateUserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("更新用户Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Updater")
                         .HasColumnName("Updater")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("更新用户");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -580,80 +478,61 @@ namespace Xz.Node.Repository.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("创建时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("CreateUserId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("创建人ID");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreateUserName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("创建人");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Cron")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("CRON表达式");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ErrorCount")
-                        .HasColumnType("int")
-                        .HasComment("异常次数");
+                        .HasColumnType("int");
 
                     b.Property<string>("JobCall")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("任务地址");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("JobCallParams")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("任务参数，JSON格式");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("JobName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("任务名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("JobType")
-                        .HasColumnType("int")
-                        .HasComment("任务执行方式0：本地任务；1：外部接口任务");
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("LastErrorTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("最后一次失败时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("LastRunTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("最后一次执行时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("NextRunTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("下次执行时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("OrgId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("所属部门");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Remark")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("备注");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RunCount")
-                        .HasColumnType("int")
-                        .HasComment("任务执行次数");
+                        .HasColumnType("int");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int")
-                        .HasComment("任务运行状态（0：停止，1：正在运行，2：暂停）");
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("最后更新时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UpdateUserId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("最后更新人ID");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UpdateUserName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("最后更新人");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -669,40 +548,31 @@ namespace Xz.Node.Repository.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("日志内容");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreateId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("操作人ID");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreateName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("操作人");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("记录时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Href")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("操作所属模块地址");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Ip")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("操作机器的IP地址");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Result")
-                        .HasColumnType("int")
-                        .HasComment("操作的结果：0：成功；1：失败；");
+                        .HasColumnType("int");
 
                     b.Property<string>("TypeId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("分类ID");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TypeName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("分类名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -714,64 +584,51 @@ namespace Xz.Node.Repository.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("Id")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Column1")
                         .HasColumnName("Column1")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("字段1");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Column2")
                         .HasColumnName("Column2")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("字段2");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Column3")
                         .HasColumnName("Column3")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("字段3");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnName("CreateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("创建时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("CreateUserId")
                         .HasColumnName("CreateUserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("创建用户Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Creater")
                         .HasColumnName("Creater")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("创建用户");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDelete")
                         .HasColumnName("IsDelete")
-                        .HasColumnType("bit")
-                        .HasComment("是否物理删除");
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("UpdateTime")
                         .HasColumnName("UpdateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("更新时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("UpdateUserId")
                         .HasColumnName("UpdateUserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("更新用户Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Updater")
                         .HasColumnName("Updater")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("更新用户");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Test_Code");
-
-                    b.HasComment("测试类");
                 });
 
             modelBuilder.Entity("Xz.Node.Repository.Domain.Test.Test_OaInfo", b =>
@@ -779,63 +636,51 @@ namespace Xz.Node.Repository.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("Id")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnName("CreateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("创建时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("CreateUserId")
                         .HasColumnName("CreateUserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("创建用户Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Creater")
                         .HasColumnName("Creater")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("创建用户");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .HasColumnName("Description")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("应用描述");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Disable")
                         .HasColumnName("Disable")
-                        .HasColumnType("bit")
-                        .HasComment("是否可用");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDelete")
                         .HasColumnName("IsDelete")
-                        .HasColumnType("bit")
-                        .HasComment("是否物理删除");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnName("Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("应用名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("TestOpForeignKey")
                         .HasColumnName("TestOpForeignKey")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("TestOpForeignKey");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("UpdateTime")
                         .HasColumnName("UpdateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("更新时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("UpdateUserId")
                         .HasColumnName("UpdateUserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("更新用户Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Updater")
                         .HasColumnName("Updater")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("更新用户");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -850,63 +695,51 @@ namespace Xz.Node.Repository.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("Id")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnName("CreateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("创建时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("CreateUserId")
                         .HasColumnName("CreateUserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("创建用户Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Creater")
                         .HasColumnName("Creater")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("创建用户");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .HasColumnName("Description")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("应用描述");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Disable")
                         .HasColumnName("Disable")
-                        .HasColumnType("bit")
-                        .HasComment("是否可用");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDelete")
                         .HasColumnName("IsDelete")
-                        .HasColumnType("bit")
-                        .HasComment("是否物理删除");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnName("Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("应用名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("TestOpForeignKey")
                         .HasColumnName("TestOpForeignKey")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("TestOpForeignKey");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("UpdateTime")
                         .HasColumnName("UpdateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("更新时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("UpdateUserId")
                         .HasColumnName("UpdateUserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("更新用户Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Updater")
                         .HasColumnName("Updater")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("更新用户");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -920,63 +753,51 @@ namespace Xz.Node.Repository.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("Id")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnName("CreateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("创建时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("CreateUserId")
                         .HasColumnName("CreateUserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("创建用户Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Creater")
                         .HasColumnName("Creater")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("创建用户");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .HasColumnName("Description")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("应用描述");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Disable")
                         .HasColumnName("Disable")
-                        .HasColumnType("bit")
-                        .HasComment("是否可用");
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDelete")
                         .HasColumnName("IsDelete")
-                        .HasColumnType("bit")
-                        .HasComment("是否物理删除");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnName("Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("应用名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("TestOpForeignKey")
                         .HasColumnName("TestOpForeignKey")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("TestOpForeignKey");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("UpdateTime")
                         .HasColumnName("UpdateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("更新时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("UpdateUserId")
                         .HasColumnName("UpdateUserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("更新用户Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Updater")
                         .HasColumnName("Updater")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("更新用户");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -991,48 +812,39 @@ namespace Xz.Node.Repository.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("Id")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnName("CreateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("创建时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("CreateUserId")
                         .HasColumnName("CreateUserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("创建用户Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Creater")
                         .HasColumnName("Creater")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("创建用户");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDelete")
                         .HasColumnName("IsDelete")
-                        .HasColumnType("bit")
-                        .HasComment("是否物理删除");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnName("Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("应用名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdateTime")
                         .HasColumnName("UpdateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("更新时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("UpdateUserId")
                         .HasColumnName("UpdateUserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("更新用户Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Updater")
                         .HasColumnName("Updater")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("更新用户");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -1044,48 +856,39 @@ namespace Xz.Node.Repository.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("Id")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnName("CreateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("创建时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("CreateUserId")
                         .HasColumnName("CreateUserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("创建用户Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Creater")
                         .HasColumnName("Creater")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("创建用户");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDelete")
                         .HasColumnName("IsDelete")
-                        .HasColumnType("bit")
-                        .HasComment("是否物理删除");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnName("Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("应用名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdateTime")
                         .HasColumnName("UpdateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("更新时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("UpdateUserId")
                         .HasColumnName("UpdateUserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("更新用户Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Updater")
                         .HasColumnName("Updater")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("更新用户");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -1097,53 +900,43 @@ namespace Xz.Node.Repository.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("Id")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnName("CreateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("创建时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("CreateUserId")
                         .HasColumnName("CreateUserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("创建用户Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Creater")
                         .HasColumnName("Creater")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("创建用户");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDelete")
                         .HasColumnName("IsDelete")
-                        .HasColumnType("bit")
-                        .HasComment("是否物理删除");
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("TestOmKey")
                         .HasColumnName("TestOmKey")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("TestOm主键");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("TestOnKey")
                         .HasColumnName("TestOnKey")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("TestOn主键");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("UpdateTime")
                         .HasColumnName("UpdateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("更新时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("UpdateUserId")
                         .HasColumnName("UpdateUserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("更新用户Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Updater")
                         .HasColumnName("Updater")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("更新用户");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -1159,68 +952,55 @@ namespace Xz.Node.Repository.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("Id")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AppSecret")
                         .HasColumnName("AppSecret")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("应用密钥");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnName("CreateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("创建时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("CreateUserId")
                         .HasColumnName("CreateUserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("创建用户Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Creater")
                         .HasColumnName("Creater")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("创建用户");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .HasColumnName("Description")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("应用描述");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Disable")
                         .HasColumnName("Disable")
-                        .HasColumnType("bit")
-                        .HasComment("是否可用");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Icon")
                         .HasColumnName("Icon")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("应用图标");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDelete")
                         .HasColumnName("IsDelete")
-                        .HasColumnType("bit")
-                        .HasComment("是否物理删除");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnName("Name")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("应用名称");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdateTime")
                         .HasColumnName("UpdateTime")
-                        .HasColumnType("datetime2")
-                        .HasComment("更新时间");
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("UpdateUserId")
                         .HasColumnName("UpdateUserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasComment("更新用户Id");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Updater")
                         .HasColumnName("Updater")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("更新用户");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

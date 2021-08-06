@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -147,14 +148,49 @@ namespace Xz.Node.Repository
 
             //非数据库表，设置无主键
             modelBuilder.Entity<SysTableColumn>().HasNoKey();
+            modelBuilder.Entity<SysTable>().HasNoKey();
+
+            //这里暂时不要取消注释
+            //this.CreateTableDescription(modelBuilder);
         }
 
+        /// <summary>
+        /// 生成表描述
+        /// </summary>
+        /// <param name="modelBuilder"></param>
+        private void CreateTableDescription(ModelBuilder modelBuilder)
+        {
+            var entitys = modelBuilder.Model.GetEntityTypes().ToList();
+            foreach (var entity in entitys)
+            {
+                var tabtype = Type.GetType(entity.ClrType.FullName);
+                if (tabtype == null)
+                {
+                    continue;
+                }
+                var props = tabtype.GetProperties();
+                var descriptionAttrtable = tabtype.GetCustomAttributes(typeof(DescriptionAttribute), true);
+                if (descriptionAttrtable.Length > 0)
+                {
+                    modelBuilder.Entity(entity.Name).HasComment(((DescriptionAttribute)descriptionAttrtable[0]).Description);
+                }
+                foreach (var prop in props)
+                {
+                    var descriptionAttr = prop.GetCustomAttributes(typeof(DescriptionAttribute), true);
+                    if (descriptionAttr.Length > 0)
+                    {
+                        modelBuilder.Entity(entity.Name).Property(prop.Name).HasComment(((DescriptionAttribute)descriptionAttr[0]).Description);
+                    }
+                }
+            }
+        }
 
         /*数据库迁移：
          *【CODE FIRST 程序包控制台执行命令】：
          * 
          * Add-Migration Init：这里的 Init 只是一个名字，表示这里是初始化。：添加迁移，Init是个描述
          * update-database Init：执行修改数据库
+         * Script-Migration :生成sql脚本，来手动迁移
          * 
          *【DB FIRST 程序包控制台执行命令】:
          * 
@@ -259,6 +295,11 @@ namespace Xz.Node.Repository
         /// Test_On,Test_Om关联表
         /// </summary>
         public virtual DbSet<Test_On_OmInfo> Test_On_OmInfo { get; set; }
+
+        /// <summary>
+        /// 测试Code
+        /// </summary>
+        public virtual DbSet<Test_CodeInfo> Test_CodeInfo { get; set; }
         #endregion
 
         #endregion
@@ -275,6 +316,11 @@ namespace Xz.Node.Repository
         /// 表结构
         /// </summary>
         public virtual DbSet<SysTableColumn> SysTableColumns { get; set; }
+
+        /// <summary>
+        /// 表结构
+        /// </summary>
+        public virtual DbSet<SysTable> SysTables { get; set; }
         #endregion
     }
 }
