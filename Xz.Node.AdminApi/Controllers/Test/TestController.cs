@@ -18,6 +18,8 @@ using Consul;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xz.Node.Framework.Cache;
+using Xz.Node.Framework.Elasticsearch;
+using Microsoft.Extensions.Configuration;
 
 namespace Xz.Node.AdminApi.Controllers.Test
 {
@@ -31,24 +33,28 @@ namespace Xz.Node.AdminApi.Controllers.Test
     {
         private readonly TestOpApp _app;
         private readonly IRabbitMQClient _rabbitMQClient;
-        private readonly ConsulConfig _consulConfig;
+        private readonly IConfiguration _configuration;
         private readonly ICacheContext _cacheContext;
+        private readonly IElasticSearchServer _elasticSearchServer;
         /// <summary>
         /// 单元测试
         /// </summary>
         /// <param name="app"></param>
         /// <param name="rabbitMQClient"></param>
         /// <param name="cacheContext"></param>
-        /// <param name="options"></param>
+        /// <param name="configuration"></param>
+        /// <param name="elasticSearchServer"></param>
         public TestController(TestOpApp app,
             IRabbitMQClient rabbitMQClient,
             ICacheContext cacheContext,
-            IOptions<ConsulConfig> options)
+            IConfiguration configuration,
+            IElasticSearchServer elasticSearchServer)
         {
             _app = app;
             _rabbitMQClient = rabbitMQClient;
             _cacheContext = cacheContext;
-            _consulConfig = options.Value;
+            _configuration = configuration;
+            _elasticSearchServer = elasticSearchServer;
         }
 
         #region 单表操作
@@ -310,7 +316,7 @@ namespace Xz.Node.AdminApi.Controllers.Test
                 Message = "调用成功",
             };
 
-            string consulAddress = _consulConfig.ConsulAddress;
+            string consulAddress = _configuration["Consul:ConsulAddress"];
             using var consulClient = new ConsulClient(a => a.Address = new Uri(consulAddress));
             var catalogServices = await consulClient.Catalog.Service("AdminApi");//这里是根据服务名获取注册的服务
             var services = catalogServices.Response;
@@ -361,6 +367,7 @@ namespace Xz.Node.AdminApi.Controllers.Test
         }
         #endregion
 
+        #region RabbitMQ
         /// <summary>
         /// MQ测试
         /// </summary>
@@ -372,5 +379,172 @@ namespace Xz.Node.AdminApi.Controllers.Test
             _rabbitMQClient.PushMessage(MQListenererEnum.Test, "这是一条测试消息");
             return Ok();
         }
+        #endregion
+
+        #region ElasticSearch
+        /// <summary>
+        /// 基于Linq的查询
+        /// </summary>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<List<Persons>> SearchByLinq(string user = "批量")
+        {
+            var list = await _elasticSearchServer.SearchByLinqAsync<Persons>("users", op => op.Match(ss => ss.Field(qq => qq.user == user)));
+
+            return list;
+        }
+
+        /// <summary>
+        /// 基于Json的查询
+        /// </summary>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<string> SearchByJson(string user = "批量")
+        {
+            var jsonobject = new { query = new { match = new { user = "批量" } } };
+            string json = JsonHelper.Instance.Serialize(jsonobject);
+
+            var jToken = await _elasticSearchServer.SearchByJsonAsync("users", json);
+
+            return jToken.ToString();
+        }
+
+        /// <summary>
+        /// 插入单个文档
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<bool> InsertDocument()
+        {
+            var content = new
+            {
+                user = "嘻嘻",
+                post_date = "2021-10-11T15:00:12",
+                message = "...."
+            };
+
+            bool result = await _elasticSearchServer.InsertDocumentAsync("users", content, "1");
+            return result;
+        }
+
+        /// <summary>
+        /// 删除单个文档
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<bool> DeleteDocument(string index = "users", string id = "2")
+        {
+            bool result = await _elasticSearchServer.DeleteDocumentAsync(index, id);
+            return result;
+        }
+
+        /// <summary>
+        /// 通过Bulk更新文档  
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<bool> UpdateDocumentByBulk()
+        {
+            var content = new
+            {
+                user = "嘻嘻2",
+                post_date = "2021-10-11T15:00:12",
+                message = "更新一下"
+            };
+
+            bool result = await _elasticSearchServer.UpdateDocumentByBulkAsync("users", "1", content);
+            return result;
+        }
+
+        /// <summary>
+        /// 更新文档  
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<bool> UpdateDocument()
+        {
+            var content = new
+            {
+                user = "嘻嘻3",
+                post_date = "2021-10-11T15:00:12",
+                message = "更新一下333"
+            };
+
+            bool result = await _elasticSearchServer.UpdateDocumentAsync("users", "1", content);
+            return result;
+        }
+
+        /// <summary>
+        /// 通过索引与id检查文档是否已经存在
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<bool> SourceExistsAsync(string index = "users", string id = "1")
+        {
+            bool result = await _elasticSearchServer.SourceExistsAsync(index, id);
+            return result;
+        }
+
+        /// <summary>
+        /// 检测索引是否已经存在
+        /// </summary>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<bool> IsIndexExsit(string index = "users")
+        {
+            bool result = await _elasticSearchServer.IsIndexExsit(index);
+            return result;
+        }
+
+        /// <summary>
+        /// 创建index
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<bool> CreateIndex(string index)
+        {
+            if (string.IsNullOrWhiteSpace(index))
+                return false;
+
+            bool result = await _elasticSearchServer.CreateIndexAsync(index);
+            return result;
+        }
+
+        /// <summary>
+        /// 删除index
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<bool> DeleteIndex(string index)
+        {
+            if (string.IsNullOrWhiteSpace(index))
+                return false;
+
+            bool result = await _elasticSearchServer.DeleteIndexAsync(index);
+            return result;
+        }
+        #endregion
+    }
+
+    public class Persons
+    {
+        public string user { get; set; }
+        public string message { get; set; }
+
+        public DateTime post_date { get; set; }
+        public List<string> albums { get; set; }
     }
 }

@@ -12,6 +12,7 @@ using System.Runtime.Loader;
 using Xz.Node.App.Interface;
 using Xz.Node.App.SSO;
 using Xz.Node.Framework.Cache;
+using Xz.Node.Framework.Elasticsearch;
 using Xz.Node.Framework.Extensions.AutofacManager;
 using Xz.Node.Framework.Jwt;
 using Xz.Node.Framework.Queue.RabbitMQ;
@@ -94,6 +95,9 @@ namespace Xz.Node.App
 
             //注入jwt，这里因为jwt启用时需要注入，懒得去容器里面去拿了，就直接注入了
             builder.RegisterType(typeof(JwtTokenHelper)).As(typeof(IJwtTokenHelper));
+
+            //注入ElasticSearch
+            builder.RegisterType(typeof(ElasticSearchServer)).As(typeof(IElasticSearchServer));
 
             InitDependency(builder);
 
