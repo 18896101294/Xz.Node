@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Xz.Node.App.ConsulManager.Response;
+using Xz.Node.App.Consul.Response;
 using Xz.Node.Framework.Common;
 using Xz.Node.Framework.Extensions;
 using Xz.Node.Framework.Model;

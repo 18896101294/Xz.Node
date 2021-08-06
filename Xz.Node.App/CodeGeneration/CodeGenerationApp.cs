@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using Xz.Node.App.Base;
-using Xz.Node.App.CodeGenerationManager.Request;
+using Xz.Node.App.CodeGeneration.Request;
 using Xz.Node.Framework.Model;
 using Xz.Node.Repository;
 
-namespace Xz.Node.App.CodeGenerationManager
+namespace Xz.Node.App.CodeGeneration
 {
     /// <summary>
     /// 代码生成

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Xz.Node.App.CodeGenerationManager.Request
+namespace Xz.Node.App.CodeGeneration.Request
 {
     /// <summary>
     /// 代码生成入参
