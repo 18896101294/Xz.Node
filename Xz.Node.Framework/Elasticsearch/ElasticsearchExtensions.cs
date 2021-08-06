@@ -50,8 +50,6 @@ namespace Xz.Node.Framework.Elasticsearch
                         json += sourceJson;
                     else
                         json += "," + sourceJson;
-
-
                 }
                 return JToken.Parse("[" + json + "]");
             }
@@ -77,9 +75,7 @@ namespace Xz.Node.Framework.Elasticsearch
                     flag = true;
                 }
             }
-            catch (Exception ex)
-            {
-            }
+            catch { }
             return flag;
         }
 
@@ -100,9 +96,7 @@ namespace Xz.Node.Framework.Elasticsearch
                     flag = true;
                 }
             }
-            catch (Exception ex)
-            {
-            }
+            catch { }
             return flag;
         }
 
@@ -171,6 +165,48 @@ namespace Xz.Node.Framework.Elasticsearch
             return false;
         }
 
+        /// <summary>
+        /// 批量插入文档
+        /// </summary>
+        /// <param name="indexName">索引名称</param>
+        /// <param name="typeName"></param>
+        /// <param name="listDocment">数据集合</param>
+        /// <returns></returns>
+        public static async Task<bool> BatchInsertDocumentAsync(this IElasticSearchServer elasticSearchServer, string indexName, List<object> listDocment)
+        {
+            List<string> list = new List<string>();
+            foreach (var objectDocment in listDocment)
+            {
+                string json = JsonHelper.Instance.Serialize(objectDocment);
+                JToken docment = null;
+                var objectDocmentOne = JToken.Parse(json);
+                docment = objectDocmentOne;
+                if (json.IndexOf("[") == 0)
+                {
+                    json = JsonHelper.Instance.Serialize(objectDocmentOne[0]);
+                    docment = objectDocmentOne[0];
+                }
+                string _id = docment["id"].ToString();
+                int idInt = json.IndexOf("\"id");
+                //去掉doc下面的json，因为id在insert上面提供了,doc哪里就不需要提供了，否则反而会报错
+                if (idInt > 0)
+                {
+                    string idJson = json.Substring(idInt, json.IndexOf(_id) + _id.Length);
+                    json = json.Replace(idJson, "");
+                }
+                var indexJsonStr = new { index = new { _index = indexName.ToLower(), _id = _id } };
+                list.Add(JsonHelper.Instance.Serialize(indexJsonStr));
+                list.Add("{\"doc\":" + json + "}");
+            }
+            var stringRespones = await elasticSearchServer.ElasticJsonClient.BulkAsync<StringResponse>(indexName.ToLower(), PostData.MultiJson(list));
+            var resObj = JObject.Parse(stringRespones.Body);
+            if (!(bool)resObj["errors"])
+            {
+                return true;
+            }
+            return false;
+        }
+
 
         /// <summary>
         /// 删除单个文档
@@ -191,9 +227,7 @@ namespace Xz.Node.Framework.Elasticsearch
                     flag = true;
                 }
             }
-            catch (Exception ex)
-            {
-            }
+            catch { }
 
             return flag;
         }
@@ -210,14 +244,56 @@ namespace Xz.Node.Framework.Elasticsearch
             bool flag = false;
             try
             {
-
                 string json = JsonHelper.Instance.Serialize(objectDocment);
-
                 var updateToJson = "{\"doc\":" + json + "}";
-
                 var stringRespones = await elasticSearchServer.ElasticJsonClient.UpdateAsync<StringResponse>(indexName, id, PostData.String(updateToJson));
                 var resObj = JObject.Parse(stringRespones.Body);
                 if ((int)resObj["_shards"]["successful"] > 0)
+                {
+                    return true;
+                }
+            }
+            catch { }
+            return flag;
+        }
+
+        /// <summary>
+        /// 批量更新文档
+        /// </summary>
+        /// <param name="indexName">索引名称</param>
+        /// <param name="listDocment">数据集合，注意需要提供更新的id</param>
+        /// <returns></returns>
+        public static async Task<bool> BatchUpdateDocumentByBulkAsync(this IElasticSearchServer elasticSearchServer, string indexName, List<object> listDocment)
+        {
+            bool flag = false;
+            try
+            {
+                List<string> list = new List<string>();
+                foreach (var objectDocment in listDocment)
+                {
+                    string json = JsonHelper.Instance.Serialize(objectDocment);
+                    JToken docment = null;
+                    var objectDocmentOne = JToken.Parse(json);
+                    docment = objectDocmentOne;
+                    if (json.IndexOf("[") == 0)
+                    {
+                        json = JsonHelper.Instance.Serialize(objectDocmentOne[0]);
+                        docment = objectDocmentOne[0];
+                    }
+                    string _id = docment["id"].ToString();
+                    int idInt = json.IndexOf("\"id");
+                    //去掉doc下面的json，因为id在update上面提供了,doc哪里就不需要提供了，否则反而会报错
+                    if (idInt > 0)
+                    {
+                        string idJson = json.Substring(idInt, json.IndexOf(_id) + _id.Length);
+                        json = json.Replace(idJson, "");
+                    }
+                    list.Add("{\"update\":{\"_id\":\"" + _id + "\"}}");
+                    list.Add("{\"doc\":" + json + "}");
+                }
+                var stringRespones = await elasticSearchServer.ElasticJsonClient.BulkAsync<StringResponse>(indexName.ToLower(), PostData.MultiJson(list));
+                var resObj = JObject.Parse(stringRespones.Body);
+                if (!(bool)resObj["errors"])
                 {
                     return true;
                 }

@@ -481,6 +481,33 @@ namespace Xz.Node.AdminApi.Controllers.Test
         }
 
         /// <summary>
+        /// 批量更新文档
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> BatchUpdateDocumentByBulk()
+        {
+            List<object> contens = new List<object>()
+            {
+                new
+                {
+                    id = 1,
+                    user = "嘻嘻_批量更新",
+                    post_date = "2021-10-11T15:00:12",
+                    message = "批量更新_id_1"
+                },
+                new
+                {
+                    id = 2,
+                    user = "xxx_批量更新",
+                    post_date = "2021-10-11T15:00:12",
+                    message = "批量更新_id_2"
+                }
+            };
+            bool result = await _elasticSearchServer.BatchUpdateDocumentByBulkAsync("users", contens);
+            return result;
+        }
+
+        /// <summary>
         /// 通过索引与id检查文档是否已经存在
         /// </summary>
         /// <param name="index"></param>
