@@ -4,8 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Xz.Node.App.CodeGenerationManager;
-using Xz.Node.App.CodeGenerationManager.Request;
+using Xz.Node.App.CodeGeneration;
+using Xz.Node.App.CodeGeneration.Request;
 using Xz.Node.Framework.Extensions;
 using Xz.Node.Framework.Model;
 

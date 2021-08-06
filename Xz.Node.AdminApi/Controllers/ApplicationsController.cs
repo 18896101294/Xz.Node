@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Xz.Node.App.AppManagers;
-using Xz.Node.App.AppManagers.Request;
 using Xz.Node.App.Base;
 using Xz.Node.Framework.Model;
 using Xz.Node.Repository.Domain.System;
@@ -27,14 +27,15 @@ namespace Xz.Node.AdminApi.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<TableData> Load([FromQuery] QueryAppListReq request)
+        public IActionResult Load()
         {
-            var applications = await _app.GetList(request);
-            return new TableData
+            var result = new ResultInfo<List<System_ApplicationInfo>>()
             {
-                data = applications,
-                count = applications.Count
+                Message = "获取数据成功",
             };
+            var resultData = _app.GetList();
+            result.Data = resultData;
+            return Ok(result);
         }
 
         ///// <summary>
