@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -21,16 +22,16 @@ namespace Xz.Node.AdminApi.Controllers.Consul
     [ApiExplorerSettings(GroupName = "Consul管理")]
     public class ConsulController : ControllerBase
     {
-        private readonly ConsulConfig _consulConfig;
+        private readonly IConfiguration _configuration;
         private readonly HttpHelper _httpHelper = null;
         /// <summary>
         /// Consul管理
         /// </summary>
-        /// <param name="options"></param>
-        public ConsulController(IOptions<ConsulConfig> options)
+        /// <param name="configuration"></param>
+        public ConsulController(IConfiguration configuration)
         {
-            _consulConfig = options.Value;
-            _httpHelper = new HttpHelper(_consulConfig.ConsulAddress);
+            _configuration = configuration;
+            _httpHelper = new HttpHelper(_configuration["Consul:ConsulAddress"]);
         }
         /// <summary>
         /// 把健康检查的地址简单实现一下
