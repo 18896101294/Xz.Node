@@ -48,10 +48,10 @@ namespace Xz.Node.IdentityServer
             //获取token的方式，启动id4项目后根据config配置获取
             //http://localhost:12796/connect/authorize?client_id=XzNode.AdminApi&redirect_uri=http://localhost:52787/swagger/oauth2-redirect.html&response_type=token&scope=xznodeapi
 
-            var host = "http://localhost";
+            var host = "http://1.116.5.70";
             if (isProduction)
             {
-                host = "http://localhost";//生产环境时，切换为正式服务器地址,这里发布的时候一定要记得改呀
+                host = "http://1.116.5.70";//生产环境时，切换为正式服务器地址,这里发布的时候一定要记得改呀
             }
             return new[]
             {

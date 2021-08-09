@@ -9,11 +9,11 @@
       //下游服务的地址，如果使用LoadBalancer的话这里可以填多项
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "1.116.5.70",
           "Port": 52787
         },
         {
-          "Host": "localhost",
+          "Host": "1.116.5.70",
           "Port": 52788
         }
       ],
@@ -87,12 +87,12 @@
   //],
   //全局配置项
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:52000", //BaseUrl就是Ocelot服务对外暴露的Url。
+    "BaseUrl": "http://1.116.5.70:52000", //BaseUrl就是Ocelot服务对外暴露的Url。
     "RequestIdKey": "OcRequestId",
     "AdministrationPath": "/administration",
     //Consul服务发现配置
     "ServiceDiscoveryProvider": {
-      "Host": "127.0.0.1",
+      "Host": "1.116.5.70",
       "Port": 8500,
       "Type": "Consul"
     },

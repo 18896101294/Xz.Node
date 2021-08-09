@@ -9,6 +9,6 @@
   "AllowedHosts": "*",
   "DataProtection": "temp-keys/",
   "ConnectionStrings": {
-    "XzNodeDBContext": "Data Source=.;Initial Catalog=XzNodeDB;User=sa;Password=123456"
+    "XzNodeDBContext": "Data Source=1.116.5.70;Initial Catalog=XzNodeDB;User=sa;Password=eq123!@#"
   }
 }
