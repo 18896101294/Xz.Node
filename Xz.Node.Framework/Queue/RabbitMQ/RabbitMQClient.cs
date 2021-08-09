@@ -59,7 +59,7 @@ namespace Xz.Node.Framework.Queue.RabbitMQ
             if (type == MQListenererEnum.Test)
             {
                 queue = "xznodemq.test";
-                routingKey = "xznoderk.test";
+                routingKey = "xznoderk.test";//这个routingKey需要在去mq队列中绑定
                 arguments.Add("x-dead-letter-exchange", "xznode.message.dlx");
                 arguments.Add("x-dead-letter-routing-key", "xznoderk.test.dlx");
             }
