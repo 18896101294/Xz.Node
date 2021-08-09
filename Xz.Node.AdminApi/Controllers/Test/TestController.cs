@@ -484,6 +484,8 @@ namespace Xz.Node.AdminApi.Controllers.Test
         /// 批量更新文档
         /// </summary>
         /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
         public async Task<bool> BatchUpdateDocumentByBulk()
         {
             List<object> contens = new List<object>()
