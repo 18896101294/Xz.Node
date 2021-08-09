@@ -52,7 +52,7 @@ namespace Xz.Node.HttpReports
                     configBuilder
                         .SetBasePath(basePath); //手动指定配置文件的路径
                     var configRoot = configBuilder.Build();
-                    var appId = configRoot.GetValue<string>("AppSetting:AppId");
+                    var appId = configRoot.GetValue<string>("ConfigSetting:AppId");
                     hostingContext.HostingEnvironment.ApplicationName = appId;
                     hostingContext.HostingEnvironment.ContentRootPath = AppDomain.CurrentDomain.BaseDirectory;
 
@@ -63,7 +63,7 @@ namespace Xz.Node.HttpReports
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     var configuration = ConfigHelper.GetDefaultConfigRoot();
-                    var httpHost = configuration["AppSetting:HttpHost"];
+                    var httpHost = configuration["ConfigSetting:HttpHost"];
                     webBuilder.UseUrls(httpHost).UseStartup<Startup>();
                 });
     }

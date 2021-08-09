@@ -1,0 +1,6 @@
+{
+  "ConfigSetting": {
+    "AppId": "HttpReports", //程序名称
+    "HttpHost": "http://*:12797" //启动绑定地址及端口
+  }
+}
