@@ -368,8 +368,7 @@ namespace Xz.Node.App.Base
                             if (propertyType.IsGenericType &&
                                 propertyType.GetGenericTypeDefinition() == typeof(Nullable<>)) //如果是可空类型
                             {
-                                System.ComponentModel.NullableConverter nullableConverter =
-                                    new System.ComponentModel.NullableConverter(propertyType);
+                                NullableConverter nullableConverter = new NullableConverter(propertyType);
                                 obj = Convert.ChangeType(value, nullableConverter.UnderlyingType);
                             }
                             else

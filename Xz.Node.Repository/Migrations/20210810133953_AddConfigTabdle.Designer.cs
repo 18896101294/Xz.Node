@@ -10,8 +10,8 @@ using Xz.Node.Repository;
 namespace Xz.Node.Repository.Migrations
 {
     [DbContext(typeof(XzDbContext))]
-    [Migration("20210806061832_AddTestCode2")]
-    partial class AddTestCode2
+    [Migration("20210810133953_AddConfigTabdle")]
+    partial class AddConfigTabdle
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -502,6 +502,84 @@ namespace Xz.Node.Repository.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("System_Application");
+                });
+
+            modelBuilder.Entity("Xz.Node.Repository.Domain.System.System_ConfigurationInfo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("Id")
+                        .HasColumnType("uniqueidentifier")
+                        .HasComment("Id");
+
+                    b.Property<string>("Category")
+                        .HasColumnName("Category")
+                        .HasColumnType("nvarchar(max)")
+                        .HasComment("分类");
+
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnName("CreateTime")
+                        .HasColumnType("datetime2")
+                        .HasComment("创建时间");
+
+                    b.Property<Guid>("CreateUserId")
+                        .HasColumnName("CreateUserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasComment("创建用户Id");
+
+                    b.Property<string>("Creater")
+                        .HasColumnName("Creater")
+                        .HasColumnType("nvarchar(max)")
+                        .HasComment("创建用户");
+
+                    b.Property<int>("DisplayNo")
+                        .HasColumnName("DisplayNo")
+                        .HasColumnType("int")
+                        .HasComment("顺序号");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnName("IsDelete")
+                        .HasColumnType("bit")
+                        .HasComment("是否物理删除");
+
+                    b.Property<bool>("IsHide")
+                        .HasColumnName("IsHide")
+                        .HasColumnType("bit")
+                        .HasComment("是否隐藏");
+
+                    b.Property<string>("Remark")
+                        .HasColumnName("Remark")
+                        .HasColumnType("nvarchar(max)")
+                        .HasComment("备注");
+
+                    b.Property<string>("Text")
+                        .HasColumnName("Text")
+                        .HasColumnType("nvarchar(max)")
+                        .HasComment("值显示值");
+
+                    b.Property<DateTime>("UpdateTime")
+                        .HasColumnName("UpdateTime")
+                        .HasColumnType("datetime2")
+                        .HasComment("更新时间");
+
+                    b.Property<Guid>("UpdateUserId")
+                        .HasColumnName("UpdateUserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasComment("更新用户Id");
+
+                    b.Property<string>("Updater")
+                        .HasColumnName("Updater")
+                        .HasColumnType("nvarchar(max)")
+                        .HasComment("更新用户");
+
+                    b.Property<string>("Value")
+                        .HasColumnName("Value")
+                        .HasColumnType("nvarchar(max)")
+                        .HasComment("值");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("System_Configuration");
                 });
 
             modelBuilder.Entity("Xz.Node.Repository.Domain.System.System_DataPrivilegeRuleInfo", b =>

@@ -102,7 +102,7 @@ namespace Xz.Node.Repository
             sorts = FiltrationSort(sorts);
             var expression = EFSQLHelpr.QueryConditionCreate<T>(conditions);
             var query = Entity.Where(expression);
-            if (sorts != null || sorts.Count > 0)
+            if (sorts != null && sorts.Count() > 0)
             {
                 query = EFSQLHelpr.SortConditionCreate<T>(query, sorts);
             }
@@ -111,7 +111,7 @@ namespace Xz.Node.Repository
                 sorts = new List<SortInfo> {
                     new SortInfo
                     {
-                       ColumnName="CreateDt",
+                       ColumnName="CreateTime",
                        Direction=ConditionDirectionEnum.DESC
                     }
                 };
@@ -150,7 +150,7 @@ namespace Xz.Node.Repository
                 {
                     new SortInfo
                     {
-                       ColumnName="CreateDt",
+                       ColumnName="CreateTime",
                        Direction=ConditionDirectionEnum.DESC
                     }
                 };
@@ -187,7 +187,7 @@ namespace Xz.Node.Repository
                 {
                     new SortInfo
                     {
-                       ColumnName="CreateDt",
+                       ColumnName="CreateTime",
                        Direction=ConditionDirectionEnum.DESC
                     }
                 };

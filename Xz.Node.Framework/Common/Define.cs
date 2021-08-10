@@ -76,5 +76,9 @@ namespace Xz.Node.Framework.Common
         public const string JOBMAPKEY = "OpenJob";
 
         public const string PermissionName = "Permission";
+        /// <summary>
+        /// 系统配置缓存key
+        /// </summary>
+        public const string SystemConfigurationCacheKey = "xznode_SystemConfiguration";
     }
 }
