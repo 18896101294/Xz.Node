@@ -72,6 +72,8 @@ namespace Xz.Node.App.SSO
 
             if (_isEnabledJwt)
             {
+                var jwtToken = _httpContextAccessor.HttpContext.Request.Query[Define.JWT_TOKEN_NAME];
+                if (!String.IsNullOrEmpty(jwtToken)) return jwtToken;
                 return _httpContextAccessor.HttpContext.Request.Headers[Define.JWT_TOKEN_NAME].ToString() ?? string.Empty;
             }
 
