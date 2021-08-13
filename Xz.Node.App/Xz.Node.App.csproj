@@ -24,4 +24,9 @@
     <ProjectReference Include="..\Xz.Node.Repository\Xz.Node.Repository.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="System\Configuration\Request\" />
+    <Folder Include="System\Configuration\Response\" />
+  </ItemGroup>
+
 </Project>

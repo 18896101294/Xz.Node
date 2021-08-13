@@ -12,7 +12,7 @@ using Xz.Node.Repository;
 using Xz.Node.Repository.Domain.System;
 using Xz.Node.Repository.Interface;
 
-namespace Xz.Node.App.System
+namespace Xz.Node.App.System.Configuration
 {
     /// <summary>
     /// 系统配置
@@ -82,6 +82,31 @@ namespace Xz.Node.App.System
                 }
             }
             return datas;
+        }
+
+        /// <summary>
+        /// 获取所有分类
+        /// </summary>
+        /// <returns></returns>
+        public IList<string> GetAllCategory()
+        {
+            var resultData = new List<string>();
+            var datas = this.GetAllDatas();
+            if (datas != null)
+            {
+                resultData = datas.Select(o => o.Category).Distinct().ToList();
+            }
+            return resultData;
+        }
+
+        /// <summary>
+        /// 逻辑删除
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public void DeleteData(IList<Guid> ids)
+        {
+            Repository.Update(o => o.IsDelete == false && ids.Contains(o.Id), o => new System_ConfigurationInfo { IsDelete = true });
         }
 
         /// <summary>

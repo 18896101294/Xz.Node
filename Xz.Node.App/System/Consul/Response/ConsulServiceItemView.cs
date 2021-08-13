@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Xz.Node.App.Consul.Response
+namespace Xz.Node.App.System.Consul.Response
 {
     /// <summary>
     /// Consul服务实例

@@ -2,13 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Xz.Node.App.System;
+using Xz.Node.App.System.Configuration;
 using Xz.Node.Framework.Extensions;
 using Xz.Node.Framework.Model;
 using Xz.Node.Repository.Domain.System;
 
-namespace Xz.Node.AdminApi.Controllers.System
+namespace Xz.Node.AdminApi.Controllers.System.Configuration
 {
     /// <summary>
     /// 系统配置管理
@@ -54,6 +53,26 @@ namespace Xz.Node.AdminApi.Controllers.System
         }
 
         /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult Delete(IList<Guid> ids)
+        {
+            var result = new ResultInfo<object>()
+            {
+                Message = "删除成功",
+            };
+            if (ids.Count() == 0)
+            {
+                throw new InfoException("删除Id不能为空");
+            }
+            _app.DeleteData(ids);
+            return Ok(result);
+        }
+
+        /// <summary>
         /// 获取分页数据
         /// </summary>
         /// <param name="dto"></param>
@@ -66,6 +85,21 @@ namespace Xz.Node.AdminApi.Controllers.System
                 Message = "获取成功"
             };
             result.Data = _app.GetPageData(dto);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 获取所有分类
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult GetAllCategory()
+        {
+            var result = new ResultInfo<IList<string>>()
+            {
+                Message = "获取成功"
+            };
+            result.Data = _app.GetAllCategory();
             return Ok(result);
         }
 
