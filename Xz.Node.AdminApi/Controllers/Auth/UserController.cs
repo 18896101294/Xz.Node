@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Xz.Node.App.Auth.Request;
 using Xz.Node.App.Auth.Response;
 using Xz.Node.App.AuthStrategies;
 using Xz.Node.App.Interface;
@@ -64,17 +65,37 @@ namespace Xz.Node.AdminApi.Controllers.Auth
             return Ok(result);
         }
 
+        ///// <summary>
+        ///// 获取登录用户可访问的所有模块，及模块的操作菜单
+        ///// </summary>
+        //[HttpGet]
+        //public IActionResult GetModulesTree()
+        //{
+        //    var result = new ResultInfo<List<TreeItem<ModuleView>>>()
+        //    {
+        //        Message = "获取数据成功",
+        //    };
+        //    result.Data = _authStrategyContext.Modules.GenerateTree(u => u.Id, u => u.ParentId).ToList();
+        //    return Ok(result);
+        //}
+
         /// <summary>
         /// 获取登录用户可访问的所有模块，及模块的操作菜单
         /// </summary>
         [HttpGet]
-        public IActionResult GetModulesTree()
+        public IActionResult GetModulesTree([FromQuery] GetModuleReq req)
         {
-            var result = new ResultInfo<List<TreeItem<ModuleView>>>()
+            var result = new ResultInfo<List<ModuleView>>()
             {
                 Message = "获取数据成功",
             };
-            result.Data = _authStrategyContext.Modules.GenerateTree(u => u.Id, u => u.ParentId).ToList();
+            var modules = _authStrategyContext.Modules.Where(o=>o.ParentId == req.ParentId).ToList();
+            foreach (var module in modules)
+            {
+                var childrenCount = _authStrategyContext.Modules.Count(o => o.ParentId == module.Id);
+                module.HasChildren = childrenCount > 0 ? true : false;
+            }
+            result.Data = modules;
             return Ok(result);
         }
 

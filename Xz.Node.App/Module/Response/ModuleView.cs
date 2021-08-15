@@ -48,17 +48,23 @@ namespace Xz.Node.App.Response
         public string IconName { get; set; }
 
         /// <summary>
-        /// 当前状态，0：正常，-1：隐藏，不在导航列表中显示
+        /// 当前状态，0：正常，-1：隐藏，不在导航列表中显
         /// </summary>
         public int Status { get; set; }
 
-        public bool Checked { get; set; }
+        /// <summary>
+        /// 是否有子节点
+        /// </summary>
+        public bool HasChildren { get; set; }
 
         /// <summary>
         /// 排序号
         /// </summary>
         public int SortNo { get; set; }
 
+        /// <summary>
+        /// 模块代码
+        /// </summary>
         public string Code { get; set; }
 
         public bool IsSys { get; set; }
