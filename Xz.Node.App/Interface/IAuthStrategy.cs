@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Xz.Node.App.Response;
+using Xz.Node.App.Auth.Module.Response;
 using Xz.Node.Framework.Common;
 using Xz.Node.Repository.Domain.Auth;
 

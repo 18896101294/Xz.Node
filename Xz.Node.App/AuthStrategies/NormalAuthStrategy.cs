@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Xz.Node.App.Auth.Module.Response;
 using Xz.Node.App.Base;
 using Xz.Node.App.Interface;
-using Xz.Node.App.Response;
 using Xz.Node.Framework.Common;
 using Xz.Node.Repository;
 using Xz.Node.Repository.Domain.Auth;

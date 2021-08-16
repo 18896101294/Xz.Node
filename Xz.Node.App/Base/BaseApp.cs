@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using Xz.Node.App.Interface;
 using Xz.Node.Framework.Common;
+using Xz.Node.Framework.Extensions;
 using Xz.Node.Repository.Core;
 using Xz.Node.Repository.Domain.System;
 using Xz.Node.Repository.Interface;
@@ -103,7 +104,7 @@ namespace Xz.Node.App.Base
                 }
                 else
                 {
-                    throw new Exception("未能找到该组织的父节点信息");
+                    throw new InfoException("未能找到该组织的父节点信息");
                 }
             }
             else

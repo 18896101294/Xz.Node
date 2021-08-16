@@ -2,12 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Xz.Node.App.Auth.Request;
-using Xz.Node.App.Auth.Response;
+using Xz.Node.App.Auth.Module.Request;
+using Xz.Node.App.Auth.Module.Response;
 using Xz.Node.App.AuthStrategies;
 using Xz.Node.App.Interface;
-using Xz.Node.App.Response;
 using Xz.Node.Framework.Common;
 using Xz.Node.Framework.Extensions;
 using Xz.Node.Framework.Model;
@@ -89,13 +87,29 @@ namespace Xz.Node.AdminApi.Controllers.Auth
             {
                 Message = "获取数据成功",
             };
-            var modules = _authStrategyContext.Modules.Where(o=>o.ParentId == req.ParentId).ToList();
+            var modules = _authStrategyContext.Modules.Where(o => o.ParentId == req.ParentId).ToList();
             foreach (var module in modules)
             {
                 var childrenCount = _authStrategyContext.Modules.Count(o => o.ParentId == module.Id);
                 module.HasChildren = childrenCount > 0 ? true : false;
             }
             result.Data = modules;
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 获取用户可访问模块的模块名称集合,用于下拉框
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult GetModulesName()
+        {
+            var result = new ResultInfo<List<ModulesNameView>>()
+            {
+                Message = "获取数据成功",
+            };
+            var modulesNameData = _authStrategyContext.Modules.Select(o => new ModulesNameView() { Id = o.Id, Name = o.Name, ParentId = o.ParentId }).ToList();
+            result.Data = modulesNameData;
             return Ok(result);
         }
 

@@ -4,7 +4,7 @@ using System.Text;
 using Xz.Node.Framework.Extensions;
 using Xz.Node.Repository.Domain.Auth;
 
-namespace Xz.Node.App.Auth.Response
+namespace Xz.Node.App.Auth.Module.Response
 {
     /// <summary>
     /// 用户资料

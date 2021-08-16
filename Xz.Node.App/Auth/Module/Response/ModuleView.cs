@@ -2,7 +2,7 @@
 using Xz.Node.Repository.Domain.Auth;
 using Xz.Node.Framework.Extensions;
 
-namespace Xz.Node.App.Response
+namespace Xz.Node.App.Auth.Module.Response
 {
     public class ModuleView
     {

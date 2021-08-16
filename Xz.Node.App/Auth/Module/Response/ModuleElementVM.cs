@@ -1,4 +1,4 @@
-﻿namespace Xz.Node.App.Response
+﻿namespace Xz.Node.App.Auth.Module.Response
 {
     /// <summary>
     /// 用户ID
