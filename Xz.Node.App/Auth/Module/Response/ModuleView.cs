@@ -4,6 +4,9 @@ using Xz.Node.Framework.Extensions;
 
 namespace Xz.Node.App.Auth.Module.Response
 {
+    /// <summary>
+    /// 模块响应model
+    /// </summary>
     public class ModuleView
     {
         /// <summary>
@@ -67,6 +70,9 @@ namespace Xz.Node.App.Auth.Module.Response
         /// </summary>
         public string Code { get; set; }
 
+        /// <summary>
+        /// 是否系统
+        /// </summary>
         public bool IsSys { get; set; }
 
         /// <summary>

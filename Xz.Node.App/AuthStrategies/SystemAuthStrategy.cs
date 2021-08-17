@@ -65,7 +65,7 @@ namespace Xz.Node.App.AuthStrategies
 
                 foreach (var module in modules)
                 {
-                    module.Elements = UnitWork.Find<Auth_ModuleElementInfo>(u => u.ModuleId == module.Id).ToList();
+                    module.Elements = UnitWork.Find<Auth_ModuleElementInfo>(u => u.ModuleId == module.Id).OrderBy(o => o.Sort).ToList();
                 }
 
                 return modules;

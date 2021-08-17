@@ -61,7 +61,7 @@ namespace Xz.Node.App.AuthStrategies
                 var usermoduleelements = ModuleElements;
                 foreach (var module in modules)
                 {
-                    module.Elements = usermoduleelements.Where(u => u.ModuleId == module.Id).ToList();
+                    module.Elements = usermoduleelements.Where(u => u.ModuleId == module.Id).OrderBy(o => o.Sort).ToList();
                 }
                 return modules;
             }

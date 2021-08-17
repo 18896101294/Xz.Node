@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Xz.Node.App.Auth.Module;
+using Xz.Node.App.Auth.Module.Request;
 using Xz.Node.App.Auth.Module.Response;
 using Xz.Node.App.Interface;
 using Xz.Node.Framework.Model;
@@ -129,16 +130,16 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         /// <summary>
         /// 删除模块
         /// </summary>
-        /// <param name="ids"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Delete([FromBody] string[] ids)
+        public IActionResult Delete([FromBody] ModuleDeleteReq req)
         {
             var result = new ResultInfo<object>()
             {
                 Message = "删除成功",
             };
-            _app.Delete(ids);
+            _app.Delete(req);
             return Ok(result);
         }
 

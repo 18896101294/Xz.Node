@@ -24,7 +24,7 @@ namespace Xz.Node.Repository.Domain.Auth
             this.CreateTime = DateTime.Now;
             this.CreateId = 0;
             this.SortNo = 0;
-            this.ParentId = null;
+            this.ParentId = string.Empty;
             this.TypeName = string.Empty;
             this.TypeId = string.Empty;
         }

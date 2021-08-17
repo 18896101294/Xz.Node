@@ -87,7 +87,7 @@ namespace Xz.Node.AdminApi.Controllers.Auth
             {
                 Message = "获取数据成功",
             };
-            var modules = _authStrategyContext.Modules.Where(o => o.ParentId == req.ParentId).ToList();
+            var modules = _authStrategyContext.Modules.Where(o => o.ParentId == req.ParentId).OrderBy(o => o.SortNo).ToList();
             foreach (var module in modules)
             {
                 var childrenCount = _authStrategyContext.Modules.Count(o => o.ParentId == module.Id);
@@ -108,7 +108,7 @@ namespace Xz.Node.AdminApi.Controllers.Auth
             {
                 Message = "获取数据成功",
             };
-            var modulesNameData = _authStrategyContext.Modules.Select(o => new ModulesNameView() { Id = o.Id, Name = o.Name, ParentId = o.ParentId }).ToList();
+            var modulesNameData = _authStrategyContext.Modules.OrderBy(o => o.SortNo).Select(o => new ModulesNameView() { Id = o.Id, Name = o.Name, ParentId = o.ParentId }).ToList();
             result.Data = modulesNameData;
             return Ok(result);
         }

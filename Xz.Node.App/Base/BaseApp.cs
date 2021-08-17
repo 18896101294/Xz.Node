@@ -84,7 +84,7 @@ namespace Xz.Node.App.Base
         /// <param name="entity"></param>
         public void CaculateCascade<U>(U entity) where U : TreeEntity
         {
-            if (entity.ParentId == "") entity.ParentId = null;
+            if (string.IsNullOrWhiteSpace(entity.ParentId)) entity.ParentId = string.Empty;
             string cascadeId;
             int currentCascadeId = 1; //当前结点的级联节点最后一位
             var sameLevels = UnitWork.Find<U>(o => o.ParentId == entity.ParentId && o.Id != entity.Id);

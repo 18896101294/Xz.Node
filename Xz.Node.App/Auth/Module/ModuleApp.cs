@@ -11,6 +11,7 @@ using Xz.Node.Repository;
 using Xz.Node.Repository.Domain.Auth;
 using Xz.Node.Repository.Interface;
 using System.Linq;
+using Xz.Node.App.Auth.Module.Request;
 
 namespace Xz.Node.App.Auth.Module
 {
@@ -49,7 +50,11 @@ namespace Xz.Node.App.Auth.Module
 
             Repository.Add(model);
 
-            AddDefaultMenus(model);
+            if (!string.IsNullOrEmpty(model.ParentId))
+            {
+                //不是根节点才添加菜单数据
+                //AddDefaultMenus(model);
+            }
             //当前登录用户的所有角色自动分配模块
             loginContext.Roles.ForEach(u =>
             {
@@ -71,6 +76,37 @@ namespace Xz.Node.App.Auth.Module
             UpdateTreeObj(obj);
         }
 
+        /// <summary>
+        /// 删除模块
+        /// </summary>
+        /// <param name="req"></param>
+        public void Delete(ModuleDeleteReq req)
+        {
+            var loginContext = _auth.GetCurrentUser();
+            if (loginContext == null)
+            {
+                throw new InfoException("登录已过期", Define.INVALID_TOKEN);
+            }
+            if(string.IsNullOrEmpty(req.Id))
+            {
+                throw new InfoException("模块Id不能为空");
+            }
+
+            UnitWork.ExecuteWithTransaction(() =>
+            {
+                var moduleElements = UnitWork.Find<Auth_ModuleElementInfo>(o => req.Id == o.ModuleId);
+                var moduleElementIds = moduleElements.Select(o => o.Id);
+                //删除菜单
+                UnitWork.Delete<Auth_ModuleElementInfo>(o => req.Id == o.ModuleId);
+                //删除菜单角色关联
+                UnitWork.Delete<Auth_RelevanceInfo>(o => moduleElementIds.Contains(o.SecondId) && o.Key == Define.ROLEELEMENT);
+                //删除模块角色关联
+                UnitWork.Delete<Auth_RelevanceInfo>(o => req.Id == o.SecondId && o.Key == Define.ROLEMODULE);
+                //删除模块
+                UnitWork.Delete<Auth_ModuleInfo>(o => o.Id == req.Id);
+                UnitWork.Save();
+            });
+        }
 
         #region 用户/角色分配模块
 
