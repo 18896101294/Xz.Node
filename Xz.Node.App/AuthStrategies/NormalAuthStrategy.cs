@@ -57,7 +57,7 @@ namespace Xz.Node.App.AuthStrategies
                                    ParentName = module.ParentName,
                                    IsSys = module.IsSys,
                                    Status = module.Status
-                               }).ToList();
+                               }).OrderBy(o => o.SortNo).ToList();
                 var usermoduleelements = ModuleElements;
                 foreach (var module in modules)
                 {

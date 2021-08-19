@@ -29,7 +29,7 @@ namespace Xz.Node.Framework.Common
             foreach (var c in collection.Where(u =>
             {
                 var selector = parentIdSelector(u);
-                return (rootId == null && selector == null)
+                return (rootId == null && string.IsNullOrEmpty(selector.ToString()))
                 || (rootId != null && rootId.Equals(selector));
             }))
             {

@@ -63,19 +63,19 @@ namespace Xz.Node.AdminApi.Controllers.Auth
             return Ok(result);
         }
 
-        ///// <summary>
-        ///// 获取登录用户可访问的所有模块，及模块的操作菜单
-        ///// </summary>
-        //[HttpGet]
-        //public IActionResult GetModulesTree()
-        //{
-        //    var result = new ResultInfo<List<TreeItem<ModuleView>>>()
-        //    {
-        //        Message = "获取数据成功",
-        //    };
-        //    result.Data = _authStrategyContext.Modules.GenerateTree(u => u.Id, u => u.ParentId).ToList();
-        //    return Ok(result);
-        //}
+        /// <summary>
+        /// 获取登录用户可访问的所有模块，及模块的操作菜单
+        /// </summary>
+        [HttpGet]
+        public IActionResult GetUserModulesTree()
+        {
+            var result = new ResultInfo<List<TreeItem<ModuleView>>>()
+            {
+                Message = "获取数据成功",
+            };
+            result.Data = _authStrategyContext.Modules.GenerateTree(u => u.Id, u => u.ParentId).ToList();
+            return Ok(result);
+        }
 
         /// <summary>
         /// 获取登录用户可访问的所有模块，及模块的操作菜单
