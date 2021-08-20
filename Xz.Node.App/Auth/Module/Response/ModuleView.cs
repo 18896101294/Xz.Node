@@ -80,6 +80,12 @@ namespace Xz.Node.App.Auth.Module.Response
         /// </summary>
         public List<Auth_ModuleElementInfo> Elements { get; set; }
 
+        /// <summary>
+        /// 用户角色
+        /// </summary>
+        public List<string> Roles { get; set; }
+
+
         public static implicit operator ModuleView(Auth_ModuleInfo module)
         {
             return module.MapTo<ModuleView>();

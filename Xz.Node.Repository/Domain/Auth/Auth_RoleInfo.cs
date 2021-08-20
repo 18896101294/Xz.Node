@@ -51,5 +51,10 @@ namespace Xz.Node.Repository.Domain.Auth
         /// </summary>
         [Description("分类ID")]
         public string TypeId { get; set; }
+        /// <summary>
+        /// 角色代码
+        /// </summary>
+        [Description("角色代码")]
+        public string Code { get; set; }
     }
 }

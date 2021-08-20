@@ -59,8 +59,10 @@ namespace Xz.Node.App.AuthStrategies
                                    Status = module.Status
                                }).OrderBy(o => o.SortNo).ToList();
                 var usermoduleelements = ModuleElements;
+                var roleCodes = this.Roles.Select(o => o.Code).ToList();
                 foreach (var module in modules)
                 {
+                    module.Roles = roleCodes;
                     module.Elements = usermoduleelements.Where(u => u.ModuleId == module.Id).OrderBy(o => o.Sort).ToList();
                 }
                 return modules;
