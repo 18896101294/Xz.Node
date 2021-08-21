@@ -60,6 +60,10 @@ namespace Xz.Node.App.Auth.Module.Response
         /// <returns></returns>
         public int Sex { get; set; }
         /// <summary>
+        /// 头像
+        /// </summary>
+        public string Avatar { get; set; }
+        /// <summary>
         /// 用户状态
         /// </summary>
         /// <returns></returns>
@@ -86,5 +90,9 @@ namespace Xz.Node.App.Auth.Module.Response
         /// 所属组织Id
         /// </summary>
         public string OrganizationIds { get; set; }
+        /// <summary>
+        /// 角色
+        /// </summary>
+        public List<string> Roles { get; set; }
     }
 }

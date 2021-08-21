@@ -23,6 +23,7 @@ namespace Xz.Node.Repository.Domain.Auth
             this.CreateId = string.Empty;
             this.TypeName = string.Empty;
             this.TypeId = string.Empty;
+            this.Avatar = string.Empty;
         }
 
         /// <summary>
@@ -75,5 +76,10 @@ namespace Xz.Node.Repository.Domain.Auth
         /// </summary>
         [Description("分类ID")]
         public string TypeId { get; set; }
+        /// <summary>
+        /// 头像
+        /// </summary>
+        [Description("头像")]
+        public string Avatar { get; set; }
     }
 }
