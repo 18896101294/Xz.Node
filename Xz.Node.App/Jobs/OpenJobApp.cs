@@ -174,6 +174,7 @@ namespace Xz.Node.App.Jobs
                 {
                     TypeName = "定时任务",
                     TypeId = "AUTOJOB",
+                    Ip = "127.0.0.1",
                     Content = $"未能找到定时任务：{jobId}"
                 });
                 return;
@@ -188,6 +189,7 @@ namespace Xz.Node.App.Jobs
                 CreateName = "Quartz",
                 CreateId = "Quartz",
                 TypeName = "定时任务",
+                Ip = "127.0.0.1",
                 TypeId = "AUTOJOB",
                 Content = $"运行了自动任务：{job.JobName}"
             });

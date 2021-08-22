@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -318,6 +319,14 @@ namespace Xz.Node.AdminApi
                     ctx.Context.Response.Headers["Access-Control-Allow-Origin"] = "*";
                 }
             };
+
+            #region 解决Ubuntu Nginx 代理不能获取IP问题
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+            #endregion
+
             app.UseStaticFiles(staticfile);
 
             //todo:测试可以允许任意跨域，正式环境要加权限

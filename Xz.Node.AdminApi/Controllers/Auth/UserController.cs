@@ -60,7 +60,7 @@ namespace Xz.Node.AdminApi.Controllers.Auth
                 Message = "获取数据成功",
             };
             result.Data = _authStrategyContext.User.MapTo<UserProfileView>();
-            result.Data.Roles = _authStrategyContext.Roles.Select(o => o.Name).ToList();
+            result.Data.Roles = _authStrategyContext.Roles.Select(o => o.Code).ToList();
             return Ok(result);
         }
 

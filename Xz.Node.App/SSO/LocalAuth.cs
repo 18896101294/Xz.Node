@@ -227,11 +227,14 @@ namespace Xz.Node.App.SSO
                 Password = pwd
             });
 
+            var httpContext = _httpContextAccessor.HttpContext;
             var log = new System_SysLogInfo
             {
                 Content = $"用户登录,结果：{result.Message}",
                 Result = result.Code == 200 ? 0 : 1,
                 CreateId = username,
+                Href = "Login/Login",
+                Ip = httpContext.GetClientUserIp(),
                 CreateName = username,
                 TypeName = "登录日志"
             };

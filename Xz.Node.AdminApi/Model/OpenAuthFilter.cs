@@ -5,6 +5,7 @@ using System.Reflection;
 using Xz.Node.App.Interface;
 using Xz.Node.App.SysLogs;
 using Xz.Node.Framework.Common;
+using Xz.Node.Framework.Extensions;
 using Xz.Node.Repository.Domain.System;
 
 namespace Xz.Node.AdminApi.Model
@@ -57,14 +58,20 @@ namespace Xz.Node.AdminApi.Model
                 });
                 return;
             }
-            _logApp.Add(new System_SysLogInfo
+            //健康检查地址及系统日志相关接口不记录访问日志
+            if (($"{Controllername}/{Actionname}").ToLower() != "Consul/HealthCheck".ToLower()
+                && Controllername.ToLower() != "syslog".ToLower())
             {
-                Content = $"用户访问",
-                Href = $"{Controllername}/{Actionname}",
-                CreateName = _authUtil.GetUserName(),
-                CreateId = _authUtil.GetCurrentUser().User.Id,
-                TypeName = "访问日志"
-            });
+                _logApp.Add(new System_SysLogInfo
+                {
+                    Content = $"用户访问",
+                    Href = $"{Controllername}/{Actionname}",
+                    Ip = context.HttpContext.GetClientUserIp(),
+                    CreateName = _authUtil.GetUserName(),
+                    CreateId = _authUtil.GetCurrentUser().User.Id,
+                    TypeName = "访问日志"
+                });
+            }
         }
 
         public void OnActionExecuted(ActionExecutedContext context)
