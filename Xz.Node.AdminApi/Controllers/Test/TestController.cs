@@ -566,6 +566,26 @@ namespace Xz.Node.AdminApi.Controllers.Test
             return result;
         }
         #endregion
+
+        /// <summary>
+        /// 异常模拟
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult GetMyErrorTest()
+        {
+            throw new InfoException("我是一个自定义异常");
+        }
+
+        /// <summary>
+        /// 异常模拟
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult GetSystemErrorTest()
+        {
+            throw new Exception("我是一个系统异常");
+        }
     }
 
     public class Persons

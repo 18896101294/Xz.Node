@@ -52,7 +52,7 @@ namespace Xz.Node.AdminApi.Model
                 }
             }
 
-            var responseCode = -1;
+            var responseCode = 500;
             if (context.Exception is InfoException)
             {
                 responseCode = ((InfoException)context.Exception).ErrorCode;
@@ -96,7 +96,7 @@ namespace Xz.Node.AdminApi.Model
                 }
             }
 
-            var responseCode = -1;
+            var responseCode = 500;
             if (context.Exception is InfoException)
             {
                 responseCode = ((InfoException)context.Exception).ErrorCode;

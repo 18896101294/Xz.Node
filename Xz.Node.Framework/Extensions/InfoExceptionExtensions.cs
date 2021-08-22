@@ -23,14 +23,14 @@ namespace Xz.Node.Framework.Extensions
         /// <summary>
         /// 错误代码定义
         /// </summary>
-        public int ErrorCode { get; set; } = -1;
+        public int ErrorCode { get; set; } = 500;
 
         /// <summary>
         /// 自定义全局提示异常信息，InfoException的异常不会被记录为错误日志
         /// </summary>
         /// <param name="msg"></param>
         /// <param name="errorCode"></param>
-        public InfoException(string msg, int errorCode = -1) : base(msg)
+        public InfoException(string msg, int errorCode = 500) : base(msg)
         {
             ErrorCode = errorCode;
         }
@@ -41,7 +41,7 @@ namespace Xz.Node.Framework.Extensions
         /// <param name="msg"></param>
         /// <param name="innerException"></param>
         /// <param name="errorCode"></param>
-        public InfoException(string msg, Exception innerException, int errorCode = -1) : base(msg, innerException)
+        public InfoException(string msg, Exception innerException, int errorCode = 500) : base(msg, innerException)
         {
             ErrorCode = errorCode;
         }

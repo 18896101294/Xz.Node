@@ -56,7 +56,7 @@ namespace Xz.Node.AdminApi.Controllers
                     result.Data = new LoginResultViewModel()
                     {
                         Success = true,
-                        Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0OWRmMTYwMi1mNWYzLTRkNTItYWZiNy0zODAyZGE2MTk1NTgiLCJhY2NvdW50IjoiYWRtaW4iLCJuYmYiOjE2MjkzNjU0MjUsImV4cCI6MTYzMDIyOTQyNSwiaXNzIjoiWHouTm9kZSIsImF1ZCI6Inh6In0.drYOl5cDIhyXErCTyDfuJ41Kitqs8RYBgArZTEtMHxI",//loginResult.Token,
+                        Token = loginResult.Token,
                         Expires = loginResult.Expires
                     };
 
