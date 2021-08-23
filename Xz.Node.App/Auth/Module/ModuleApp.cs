@@ -87,7 +87,7 @@ namespace Xz.Node.App.Auth.Module
             {
                 throw new InfoException("登录已过期", Define.INVALID_TOKEN);
             }
-            if(string.IsNullOrEmpty(req.Id))
+            if (string.IsNullOrEmpty(req.Id))
             {
                 throw new InfoException("模块Id不能为空");
             }
@@ -154,11 +154,32 @@ namespace Xz.Node.App.Auth.Module
         /// <summary>
         /// 删除指定的菜单
         /// </summary>
-        /// <param name="ids"></param>
-        public void DelMenu(string[] ids)
+        /// <param name="req"></param>
+        public void DelMenu(DelMenuReq req)
         {
-            UnitWork.Delete<Auth_ModuleElementInfo>(u => ids.Contains(u.Id));
-            UnitWork.Save();
+            var loginContext = _auth.GetCurrentUser();
+            if (loginContext == null)
+            {
+                throw new InfoException("登录已过期", Define.INVALID_TOKEN);
+            }
+            if (string.IsNullOrEmpty(req.Id))
+            {
+                throw new InfoException("菜单Id不能为空");
+            }
+
+            UnitWork.ExecuteWithTransaction(() =>
+            {
+                var moduleElement = UnitWork.Find<Auth_ModuleElementInfo>(o => req.Id == o.Id);
+                if (moduleElement == null)
+                {
+                    throw new InfoException($"没有找到菜单Id为：{req.Id}的数据");
+                }
+                //删除菜单
+                UnitWork.Delete<Auth_ModuleElementInfo>(o => o.Id == req.Id);
+                //删除菜单角色关联
+                UnitWork.Delete<Auth_RelevanceInfo>(o => req.Id == o.SecondId && o.Key == Define.ROLEELEMENT);
+                UnitWork.Save();
+            });
         }
 
 

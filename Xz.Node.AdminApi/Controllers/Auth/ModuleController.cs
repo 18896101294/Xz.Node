@@ -198,13 +198,13 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         /// 删除菜单
         /// </summary>
         [HttpPost]
-        public IActionResult DelMenu([FromQuery] string[] ids)
+        public IActionResult DelMenu([FromBody] DelMenuReq req)
         {
             var result = new ResultInfo<object>()
             {
                 Message = "删除成功"
             };
-            _app.DelMenu(ids);
+            _app.DelMenu(req);
 
             return Ok(result);
         }
