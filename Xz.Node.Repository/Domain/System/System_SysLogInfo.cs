@@ -72,7 +72,16 @@ namespace Xz.Node.Repository.Domain.System
         /// </summary>
         [Description("操作的结果：0：成功；1：失败；")]
         public int Result { get; set; }
-
+        /// <summary>
+        /// 应用
+        /// </summary>
+        [Description("应用")]
         public string Application { get; set; }
+        /// <summary>
+        /// 是否物理删除
+        /// </summary>
+        [Column("IsDelete"), Newtonsoft.Json.JsonIgnore]
+        [Description("是否物理删除")]
+        public bool IsDelete { get; set; }
     }
 }

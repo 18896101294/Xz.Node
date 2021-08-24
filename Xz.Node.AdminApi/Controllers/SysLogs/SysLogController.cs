@@ -27,16 +27,17 @@ namespace Xz.Node.AdminApi.Controllers.SysLogs
         /// <summary>
         /// 获取分页数据
         /// </summary>
-        /// <param name="req"></param>
+        /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult GetPageData([FromBody] QuerySysLogListReq req)
+        public IActionResult GetPageData([FromBody] BaseDto.PageDataModel dto)
         {
             var result = new ResultInfo<PageInfo<System_SysLogInfo>>()
             {
                 Message = "获取成功"
             };
-            result.Data = _app.Load(req);
+            //result.Data = _app.Load(dto);
+            result.Data = _app.GetPageData(dto);
             return Ok(result);
         }
 

@@ -20,12 +20,31 @@ namespace Xz.Node.App.SysLogs
         {
 
         }
+
         /// <summary>
-        /// 加载列表
+        /// 获取分页数据
         /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        public PageInfo<System_SysLogInfo> GetPageData(BaseDto.PageDataModel dto)
+        {
+            PageInfo<System_SysLogInfo> page = new PageInfo<System_SysLogInfo>()
+            {
+                PageIndex = dto.PageIndex ?? 1,
+                PageSize = dto.PageSize ?? 20
+            };
+            Repository.GetPageDatas(dto.Conditions.ToConditions(), dto.Sorts.ToSorts(), page);
+            return page;
+        }
+
+        /// <summary>
+        /// 加载列表，不推荐的写法，效率低下
+        /// </summary>
+        [Obsolete("替代方法：Repository.GetPageDatas")]
         public PageInfo<System_SysLogInfo> Load(QuerySysLogListReq request)
         {
             var result = new PageInfo<System_SysLogInfo>();
+
             var objs = UnitWork.Find<System_SysLogInfo>(null);
             if (!string.IsNullOrEmpty(request.key))
             {
