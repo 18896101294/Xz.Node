@@ -39,5 +39,20 @@ namespace Xz.Node.AdminApi.Controllers.SysLogs
             result.Data = _app.Load(req);
             return Ok(result);
         }
+
+        /// <summary>
+        /// 清理10天前的日志数据
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult ClearData()
+        {
+            var result = new ResultInfo<object>()
+            {
+                Message = "清理成功"
+            };
+            _app.ClearData();
+            return Ok(result);
+        }
     }
 }

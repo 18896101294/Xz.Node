@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Xz.Node.App.Base;
@@ -46,6 +47,10 @@ namespace Xz.Node.App.SysLogs
             {
                 objs = objs.Where(u => u.CreateTime >= request.BeginCreateTime && u.CreateTime <= request.EndCreateTime);
             }
+            if (request.Result.HasValue)
+            {
+                objs = objs.Where(u => u.Result == request.Result);
+            }
 
             result.PageIndex = request.page;
             result.PageSize = request.limit;
@@ -76,6 +81,18 @@ namespace Xz.Node.App.SysLogs
             UnitWork.Update<System_SysLogInfo>(u => u.Id == obj.Id, u => new System_SysLogInfo
             {
                 //todo:要修改的字段赋值
+            });
+        }
+
+        /// <summary>
+        /// 清理10天前的日志数据
+        /// </summary>
+        public void ClearData()
+        {
+            UnitWork.ExecuteWithTransaction(() =>
+            {
+                UnitWork.Delete<System_SysLogInfo>(o => o.CreateTime < DateTime.Now.Date.AddDays(-10));
+                UnitWork.Save();
             });
         }
     }

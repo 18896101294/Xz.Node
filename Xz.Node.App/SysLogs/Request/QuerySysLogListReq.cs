@@ -24,6 +24,11 @@ namespace Xz.Node.App.Request
         public string Ip { get; set; }
 
         /// <summary>
+        /// 操作结果
+        /// </summary>
+        public int? Result { get; set; }
+
+        /// <summary>
         /// 操作开始时间
         /// </summary>
         public DateTime? BeginCreateTime { get; set; }
