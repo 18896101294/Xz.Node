@@ -177,6 +177,27 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         }
 
         /// <summary>
+        /// 获取指定部门的全部下级机构
+        /// </summary>
+        /// <param name="orgId">部门ID</param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult GetChildOrgs(string orgId)
+        {
+            var result = new ResultInfo<List<Auth_OrgInfo>>()
+            {
+                Message = "获取数据成功",
+            };
+            if (string.IsNullOrEmpty(orgId))
+            {
+                throw new InfoException("部门id不能为空");
+            }
+            var query = _authStrategyContext.Orgs.Where(u => u.ParentId == orgId);
+            result.Data = query.ToList();
+            return Ok(result);
+        }
+
+        /// <summary>
         /// 获取当前登录用户可访问的字段
         /// </summary>
         /// <param name="moduleCode">模块的Code，如Category</param>
@@ -189,35 +210,6 @@ namespace Xz.Node.AdminApi.Controllers.Auth
                 Message = "获取数据成功",
             };
             result.Data = _authStrategyContext.GetProperties(moduleCode);
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// 加载机构的全部下级机构
-        /// </summary>
-        /// <param name="orgId">机构ID</param>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult GetSubOrgs(string orgId)
-        {
-            var result = new ResultInfo<List<Auth_OrgInfo>>()
-            {
-                Message = "获取数据成功",
-            };
-            string cascadeId = ".0.";
-            if (!string.IsNullOrEmpty(orgId))
-            {
-                var org = _authStrategyContext.Orgs.SingleOrDefault(u => u.Id == orgId);
-                if (org == null)
-                {
-                    throw new InfoException($"Id为：{orgId}的组织不存在");
-                }
-                cascadeId = org.CascadeId;
-            }
-            var query = _authStrategyContext.Orgs.Where(u => u.CascadeId.Contains(cascadeId));
-
-            result.Data = query.ToList();
-
             return Ok(result);
         }
     }

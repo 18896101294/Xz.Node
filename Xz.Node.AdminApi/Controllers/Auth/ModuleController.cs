@@ -5,6 +5,7 @@ using Xz.Node.App.Auth.Module;
 using Xz.Node.App.Auth.Module.Request;
 using Xz.Node.App.Auth.Module.Response;
 using Xz.Node.App.Interface;
+using Xz.Node.Framework.Extensions;
 using Xz.Node.Framework.Model;
 using Xz.Node.Repository.Domain.Auth;
 
@@ -146,18 +147,21 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         /// <summary>
         /// 加载当前用户可访问模块的菜单
         /// </summary>
-        /// <param name="moduleId">The module identifier.</param>
-        /// <returns>System.String.</returns>
+        /// <param name="req">模块入参</param>
         [HttpGet]
-        public IActionResult LoadMenus(string moduleId)
+        public IActionResult LoadMenus([FromQuery] LoadMenusReq req)
         {
-            var result = new ResultInfo<ModuleView>()
+            var result = new ResultInfo<List<Auth_ModuleElementInfo>>()
             {
                 Message = "获取成功",
             };
+            if(string.IsNullOrEmpty(req.ModuleId))
+            {
+                throw new InfoException("模块Id不能为空");
+            }
             var user = _authUtil.GetCurrentUser();
-            var module = user.Modules.Single(u => u.Id == moduleId);
-            result.Data = module;
+            var module = user.Modules.Single(u => u.Id == req.ModuleId);
+            result.Data = module.Elements;
             return Ok(result);
         }
 

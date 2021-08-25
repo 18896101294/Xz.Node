@@ -48,7 +48,7 @@ namespace Xz.Node.Framework.Common
         /// <summary>
         /// token无效
         /// </summary>
-        public const int INVALID_TOKEN = 50014;
+        public const int INVALID_TOKEN = 401;
 
         public const string TOKEN_NAME = "X-Token";
 
