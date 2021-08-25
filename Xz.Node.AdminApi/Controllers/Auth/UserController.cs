@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xz.Node.App.Auth.Module.Request;
 using Xz.Node.App.Auth.Module.Response;
+using Xz.Node.App.Auth.Org.Response;
 using Xz.Node.App.AuthStrategies;
 using Xz.Node.App.Interface;
 using Xz.Node.Framework.Common;
@@ -173,6 +174,22 @@ namespace Xz.Node.AdminApi.Controllers.Auth
                 Message = "获取数据成功",
             };
             result.Data = _authStrategyContext.Orgs;
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 获取用户可访问部门名称集合,用于下拉框
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult GetOrgsName()
+        {
+            var result = new ResultInfo<List<OrgsNameView>>()
+            {
+                Message = "获取数据成功",
+            };
+            var modulesNameData = _authStrategyContext.Orgs.OrderBy(o => o.SortNo).Select(o => new OrgsNameView() { Id = o.Id, Name = o.Name, ParentId = o.ParentId }).ToList();
+            result.Data = modulesNameData;
             return Ok(result);
         }
 

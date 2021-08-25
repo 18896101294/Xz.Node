@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Xz.Node.App.Auth.Module.Response
+namespace Xz.Node.App.Auth.Org.Response
 {
     /// <summary>
-    /// 模块下来菜单mode
+    /// 部门下来菜单model
     /// </summary>
-    public class ModulesNameView
+    public class OrgsNameView
     {
         /// <summary>
-        /// 模块Id
+        /// 部门Id
         /// </summary>
         public string Id { get; set; }
 
         /// <summary>
-        /// 模块名称
+        /// 部门名称
         /// </summary>
         public string Name { get; set; }
 
