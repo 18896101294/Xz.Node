@@ -93,7 +93,7 @@
     //Consul服务发现配置
     "ServiceDiscoveryProvider": {
       "Host": "1.116.5.70",
-      "Port": 8500,
+      "Port": 8600,
       "Type": "Consul"
     },
     //限流全局配置，限流可以配置一些查询的接口，防止用户多次请求造成资源浪费

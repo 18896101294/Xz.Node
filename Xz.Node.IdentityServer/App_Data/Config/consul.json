@@ -3,7 +3,7 @@
     "RegisterSeconds": 5, //服务启动多久后注册
     "HealthCheckSeconds": 60, //健康检查时间间隔(单位秒)
     "HealthCheckTimeOutSeconds": 5, //健康检查超时时间(单位秒)
-    "ConsulAddress": "http://1.116.5.70:8500",
+    "ConsulAddress": "http://1.116.5.70:8600",
     "IsEnableStop": false //应用程序终止时，服务是否取消注册
   }
 }

@@ -29,6 +29,7 @@ namespace Xz.Node.AdminApi.Controllers.System.Consul
         {
             _configuration = configuration;
             _httpHelper = new HttpHelper(_configuration["Consul:ConsulAddress"]);
+            //_httpHelper = new HttpHelper("http://1.116.5.70:8600");
         }
         /// <summary>
         /// 把健康检查的地址简单实现一下
