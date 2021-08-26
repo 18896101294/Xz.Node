@@ -173,7 +173,7 @@ namespace Xz.Node.AdminApi.Controllers.Auth
             {
                 Message = "获取数据成功",
             };
-            result.Data = _authStrategyContext.Orgs;
+            result.Data = _authStrategyContext.Orgs.OrderBy(o => o.SortNo).ToList();
             return Ok(result);
         }
 
@@ -209,7 +209,17 @@ namespace Xz.Node.AdminApi.Controllers.Auth
             {
                 throw new InfoException("部门id不能为空");
             }
+            if(orgId == "0")
+            {
+                result.Data = _authStrategyContext.Orgs.OrderBy(o => o.SortNo).ToList();
+                return Ok(result);
+            }
             var query = _authStrategyContext.Orgs.Where(u => u.ParentId == orgId).OrderBy(o => o.SortNo);
+            if(query == null || query.Count() == 0)
+            {
+                result.Data = _authStrategyContext.Orgs.Where(u => u.Id == orgId).ToList();
+                return Ok(result);
+            }
             result.Data = query.ToList();
             return Ok(result);
         }
