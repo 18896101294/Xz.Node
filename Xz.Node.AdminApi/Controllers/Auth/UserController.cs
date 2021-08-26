@@ -209,7 +209,7 @@ namespace Xz.Node.AdminApi.Controllers.Auth
             {
                 throw new InfoException("部门id不能为空");
             }
-            var query = _authStrategyContext.Orgs.Where(u => u.ParentId == orgId);
+            var query = _authStrategyContext.Orgs.Where(u => u.ParentId == orgId).OrderBy(o => o.SortNo);
             result.Data = query.ToList();
             return Ok(result);
         }
