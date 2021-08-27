@@ -11,7 +11,7 @@ namespace Xz.Node.AdminApi.Controllers.SysLogs
     /// </summary>
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [ApiExplorerSettings(GroupName = "系统日志管理")]
+    [ApiExplorerSettings(GroupName = "日志管理")]
     public class SysLogController : Controller
     {
         private readonly SysLogApp _app;

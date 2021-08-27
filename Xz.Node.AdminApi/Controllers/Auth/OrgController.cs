@@ -63,7 +63,7 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         [HttpGet]
         public IActionResult GetOrgUsers([FromQuery] OrgUsersDto req)
         {
-            var result = new ResultInfo<List<OrgUsersView>>()
+            var result = new ResultInfo<PageInfo<OrgUsersView>>()
             {
                 Message = "获取成功",
             };

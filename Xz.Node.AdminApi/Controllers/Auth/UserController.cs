@@ -2,15 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Xz.Node.App.Auth.Module.Request;
-using Xz.Node.App.Auth.Module.Response;
-using Xz.Node.App.Auth.Org.Response;
-using Xz.Node.App.AuthStrategies;
-using Xz.Node.App.Interface;
+using System.Threading.Tasks;
+using Xz.Node.App.Auth.User;
+using Xz.Node.App.Auth.User.Request;
+using Xz.Node.App.Auth.User.Response;
 using Xz.Node.Framework.Common;
-using Xz.Node.Framework.Extensions;
 using Xz.Node.Framework.Model;
-using Xz.Node.Repository.Domain.Auth;
 
 namespace Xz.Node.AdminApi.Controllers.Auth
 {
@@ -20,223 +17,104 @@ namespace Xz.Node.AdminApi.Controllers.Auth
     [Route("api/[controller]/[action]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "用户管理")]
-    public class UserController : ControllerBase
+    public class UserController : Controller
     {
-        private readonly AuthStrategyContext _authStrategyContext;
-        private readonly IAuth _authUtil;
+        private readonly UserApp _app;
         /// <summary>
         /// 用户管理
         /// </summary>
-        /// <param name="authUtil"></param>
-        public UserController(IAuth authUtil)
+        /// <param name="app"></param>
+        public UserController(UserApp app)
         {
-            _authUtil = authUtil;
-            _authStrategyContext = _authUtil.GetCurrentUser();
+            _app = app;
         }
 
         /// <summary>
-        /// 获取用户登录名
+        /// 获取分页数据
         /// </summary>
+        /// <param name="req"></param>
         /// <returns></returns>
-        [HttpGet]
-        public IActionResult GetUserName()
+        [HttpPost]
+        public IActionResult LoadUsersPage([FromBody] LoadUsersPageReq req)
         {
-            var result = new ResultInfo<string>()
+            var result = new ResultInfo<PageInfo<LoadUsersPageView>>()
             {
-                Message = "获取数据成功",
+                Message = "获取成功"
             };
-            result.Data = _authStrategyContext.User.Name;
+            result.Data = _app.LoadUsersPage(req);
             return Ok(result);
         }
 
         /// <summary>
-        /// 获取用户资料
+        /// 保存用户信息
         /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult GetUserProfile()
+        /// <param name="req"></param>
+        [HttpPost]
+        public IActionResult SaveUser([FromBody] UpdateUserReq req)
         {
-            var result = new ResultInfo<UserProfileView>()
+            var result = new ResultInfo<object>()
             {
-                Message = "获取数据成功",
+                Message = "保存成功",
             };
-            result.Data = _authStrategyContext.User.MapTo<UserProfileView>();
-            result.Data.Roles = _authStrategyContext.Roles.Select(o => o.Code).ToList();
+             _app.SaveUser(req);
             return Ok(result);
         }
 
         /// <summary>
-        /// 获取登录用户可访问的所有模块，及模块的操作菜单
+        /// 删除用户,包含用户与组织关系、用户与角色关系
         /// </summary>
-        [HttpGet]
-        public IActionResult GetUserModulesTree()
+        /// <param name="req"></param>
+        [HttpPost]
+        public IActionResult Delete([FromBody] DeleteUserReq req)
         {
-            var result = new ResultInfo<List<TreeItem<ModuleView>>>()
+            var result = new ResultInfo<object>()
             {
-                Message = "获取数据成功",
+                Message = "删除成功",
             };
-            result.Data = _authStrategyContext.Modules.GenerateTree(u => u.Id, u => u.ParentId).ToList();
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// 获取登录用户可访问的所有模块，及模块的操作菜单
-        /// </summary>
-        [HttpGet]
-        public IActionResult GetModulesTree([FromQuery] GetModuleReq req)
-        {
-            var result = new ResultInfo<List<ModuleView>>()
+            if(req.Ids == null || req.Ids.Count() == 0)
             {
-                Message = "获取数据成功",
-            };
-            var modules = _authStrategyContext.Modules.Where(o => o.ParentId == req.ParentId).OrderBy(o => o.SortNo).ToList();
-            foreach (var module in modules)
-            {
-                var childrenCount = _authStrategyContext.Modules.Count(o => o.ParentId == module.Id);
-                module.HasChildren = childrenCount > 0 ? true : false;
+                throw new Exception("请选择需要删除的用户");
             }
-            result.Data = modules;
+            _app.Delete(req.Ids.ToArray());
             return Ok(result);
         }
 
         /// <summary>
-        /// 获取用户可访问模块的模块名称集合,用于下拉框
+        /// 重置密码
         /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult GetModulesName()
+        /// <param name="req"></param>
+        [HttpPost]
+        public IActionResult ChangePassword([FromBody] ChangePasswordReq req)
         {
-            var result = new ResultInfo<List<ModulesNameView>>()
+            var result = new ResultInfo<object>()
             {
-                Message = "获取数据成功",
+                Message = $"重置成功，初始密码为：{Define.INITIAL_PWD}",
             };
-            var modulesNameData = _authStrategyContext.Modules.OrderBy(o => o.SortNo).Select(o => new ModulesNameView() { Id = o.Id, Name = o.Name, ParentId = o.ParentId }).ToList();
-            result.Data = modulesNameData;
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// 获取datatable结构的模块列表
-        /// </summary>
-        /// <param name="pId"></param>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult GetModulesTable(string pId)
-        {
-            var result = new ResultInfo<List<ModuleView>>()
-            {
-                Message = "获取数据成功",
-            };
-            string cascadeId = ".0.";
-            if (!string.IsNullOrEmpty(pId))
-            {
-                var obj = _authStrategyContext.Modules.SingleOrDefault(u => u.Id == pId);
-                if (obj == null)
-                    throw new InfoException("未能找到指定对象信息");
-                cascadeId = obj.CascadeId;
+            if (string.IsNullOrEmpty(req.Id))
+            { 
+                throw new Exception("请选择需要重置密码的用户");
             }
+            _app.ChangePassword(req);
+            return Ok(result);
+        }
 
-            var query = _authStrategyContext.Modules.Where(u => u.CascadeId.Contains(cascadeId));
-
-            if (query == null || query.Count() == 0)
+        /// <summary>
+        /// 修改基本资料
+        /// </summary>
+        /// <param name="req"></param>
+        [HttpPost]
+        public IActionResult ChangeProfile([FromBody] ChangeProfileReq req)
+        {
+            var result = new ResultInfo<object>()
             {
-                result.Message = "暂无数据";
-                return Ok(result);
+                Message = $"重置成功，初始密码为：{Define.INITIAL_PWD}",
+                Data = req
+            };
+            if (string.IsNullOrEmpty(req.Id))
+            {
+                throw new Exception("用户id不能为空");
             }
-            result.Data = query.ToList();
-
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// 获取用户可访问的模块列表
-        /// </summary>
-        [HttpGet]
-        public IActionResult GetModules()
-        {
-            var result = new ResultInfo<List<ModuleView>>()
-            {
-                Message = "获取数据成功",
-            };
-            result.Data = _authStrategyContext.Modules;
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// 获取登录用户可访问的所有部门
-        /// <para>用于树状结构</para>
-        /// </summary>
-        [HttpGet]
-        public IActionResult GetOrgs()
-        {
-            var result = new ResultInfo<List<Auth_OrgInfo>>()
-            {
-                Message = "获取数据成功",
-            };
-            result.Data = _authStrategyContext.Orgs.OrderBy(o => o.SortNo).ToList();
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// 获取用户可访问部门名称集合,用于下拉框
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult GetOrgsName()
-        {
-            var result = new ResultInfo<List<OrgsNameView>>()
-            {
-                Message = "获取数据成功",
-            };
-            var modulesNameData = _authStrategyContext.Orgs.OrderBy(o => o.SortNo).Select(o => new OrgsNameView() { Id = o.Id, Name = o.Name, ParentId = o.ParentId }).ToList();
-            result.Data = modulesNameData;
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// 获取指定部门的全部下级机构
-        /// </summary>
-        /// <param name="orgId">部门ID</param>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult GetChildOrgs(string orgId)
-        {
-            var result = new ResultInfo<List<Auth_OrgInfo>>()
-            {
-                Message = "获取数据成功",
-            };
-            if (string.IsNullOrEmpty(orgId))
-            {
-                throw new InfoException("部门id不能为空");
-            }
-            if(orgId == "0")
-            {
-                result.Data = _authStrategyContext.Orgs.OrderBy(o => o.SortNo).ToList();
-                return Ok(result);
-            }
-            var query = _authStrategyContext.Orgs.Where(u => u.ParentId == orgId).OrderBy(o => o.SortNo);
-            if(query == null || query.Count() == 0)
-            {
-                result.Data = _authStrategyContext.Orgs.Where(u => u.Id == orgId).ToList();
-                return Ok(result);
-            }
-            result.Data = query.ToList();
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// 获取当前登录用户可访问的字段
-        /// </summary>
-        /// <param name="moduleCode">模块的Code，如Category</param>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult GetProperties(string moduleCode)
-        {
-            var result = new ResultInfo<List<KeyDescription>>()
-            {
-                Message = "获取数据成功",
-            };
-            result.Data = _authStrategyContext.GetProperties(moduleCode);
+            _app.ChangeProfile(req);
             return Ok(result);
         }
     }

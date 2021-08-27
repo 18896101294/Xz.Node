@@ -47,9 +47,9 @@ namespace Xz.Node.Repository.Domain.Auth
         [Description("性别")]
         public int Sex { get; set; }
         /// <summary>
-        /// 用户状态
+        /// 用户状态，0：启用，1：禁用
         /// </summary>
-        [Description("用户状态")]
+        [Description("用户状态，0：启用，1：禁用")]
         public int Status { get; set; }
         /// <summary>
         /// 业务对照码

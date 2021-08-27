@@ -12,6 +12,7 @@ using Xz.Node.App.Interface;
 using Xz.Node.Framework.Common;
 using Xz.Node.Framework.Enums;
 using Xz.Node.Framework.Extensions;
+using Xz.Node.Framework.Model;
 using Xz.Node.Repository;
 using Xz.Node.Repository.Domain.Auth;
 using Xz.Node.Repository.Interface;
@@ -106,8 +107,13 @@ namespace Xz.Node.App.Auth.Org
         /// 加载部门中的用户
         /// </summary>
         /// <param name="req">请求入参</param>
-        public List<OrgUsersView> GetOrgUsers(OrgUsersDto req)
+        public PageInfo<OrgUsersView> GetOrgUsers(OrgUsersDto req)
         {
+            var pageData = new PageInfo<OrgUsersView>()
+            {
+                PageIndex = req.page,
+                PageSize = req.limit
+            };
             var (expression, p) = EFSQLHelpr.CreateBinaryExpression<Auth_UserInfo>();
             if (!string.IsNullOrEmpty(req.Account))
             {
@@ -143,7 +149,9 @@ namespace Xz.Node.App.Auth.Org
                 Avatar = b.Avatar,
                 CreateTime = b.CreateTime
             }).Skip(((req.page - 1) * req.limit)).Take(req.limit);
-            return query.ToList();
+            pageData.Datas = query.ToList();
+            pageData.Total = query.Count();
+            return pageData;
         }
 
         /// <summary>

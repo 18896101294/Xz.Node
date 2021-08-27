@@ -15,8 +15,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Xz.Node.App.Auth.User;
 using Xz.Node.App.Interface;
-using Xz.Node.App.UserManager;
 using Xz.Node.Framework.Common;
 using Xz.Node.Framework.Encryption;
 using Xz.Node.Repository.Domain.Auth;
@@ -32,7 +32,7 @@ namespace Xz.Node.IdentityServer.Quickstart.Account
     [AllowAnonymous]
     public class AccountController : Controller
     {
-        private readonly UserManagerApp _userManager;
+        private readonly UserApp _userApp;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IClientStore _clientStore;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
@@ -43,7 +43,7 @@ namespace Xz.Node.IdentityServer.Quickstart.Account
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IAuthenticationSchemeProvider schemeProvider,
-            IEventService events, UserManagerApp userManager,
+            IEventService events, UserApp userApp,
             IAuth authUtil)
         {
 
@@ -51,7 +51,7 @@ namespace Xz.Node.IdentityServer.Quickstart.Account
             _clientStore = clientStore;
             _schemeProvider = schemeProvider;
             _events = events;
-            _userManager = userManager;
+            _userApp = userApp;
             _authUtil = authUtil;
         }
 
@@ -126,7 +126,7 @@ namespace Xz.Node.IdentityServer.Quickstart.Account
                 }
                 else
                 {
-                    user = _userManager.GetByAccount(model.Username, encryptPassWord);
+                    user = _userApp.GetByAccount(model.Username, encryptPassWord);
                 }
 
                 if (user != null)

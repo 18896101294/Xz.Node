@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Xz.Node.App.UserManager;
+using Xz.Node.App.Auth.User;
 using Xz.Node.Framework.Common;
 using Xz.Node.Repository.Domain.Auth;
 
@@ -19,15 +19,14 @@ namespace Xz.Node.IdentityServer
         /// The logger
         /// </summary>
         protected readonly ILogger Logger;
-
-        protected UserManagerApp UserManager;
+        protected UserApp UserManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TestUserProfileService"/> class.
         /// </summary>
         /// <param name="users">The users.</param>
         /// <param name="logger">The logger.</param>
-        public CustomProfileService(ILogger<TestUserProfileService> logger, UserManagerApp userManager)
+        public CustomProfileService(ILogger<TestUserProfileService> logger, UserApp userManager)
         {
             Logger = logger;
             UserManager = userManager;

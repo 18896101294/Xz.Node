@@ -61,6 +61,11 @@ namespace Xz.Node.Framework.Common
         public const string SYSTEM_USERNAME = "System";
         public const string SYSTEM_USERPWD = "123456";
         /// <summary>
+        /// 初始密码
+        /// </summary>
+        public const string INITIAL_PWD = "123456";
+
+        /// <summary>
         /// 数据权限配置中，当前登录用户的key
         /// </summary>
         public const string DATAPRIVILEGE_LOGINUSER = "{loginUser}";
