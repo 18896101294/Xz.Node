@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
+using Xz.Node.App.Auth.Org.Request;
+using Xz.Node.App.Auth.Org.Response;
 using Xz.Node.App.Auth.Revelance;
 using Xz.Node.App.Auth.Revelance.Request;
 using Xz.Node.App.Base;
 using Xz.Node.App.Interface;
 using Xz.Node.Framework.Common;
+using Xz.Node.Framework.Enums;
 using Xz.Node.Framework.Extensions;
 using Xz.Node.Repository;
 using Xz.Node.Repository.Domain.Auth;
 using Xz.Node.Repository.Interface;
+using static Xz.Node.Framework.Model.BaseDto;
 
 namespace Xz.Node.App.Auth.Org
 {
@@ -95,6 +100,50 @@ namespace Xz.Node.App.Auth.Org
                 UnitWork.Delete<Auth_OrgInfo>(u => delOrgIds.Contains(u.Id));
                 UnitWork.Save();
             });
+        }
+
+        /// <summary>
+        /// 加载部门中的用户
+        /// </summary>
+        /// <param name="req">请求入参</param>
+        public List<OrgUsersView> GetOrgUsers(OrgUsersDto req)
+        {
+            var (expression, p) = EFSQLHelpr.CreateBinaryExpression<Auth_UserInfo>();
+            if (!string.IsNullOrEmpty(req.Account))
+            {
+                expression = EFSQLHelpr.ExpressionAndAlso(expression, p, "Account", req.Account);
+            }
+            if (!string.IsNullOrEmpty(req.Name))
+            {
+                expression = EFSQLHelpr.ExpressionAndAlso(expression, p, "Name", req.Name);
+            }
+            if (req.Status.HasValue)
+            {
+                expression = EFSQLHelpr.ExpressionAndAlso(expression, p, "Status", req.Status.ToString());
+            }
+            var lambda = Expression.Lambda<Func<Auth_UserInfo, bool>>(expression, p);
+
+            var query = UnitWork.Find<Auth_OrgInfo>(o => o.Id == req.OrgId).Join(UnitWork.Find<Auth_RelevanceInfo>(o => o.Key == Define.USERORG), a => a.Id, b => b.SecondId, (a, b) => new
+            {
+                OrgId = a.Id,
+                OrgName = a.Name,
+                OrgCode = a.CustomCode,
+                FirstId = b.FirstId
+            }).Join(UnitWork.Find<Auth_UserInfo>(lambda), a => a.FirstId, b => b.Id, (a, b) => new OrgUsersView
+            {
+                UserId = b.Id,
+                OrgId = a.OrgId,
+                OrgName = a.OrgName,
+                OrgCode = a.OrgCode,
+                Account = b.Account,
+                Name = b.Name,
+                Sex = b.Sex,
+                Status = b.Status,
+                BizCode = b.BizCode,
+                Avatar = b.Avatar,
+                CreateTime = b.CreateTime
+            }).Skip(((req.page - 1) * req.limit)).Take(req.limit);
+            return query.ToList();
         }
 
         /// <summary>

@@ -278,6 +278,35 @@ namespace Xz.Node.Repository
             return (IOrderedQueryable<T>)result;
         }
         #endregion
+
+        /// <summary>
+        /// 创建表达式
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static (BinaryExpression, ParameterExpression) CreateBinaryExpression<T>()
+        {
+            ParameterExpression p = Expression.Parameter(typeof(T), "o");
+            var conDef1 = Expression.Constant(1);
+            BinaryExpression expression = Expression.Equal(conDef1, conDef1);
+            return (expression, p);
+        }
+
+        /// <summary>
+        /// 创建表达式
+        /// </summary>
+        /// <returns></returns>
+        public static BinaryExpression ExpressionAndAlso(BinaryExpression expression, ParameterExpression p, string columnName, string columnValue, ConditionOperEnum conditionOper = ConditionOperEnum.Equal)
+        {
+            MemberExpression pi = Expression.Property(p, columnName);
+            var value = ConstantExpressionGet(columnName, columnValue, pi.Type, conditionOper);
+            var rightExp = Expression.Equal(pi, value);
+            if (rightExp != null)
+            {
+                expression = Expression.AndAlso(expression, rightExp);
+            }
+            return expression;
+        }
     }
 
     //public class EFTemp

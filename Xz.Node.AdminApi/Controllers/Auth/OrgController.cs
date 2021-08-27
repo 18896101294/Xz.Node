@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xz.Node.App.Auth.Org;
 using Xz.Node.App.Auth.Org.Request;
+using Xz.Node.App.Auth.Org.Response;
 using Xz.Node.App.Interface;
 using Xz.Node.Framework.Extensions;
 using Xz.Node.Framework.Model;
@@ -53,6 +54,23 @@ namespace Xz.Node.AdminApi.Controllers.Auth
             result.Data = orgs;
             return Ok(result);
         }
+
+        /// <summary>
+        /// 获取部门下的用户列表
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult GetOrgUsers([FromQuery] OrgUsersDto req)
+        {
+            var result = new ResultInfo<List<OrgUsersView>>()
+            {
+                Message = "获取成功",
+            };
+            result.Data = _app.GetOrgUsers(req);
+            return Ok(result);
+        }
+
 
         /// <summary>
         /// 添加部门
