@@ -87,7 +87,7 @@ namespace Xz.Node.App.AuthStrategies
         /// </summary>
         public List<Auth_RoleInfo> Roles
         {
-            get { return UnitWork.Find<Auth_RoleInfo>(u => _userRoleIds.Contains(u.Id)).ToList(); }
+            get { return UnitWork.Find<Auth_RoleInfo>(u => _userRoleIds.Contains(u.Id)).OrderByDescending(o => o.CreateTime).ToList(); }
         }
 
         /// <summary>

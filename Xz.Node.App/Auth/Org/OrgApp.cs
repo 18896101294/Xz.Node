@@ -138,9 +138,6 @@ namespace Xz.Node.App.Auth.Org
             }).Join(UnitWork.Find<Auth_UserInfo>(lambda), a => a.FirstId, b => b.Id, (a, b) => new OrgUsersView
             {
                 UserId = b.Id,
-                OrgId = a.OrgId,
-                OrgName = a.OrgName,
-                OrgCode = a.OrgCode,
                 Account = b.Account,
                 Name = b.Name,
                 Sex = b.Sex,
@@ -148,7 +145,25 @@ namespace Xz.Node.App.Auth.Org
                 BizCode = b.BizCode,
                 Avatar = b.Avatar,
                 CreateTime = b.CreateTime
-            }).Skip(((req.page - 1) * req.limit)).Take(req.limit);
+            }).Skip(((req.page - 1) * req.limit)).Take(req.limit).ToList();
+            if (query != null || query.Count() > 0)
+            {
+                var userIds = query.Select(o => o.UserId).ToArray();
+                //获取关联的角色
+                //var roleIds = _revelanceApp.Get(Define.USERROLE, true, userIds);
+                //var roleDatas = _revelanceApp.Get(Define.USERROLE, true, userIds);
+                //获取关联的部门
+                var userOrgRevelanceDatas = UnitWork.Find<Auth_RelevanceInfo>(o => o.Key == Define.USERORG && userIds.Contains(o.FirstId)).ToList();
+                var orgIds = userOrgRevelanceDatas.Select(o => o.SecondId);
+                var orgDatas = UnitWork.Find<Auth_OrgInfo>(o => orgIds.Contains(o.Id)).ToList();
+                foreach (var user in query)
+                {
+                    var userOrgs = userOrgRevelanceDatas.Where(o => o.FirstId == user.UserId);
+                    var userOrgDatas = orgDatas.Where(o => userOrgs.Select(o => o.SecondId).Contains(o.Id));
+                    user.OrgIds = userOrgDatas.Select(o => o.Id).ToList();
+                    user.OrgNames = userOrgDatas.Select(o => o.Name).ToList();
+                }
+            }
             pageData.Datas = query.ToList();
             pageData.Total = query.Count();
             return pageData;

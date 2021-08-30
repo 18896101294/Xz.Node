@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Xz.Node.App.Auth.Role;
 using Xz.Node.App.Auth.Role.Request;
+using Xz.Node.App.Auth.Role.Response;
 using Xz.Node.App.Base;
 using Xz.Node.Framework.Model;
 using Xz.Node.Repository.Domain.Auth;
@@ -37,7 +36,7 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         [HttpPost]
         public IActionResult LoadRolesPage([FromBody] LoadRolesPageReq req)
         {
-            var result = new ResultInfo<PageInfo<Auth_RoleInfo>>()
+            var result = new ResultInfo<PageInfo<LoadRolesPageView>>()
             {
                 Message = "获取成功"
             };

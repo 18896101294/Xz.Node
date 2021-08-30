@@ -1,4 +1,6 @@
-﻿namespace Xz.Node.App.Auth.Role.Response
+﻿using System.Collections.Generic;
+
+namespace Xz.Node.App.Auth.Role.Response
 {
     /// <summary>
     /// 加载角色分页列表view
@@ -9,17 +11,18 @@
         /// 角色Id
         /// </summary>
         public string Id { get; set; }
-
         /// <summary>
         /// 角色名称
         /// </summary>
         public string Name { get; set; }
-
+        /// <summary>
+        /// 用户列表，逗号分割
+        /// </summary>
+        public List<string> UserNames { get; set; }
         /// <summary>
         /// 代码
         /// </summary>
         public string Code { get; set; }
-
         /// <summary>
         /// 状态 0：启用，1：禁用
         /// </summary>

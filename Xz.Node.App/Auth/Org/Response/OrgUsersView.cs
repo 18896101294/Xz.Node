@@ -15,21 +15,6 @@ namespace Xz.Node.App.Auth.Org.Response
         public string UserId { get; set; }
 
         /// <summary>
-        /// 部门Id
-        /// </summary>
-        public string OrgId { get; set; }
-
-        /// <summary>
-        /// 部门名称
-        /// </summary>
-        public string OrgName { get; set; }
-
-        /// <summary>
-        /// 部门代码
-        /// </summary>
-        public string OrgCode { get; set; }
-
-        /// <summary>
         /// 用户账号
         /// </summary>
         public string Account { get; set; }
@@ -58,6 +43,16 @@ namespace Xz.Node.App.Auth.Org.Response
         /// 头像
         /// </summary>
         public string Avatar { get; set; }
+
+        /// <summary>
+        /// 部门Id列表
+        /// </summary>
+        public List<string> OrgIds { get; set; }
+
+        /// <summary>
+        /// 部门名称列表
+        /// </summary>
+        public List<string> OrgNames{ get;set; }
 
         /// <summary>
         /// 创建时间

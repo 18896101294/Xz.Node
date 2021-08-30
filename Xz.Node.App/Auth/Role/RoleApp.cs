@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xz.Node.App.Auth.Revelance;
 using Xz.Node.App.Auth.Revelance.Request;
 using Xz.Node.App.Auth.Role.Request;
@@ -39,13 +38,13 @@ namespace Xz.Node.App.Auth.Role
         /// <summary>
         /// 加载当前登录用户可访问的全部角色
         /// </summary>
-        public PageInfo<Auth_RoleInfo> LoadRolesPage(LoadRolesPageReq req)
+        public PageInfo<LoadRolesPageView> LoadRolesPage(LoadRolesPageReq req)
         {
-            var page = new PageInfo<Auth_RoleInfo>()
+            var page = new PageInfo<LoadRolesPageView>()
             {
                 PageIndex = req.page,
                 PageSize = req.limit,
-                Datas = new List<Auth_RoleInfo>()
+                Datas = new List<LoadRolesPageView>()
             };
             var loginUser = _auth.GetCurrentUser();
             //这里因为角色不会太多，做了假分页，不会消耗多少性能
@@ -62,7 +61,34 @@ namespace Xz.Node.App.Auth.Role
             {
                 roles = roles.Where(u => u.Status == req.Status).ToList();
             }
-            page.Datas = roles.Skip((req.page - 1) * req.limit).Take(req.limit).ToList();
+            var resultData = roles.Skip((req.page - 1) * req.limit).Take(req.limit).Select(o => new LoadRolesPageView()
+            {
+                Id = o.Id,
+                Name = o.Name,
+                Code = o.Code,
+                Status = o.Status,
+                UserNames = new List<string>()
+            }).ToList();
+            if (resultData == null || resultData.Count() == 0)
+            {
+                return page;
+            }
+            var roleIds = resultData.Select(o => o.Id);
+            var relevanceDatas = UnitWork.Find<Auth_RelevanceInfo>(o => o.Key == Define.USERROLE && roleIds.Contains(o.SecondId));
+            if (relevanceDatas != null && relevanceDatas.Count() > 0)
+            {
+                resultData.ForEach(role =>
+                {
+                    var userRoleDatas = relevanceDatas.Where(o => o.SecondId == role.Id);
+                    if (userRoleDatas != null && userRoleDatas.Count() > 0)
+                    {
+                        var userIds = userRoleDatas.Select(o => o.FirstId).Distinct().ToList();
+                        var userNames = UnitWork.Find<Auth_UserInfo>(o => userIds.Contains(o.Id)).Select(o => o.Name);
+                        role.UserNames = userNames.ToList();
+                    }
+                });
+            }
+            page.Datas = resultData;
             page.Total = roles.Count();
             return page;
         }
