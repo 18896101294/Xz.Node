@@ -61,7 +61,7 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         }
 
         /// <summary>
-        /// 删除用户,包含用户与组织关系、用户与角色关系
+        /// 删除用户
         /// </summary>
         /// <param name="req"></param>
         [HttpPost]

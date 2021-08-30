@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Xz.Node.App.Auth.Org;
 using Xz.Node.App.Auth.Revelance;
+using Xz.Node.App.Auth.Role;
 using Xz.Node.App.Auth.User.Request;
 using Xz.Node.App.Auth.User.Response;
 using Xz.Node.App.Base;
@@ -24,7 +25,7 @@ namespace Xz.Node.App.Auth.User
     public class UserApp : BaseStringApp<Auth_UserInfo, XzDbContext>
     {
         private readonly RevelanceApp _revelanceApp;
-        private readonly OrgApp _orgApp;
+
         /// <summary>
         /// 用户管理构造
         /// </summary>
@@ -32,14 +33,11 @@ namespace Xz.Node.App.Auth.User
         /// <param name="repository"></param>
         /// <param name="auth"></param>
         /// <param name="revelanceApp"></param>
-        /// <param name="orgApp"></param>
         public UserApp(IUnitWork<XzDbContext> unitWork, IRepository<Auth_UserInfo, XzDbContext> repository,
             IAuth auth,
-            RevelanceApp revelanceApp,
-            OrgApp orgApp) : base(unitWork, repository, auth)
+            RevelanceApp revelanceApp) : base(unitWork, repository, auth)
         {
             _revelanceApp = revelanceApp;
-            _orgApp = orgApp;
         }
 
         /// <summary>
@@ -152,11 +150,16 @@ namespace Xz.Node.App.Auth.User
                     //角色关联
                     if (!string.IsNullOrEmpty(req.RoleIds))
                     {
-
+                        string[] roleIds = req.RoleIds.Split(',').ToArray();
+                        _revelanceApp.Assign(Define.USERROLE, roleIds.ToLookup(u => requser.Id));
                     }
                 }
                 else
                 {
+                    if (UnitWork.Any<Auth_UserInfo>(u => u.Id != req.Id && u.Account == req.Account))
+                    {
+                        throw new InfoException("用户账号已存在");
+                    }
                     UnitWork.Update<Auth_UserInfo>(u => u.Id == req.Id, u => new Auth_UserInfo
                     {
                         Account = req.Account,
@@ -171,7 +174,9 @@ namespace Xz.Node.App.Auth.User
                     //角色关联
                     if (!string.IsNullOrEmpty(req.RoleIds))
                     {
-
+                        string[] roleIds = req.RoleIds.Split(',').ToArray();
+                        _revelanceApp.DeleteBy(Define.USERROLE, requser.Id);
+                        _revelanceApp.Assign(Define.USERROLE, roleIds.ToLookup(u => requser.Id));
                     }
                 }
                 UnitWork.Save();
