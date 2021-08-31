@@ -75,37 +75,68 @@ namespace Xz.Node.App.Auth.User
             }
             var lambda = Expression.Lambda<Func<Auth_UserInfo, bool>>(expression, p);
 
-            var queryDatas = UnitWork.Find<Auth_UserInfo>(lambda).Skip(((req.page - 1) * req.limit)).Take(req.limit).Select(o => new LoadUsersPageView()
+            var loginUser = _auth.GetCurrentUser();
+
+            var query = UnitWork.Find<Auth_UserInfo>(lambda);
+
+            var userOrgs = from user in query
+                           join relevance in UnitWork.Find<Auth_RelevanceInfo>(u => u.Key == Define.USERORG)
+                               on user.Id equals relevance.FirstId into temp
+                           from r in temp.DefaultIfEmpty()
+                           join org in UnitWork.Find<Auth_OrgInfo>(null)
+                               on r.SecondId equals org.Id into orgtmp
+                           from o in orgtmp.DefaultIfEmpty()
+                           select new 
+                           {
+                               user.Account,
+                               user.Name,
+                               user.Id,
+                               user.Sex,
+                               user.Status,
+                               user.BizCode,
+                               user.Avatar,
+                               user.CreateId,
+                               user.CreateTime,
+                               user.TypeId,
+                               user.TypeName,
+                               r.Key,
+                               r.SecondId,
+                               OrgId = o.Id,
+                               OrgName = o.Name
+                           };
+
+            //如果请求的orgId不为空
+            if (!string.IsNullOrEmpty(req.OrgId) && !req.OrgId.Equals("0"))
             {
-                Id = o.Id,
-                Account = o.Account,
-                Name = o.Name,
-                Sex = o.Sex,
-                Status = o.Status,
-                BizCode = o.BizCode,
-                Avatar = o.Avatar,
-                CreateTime = o.CreateTime
-            });
-            if (queryDatas != null || queryDatas.Count() > 0)
-            {
-                var userIds = queryDatas.Select(o => o.Id).ToArray();
-                //获取关联的角色
-                //var roleIds = _revelanceApp.Get(Define.USERROLE, true, userIds);
-                //var roleDatas = _revelanceApp.Get(Define.USERROLE, true, userIds);
-                //获取关联的部门
-                var userOrgRevelanceDatas = UnitWork.Find<Auth_RelevanceInfo>(o => o.Key == Define.USERORG && userIds.Contains(o.FirstId)).ToList();
-                var orgIds = userOrgRevelanceDatas.Select(o => o.SecondId);
-                var orgDatas = UnitWork.Find<Auth_OrgInfo>(o => orgIds.Contains(o.Id)).ToList();
-                foreach (var user in queryDatas)
-                {
-                    var userOrgs = userOrgRevelanceDatas.Where(o => o.FirstId == user.Id);
-                    var userOrgDatas = orgDatas.Where(o => userOrgs.Select(o => o.SecondId).Contains(o.Id));
-                    user.OrgIds = userOrgDatas.Select(o => o.Id).ToList();
-                    user.OrgNames = string.Join(',', userOrgDatas.Select(o => "[" + o.Name + "]"));
-                }
-                pageData.Datas = queryDatas.ToList();
-                pageData.Total = queryDatas.Count();
+                var org = loginUser.Orgs.SingleOrDefault(u => u.Id == req.OrgId);
+                var orgIds = loginUser.Orgs.Where(u => u.Id == org.Id).Select(u => u.Id).ToArray();
+                //只获取机构里面的用户
+                userOrgs = userOrgs.Where(u => u.Key == Define.USERORG && orgIds.Contains(u.OrgId));
             }
+            else //如果请求的orgId为空，即为跟节点，这时可以额外获取到机构已经被删除的用户，从而进行机构分配。可以根据自己需求进行调整
+            {
+                var orgIds = loginUser.Orgs.Select(u => u.Id).ToArray();
+
+                //获取用户可以访问的机构的用户和没有任何机构关联的用户（机构被删除后，没有删除这里面的关联关系）
+                userOrgs = userOrgs.Where(u => (u.Key == Define.USERORG && orgIds.Contains(u.OrgId)) || (u.OrgId == null));
+            }
+
+            var userViews = userOrgs.ToList().GroupBy(b => b.Account).Select(u => new LoadUsersPageView
+            {
+                Id = u.First().Id,
+                Account = u.Key,
+                Name = u.First().Name,
+                Sex = u.First().Sex,
+                Status = u.First().Status,
+                BizCode = u.First().BizCode,
+                Avatar = u.First().Avatar,
+                CreateTime = u.First().CreateTime,
+                OrgIds = u.Select(x => x.OrgId).ToList(),
+                OrgNames = u.Select(x => x.OrgName).ToList()
+            });
+
+            pageData.Datas = userViews.OrderBy(u => u.CreateTime).Skip((req.page - 1) * req.limit).Take(req.limit).ToList();
+            pageData.Total = userViews.Count();
             return pageData;
         }
 

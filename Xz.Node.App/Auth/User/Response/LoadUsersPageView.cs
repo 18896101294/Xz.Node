@@ -46,9 +46,9 @@ namespace Xz.Node.App.Auth.User.Response
         /// </summary>
         public List<string> OrgIds { get; set; }
         /// <summary>
-        /// 部门名称
+        /// 部门名称列表
         /// </summary>
-        public string OrgNames { get; set; }
+        public List<string> OrgNames { get; set; }
         /// <summary>
         /// 角色Ids
         /// </summary>
