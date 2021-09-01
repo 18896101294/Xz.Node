@@ -1,4 +1,5 @@
-﻿using Xz.Node.Framework.Extensions;
+﻿using System.Collections.Generic;
+using Xz.Node.Framework.Extensions;
 using Xz.Node.Repository.Domain.Auth;
 
 namespace Xz.Node.App.Auth.User.Request
@@ -35,13 +36,13 @@ namespace Xz.Node.App.Auth.User.Request
         /// <returns></returns>
         public int Status { get; set; }
         /// <summary>
-        /// 所属部门Id，多个可用，分隔
+        /// 所属部门Id
         /// </summary>
-        public string OrgIds { get; set; }
+        public List<string> OrgIds { get; set; }
         /// <summary>
-        /// 所属角色Id，多个可用，分隔
+        /// 所属角色Id
         /// </summary>
-        public string RoleIds { get; set; }
+        public List<string> RoleIds { get; set; }
         /// <summary>
         /// 修改映射
         /// </summary>

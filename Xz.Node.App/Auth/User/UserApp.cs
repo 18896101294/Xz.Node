@@ -86,7 +86,7 @@ namespace Xz.Node.App.Auth.User
                            join org in UnitWork.Find<Auth_OrgInfo>(null)
                                on r.SecondId equals org.Id into orgtmp
                            from o in orgtmp.DefaultIfEmpty()
-                           select new 
+                           select new
                            {
                                user.Account,
                                user.Name,
@@ -157,11 +157,10 @@ namespace Xz.Node.App.Auth.User
         /// <param name="req"></param>
         public void SaveUser(UpdateUserReq req)
         {
-            if (string.IsNullOrEmpty(req.OrgIds))
+            if (req.OrgIds.Count() == 0)
             {
                 throw new InfoException("请为用户分配部门");
             }
-            string[] orgIds = req.OrgIds.Split(',').ToArray();
 
             Auth_UserInfo requser = req;
             UnitWork.ExecuteWithTransaction(() =>
@@ -177,12 +176,11 @@ namespace Xz.Node.App.Auth.User
                     requser.CreateTime = DateTime.Now;
                     UnitWork.Add(requser);
                     //部门关联
-                    _revelanceApp.Assign(Define.USERORG, orgIds.ToLookup(u => requser.Id));
+                    _revelanceApp.Assign(Define.USERORG, req.OrgIds.ToLookup(u => requser.Id));
                     //角色关联
-                    if (!string.IsNullOrEmpty(req.RoleIds))
+                    if (req.OrgIds.Count() > 0)
                     {
-                        string[] roleIds = req.RoleIds.Split(',').ToArray();
-                        _revelanceApp.Assign(Define.USERROLE, roleIds.ToLookup(u => requser.Id));
+                        _revelanceApp.Assign(Define.USERROLE, req.OrgIds.ToLookup(u => requser.Id));
                     }
                 }
                 else
@@ -201,13 +199,12 @@ namespace Xz.Node.App.Auth.User
                     });
                     //部门关联
                     _revelanceApp.DeleteBy(Define.USERORG, requser.Id);
-                    _revelanceApp.Assign(Define.USERORG, orgIds.ToLookup(u => requser.Id));
+                    _revelanceApp.Assign(Define.USERORG, req.OrgIds.ToLookup(u => requser.Id));
                     //角色关联
-                    if (!string.IsNullOrEmpty(req.RoleIds))
+                    if (req.OrgIds.Count() > 0)
                     {
-                        string[] roleIds = req.RoleIds.Split(',').ToArray();
                         _revelanceApp.DeleteBy(Define.USERROLE, requser.Id);
-                        _revelanceApp.Assign(Define.USERROLE, roleIds.ToLookup(u => requser.Id));
+                        _revelanceApp.Assign(Define.USERROLE, req.RoleIds.ToLookup(u => requser.Id));
                     }
                 }
                 UnitWork.Save();

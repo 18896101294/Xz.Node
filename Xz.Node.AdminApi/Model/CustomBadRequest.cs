@@ -16,7 +16,7 @@ namespace Xz.Node.AdminApi.Model
         {
             Title = "WebApi客户端传入的参数无效";
             Detail = "vue客户端（或其他方式）调用WebApi时传入的参数类型与接口需要的类型不匹配";
-            Status = 400;
+            Status = 500;
             ConstructErrorMessages(context);
         }
 
