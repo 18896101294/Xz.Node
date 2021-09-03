@@ -197,7 +197,6 @@ namespace Xz.Node.App.Auth.User
                         Sex = req.Sex,
                         Status = req.Status
                     });
-                    //部门关联
                     _revelanceApp.DeleteBy(Define.USERORG, requser.Id);
                     _revelanceApp.Assign(Define.USERORG, req.OrgIds.ToLookup(u => requser.Id));
                     //角色关联

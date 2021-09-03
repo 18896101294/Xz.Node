@@ -56,6 +56,7 @@ namespace Xz.Node.App.Auth.Revelance
                                    Key = key,
                                    FirstId = sameVals.Key,
                                    SecondId = value,
+                                   OperatorId = _auth.GetCurrentUser().User.Id,
                                    OperateTime = DateTime.Now
                                }).ToArray());
             UnitWork.Save();
@@ -149,29 +150,48 @@ namespace Xz.Node.App.Auth.Revelance
         /// <summary>
         /// 分配数据字段权限
         /// </summary>
-        /// <param name="request"></param>
-        public void AssignData(AssignDataReq request)
+        /// <param name="requests"></param>
+        public void AssignData(List<AssignDataReq> requests)
         {
-            if (!request.Properties.Any())
+            if (requests == null || requests.Count() == 0)
             {
                 return;
             }
 
-            var relevances = new List<Auth_RelevanceInfo>();
-            foreach (var requestProperty in request.Properties)
+            var operatorId = _auth.GetCurrentUser().User.Id;
+            List<Auth_RelevanceInfo> addDatas = new List<Auth_RelevanceInfo>();
+
+            foreach (var request in requests)
             {
-                relevances.Add(new Auth_RelevanceInfo
+                if (!request.Properties.Any())
                 {
-                    Key = Define.ROLEDATAPROPERTY,
-                    FirstId = request.RoleId,
-                    SecondId = request.ModuleCode,
-                    ThirdId = requestProperty,
-                    OperateTime = DateTime.Now
-                });
+                    continue;
+                }
+                addDatas.AddRange((from thirdId in request.Properties
+                                    select new Auth_RelevanceInfo
+                                    {
+                                        Key = Define.ROLEDATAPROPERTY,
+                                        FirstId = request.RoleId,
+                                        SecondId = request.ModuleId,
+                                        ThirdId = thirdId,
+                                        OperatorId = operatorId,
+                                        OperateTime = DateTime.Now
+                                    }).ToArray());
             }
 
-            UnitWork.BatchAdd(relevances.ToArray());
-            UnitWork.Save();
+            UnitWork.ExecuteWithTransaction(() =>
+            {
+                var roleIds = requests.Select(o => o.RoleId).Distinct().ToArray();
+                //删除以前的所有字段
+                UnitWork.Delete<Auth_RelevanceInfo>(u => roleIds.Contains(u.FirstId) && u.Key == Define.ROLEDATAPROPERTY);
+
+                //批量分配角色字段
+                if (addDatas.Count > 0)
+                {
+                    UnitWork.BatchAdd(addDatas.ToArray());
+                }
+                UnitWork.Save();
+            });
         }
 
         /// <summary>
@@ -182,13 +202,13 @@ namespace Xz.Node.App.Auth.Revelance
         {
             if (request.Properties == null || request.Properties.Length == 0)
             {
-                if (string.IsNullOrEmpty(request.ModuleCode)) //模块为空，直接把角色的所有授权删除
+                if (string.IsNullOrEmpty(request.ModuleId)) //模块为空，直接把角色的所有授权删除
                 {
                     DeleteBy(Define.ROLEDATAPROPERTY, request.RoleId);
                 }
                 else //把角色的某一个模块权限全部删除
                 {
-                    DeleteBy(Define.ROLEDATAPROPERTY, new[] { request.ModuleCode }.ToLookup(u => request.RoleId));
+                    DeleteBy(Define.ROLEDATAPROPERTY, new[] { request.ModuleId }.ToLookup(u => request.RoleId));
                 }
             }
             else //按具体的id删除
@@ -197,7 +217,7 @@ namespace Xz.Node.App.Auth.Revelance
                 {
                     UnitWork.Delete<Auth_RelevanceInfo>(u => u.Key == Define.ROLEDATAPROPERTY
                                                     && u.FirstId == request.RoleId
-                                                    && u.SecondId == request.ModuleCode
+                                                    && u.SecondId == request.ModuleId
                                                     && u.ThirdId == property);
                 }
             }
@@ -209,19 +229,102 @@ namespace Xz.Node.App.Auth.Revelance
         /// <param name="request"></param>
         public void AssignRoleUsers(AssignRoleUsersReq request)
         {
+            var operatorId = _auth.GetCurrentUser().User.Id;
+
             UnitWork.ExecuteWithTransaction(() =>
             {
                 //删除以前的所有用户
                 UnitWork.Delete<Auth_RelevanceInfo>(u => u.SecondId == request.RoleId && u.Key == Define.USERROLE);
                 //批量分配用户角色
-                UnitWork.BatchAdd((from firstId in request.UserIds
+                if (request.UserIds != null && request.UserIds.Length > 0)
+                {
+                    UnitWork.BatchAdd((from firstId in request.UserIds
+                                       select new Auth_RelevanceInfo
+                                       {
+                                           Key = Define.USERROLE,
+                                           FirstId = firstId,
+                                           SecondId = request.RoleId,
+                                           OperatorId = operatorId,
+                                           OperateTime = DateTime.Now
+                                       }).ToArray());
+                }
+                UnitWork.Save();
+            });
+        }
+
+        /// <summary>
+        /// 为角色分配模块，需要统一提交，会删除以前该角色的所有模块
+        /// </summary>
+        /// <param name="request"></param>
+        public void AssignRoleModules(AssignRoleModulesReq request)
+        {
+            var operatorId = _auth.GetCurrentUser().User.Id;
+
+            UnitWork.ExecuteWithTransaction(() =>
+            {
+                //删除以前的所有模块
+                UnitWork.Delete<Auth_RelevanceInfo>(u => u.FirstId == request.RoleId && u.Key == Define.ROLEMODULE);
+                //批量分配角色模块
+                if (request.ModuleIds != null && request.ModuleIds.Length > 0)
+                {
+                    UnitWork.BatchAdd((from secondId in request.ModuleIds
+                                       select new Auth_RelevanceInfo
+                                       {
+                                           Key = Define.ROLEMODULE,
+                                           FirstId = request.RoleId,
+                                           SecondId = secondId,
+                                           OperatorId = operatorId,
+                                           OperateTime = DateTime.Now
+                                       }).ToArray());
+                }
+                UnitWork.Save();
+            });
+        }
+
+        /// <summary>
+        /// 为角色分配菜单，需要统一提交，会删除以前该角色的所有菜单
+        /// </summary>
+        /// <param name="requests"></param>
+        public void AssignRoleMenus(List<AssignRoleMenusReq> requests)
+        {
+            if (requests == null || requests.Count() == 0)
+            {
+                return;
+            }
+
+            List<Auth_RelevanceInfo> addDatas = new List<Auth_RelevanceInfo>();
+            var operatorId = _auth.GetCurrentUser().User.Id;
+
+            foreach (var request in requests)
+            {
+                if (!request.MenuIds.Any())
+                {
+                    continue;
+                }
+                //批量分配角色菜单
+                addDatas.AddRange((from thirdId in request.MenuIds
                                    select new Auth_RelevanceInfo
-                                   {
-                                       Key = Define.USERROLE,
-                                       FirstId = firstId,
-                                       SecondId = request.RoleId,
-                                       OperateTime = DateTime.Now
-                                   }).ToArray());
+                                    {
+                                        Key = Define.ROLEELEMENT,
+                                        FirstId = request.RoleId,
+                                        SecondId = request.ModuleId,
+                                        ThirdId = thirdId,
+                                        OperatorId = operatorId,
+                                        OperateTime = DateTime.Now
+                                    }).ToArray());
+            }
+
+            UnitWork.ExecuteWithTransaction(() =>
+            {
+                var roleIds = requests.Select(o => o.RoleId).Distinct().ToArray();
+                //删除以前的所有菜单
+                UnitWork.Delete<Auth_RelevanceInfo>(u => roleIds.Contains(u.FirstId) && u.Key == Define.ROLEELEMENT);
+
+                //批量分配角色菜单
+                if (addDatas.Count > 0)
+                {
+                    UnitWork.BatchAdd(addDatas.ToArray());
+                }
                 UnitWork.Save();
             });
         }
@@ -236,16 +339,19 @@ namespace Xz.Node.App.Auth.Revelance
             {
                 //删除以前的所有用户
                 UnitWork.Delete<Auth_RelevanceInfo>(u => u.SecondId == request.OrgId && u.Key == Define.USERORG);
-                //批量分配用户角色
-                UnitWork.BatchAdd((from firstId in request.UserIds
-                                   select new Auth_RelevanceInfo
-                                   {
-                                       Key = Define.USERORG,
-                                       FirstId = firstId,
-                                       SecondId = request.OrgId,
-                                       OperateTime = DateTime.Now
-                                   }).ToArray());
-                UnitWork.Save();
+                if (request.UserIds != null && request.UserIds.Length > 0)
+                {
+                    //批量分配用户角色
+                    UnitWork.BatchAdd((from firstId in request.UserIds
+                                       select new Auth_RelevanceInfo
+                                       {
+                                           Key = Define.USERORG,
+                                           FirstId = firstId,
+                                           SecondId = request.OrgId,
+                                           OperateTime = DateTime.Now
+                                       }).ToArray());
+                    UnitWork.Save();
+                }
             });
         }
     }

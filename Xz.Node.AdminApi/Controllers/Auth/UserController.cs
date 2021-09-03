@@ -107,7 +107,7 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         {
             var result = new ResultInfo<object>()
             {
-                Message = $"重置成功，初始密码为：{Define.INITIAL_PWD}",
+                Message = "保存成功",
                 Data = req
             };
             if (string.IsNullOrEmpty(req.Id))

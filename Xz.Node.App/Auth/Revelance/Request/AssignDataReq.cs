@@ -14,9 +14,9 @@ namespace Xz.Node.App.Auth.Revelance.Request
         /// </summary>
         public string RoleId { get; set; }
         /// <summary>
-        /// 模块的Code,比如Category/Resource
+        /// 模块Id
         /// </summary>
-        public string ModuleCode { get; set; }
+        public string ModuleId { get; set; }
         /// <summary>
         /// 字段名称列表
         /// </summary>

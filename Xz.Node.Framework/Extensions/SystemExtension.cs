@@ -15,10 +15,10 @@ namespace Xz.Node.Framework.Extensions
         /// <returns></returns>
         public static string GetClientUserIp(this HttpContext context)
         {
-            var userHostAddress = context.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+            var userHostAddress = context.Request.Headers["X-Real-IP"].FirstOrDefault();
             if (string.IsNullOrEmpty(userHostAddress))
             {
-                userHostAddress = context.Connection.RemoteIpAddress.ToString();
+                userHostAddress = context.Connection.RemoteIpAddress.MapToIPv4().ToString();
             }
 
             //最后判断获取是否成功，并检查IP地址的格式（检查其格式非常重要）

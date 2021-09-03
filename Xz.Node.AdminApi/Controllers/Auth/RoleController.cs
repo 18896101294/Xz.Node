@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using Xz.Node.App.Auth.Revelance.Request;
 using Xz.Node.App.Auth.Role;
 using Xz.Node.App.Auth.Role.Request;
 using Xz.Node.App.Auth.Role.Response;
@@ -75,11 +77,71 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         }
 
         /// <summary>
+        /// 为角色分配用户
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult RoleAllocationUsers([FromBody] AssignRoleUsersReq req)
+        {
+            var result = new ResultInfo<object>()
+            {
+                Message = "分配成功",
+            };
+            _app.RoleAllocationUsers(req);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 为角色分配模块
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult RoleAllocationModules([FromBody] AssignRoleModulesReq req)
+        {
+            var result = new ResultInfo<object>()
+            {
+                Message = "分配成功",
+            };
+            _app.RoleAllocationModules(req);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 为角色分配菜单
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult RoleAllocationMenus([FromBody] List<AssignRoleMenusReq> reqs)
+        {
+            var result = new ResultInfo<object>()
+            {
+                Message = "分配成功",
+            };
+            _app.RoleAllocationMenus(reqs);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 为角色分配字段
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult RoleAllocationDatas([FromBody] List<AssignDataReq> reqs)
+        {
+            var result = new ResultInfo<object>()
+            {
+                Message = "分配成功",
+            };
+            _app.RoleAllocationDatas(reqs);
+            return Ok(result);
+        }
+
+        /// <summary>
         /// 删除角色
         /// </summary>
         /// <param name="req"></param>
         [HttpPost]
-        public IActionResult Delete([FromBody] BaseIdReq req)
+        public IActionResult Delete([FromBody] BaseIdsReq req)
         {
             var result = new ResultInfo<object>()
             {

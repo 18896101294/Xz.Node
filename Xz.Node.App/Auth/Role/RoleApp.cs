@@ -152,6 +152,55 @@ namespace Xz.Node.App.Auth.Role
         }
 
         /// <summary>
+        /// 为角色分配用户
+        /// </summary>
+        /// <param name="req"></param>
+        public void RoleAllocationUsers(AssignRoleUsersReq req)
+        {
+            if(string.IsNullOrEmpty(req.RoleId))
+            {
+                throw new InfoException("角色Id不能为空");
+            }
+            //为角色分配用户
+            _revelanceApp.AssignRoleUsers(req);
+        }
+
+        /// <summary>
+        /// 为角色分配模块
+        /// </summary>
+        /// <param name="req"></param>
+        public void RoleAllocationModules(AssignRoleModulesReq req)
+        {
+            if (string.IsNullOrEmpty(req.RoleId))
+            {
+                throw new InfoException("角色Id不能为空");
+            }
+            //为角色分配模块
+            _revelanceApp.AssignRoleModules(req);
+        }
+
+        /// <summary>
+        /// 为角色分配菜单
+        /// </summary>
+        /// <param name="reqs"></param>
+        public void RoleAllocationMenus(List<AssignRoleMenusReq> reqs)
+        {
+            //为角色分配菜单
+            _revelanceApp.AssignRoleMenus(reqs);
+        }
+
+        /// <summary>
+        /// 为角色分配字段
+        /// </summary>
+        /// <param name="reqs"></param>
+        public void RoleAllocationDatas(List<AssignDataReq> reqs)
+        {
+            //为角色分配字段
+            _revelanceApp.AssignData(reqs);
+        }
+
+
+        /// <summary>
         /// 验证角色名和代码是否已经存在
         /// </summary>
         /// <param name="req"></param>
