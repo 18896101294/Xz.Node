@@ -226,6 +226,23 @@ namespace Xz.Node.App.Auth.User
         }
 
         /// <summary>
+        /// 禁用用户
+        /// </summary>
+        /// <param name="req"></param>
+        public void DisableUser(BaseIdsReq req)
+        {
+            if (req.Ids == null || req.Ids.Count() == 0)
+            {
+                throw new InfoException("用户Id不能为空");
+            }
+
+            UnitWork.Update<Auth_UserInfo>(u => req.Ids.Contains(u.Id), u => new Auth_UserInfo
+            {
+                Status = (int)DisableStatusEnum.Disable
+            });
+        }
+
+        /// <summary>
         /// 重置密码
         /// </summary>
         /// <param name="req"></param>

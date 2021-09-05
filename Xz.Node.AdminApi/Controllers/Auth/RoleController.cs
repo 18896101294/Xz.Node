@@ -137,6 +137,22 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         }
 
         /// <summary>
+        /// 禁用角色
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult DisableRole([FromBody] BaseIdsReq req)
+        {
+            var result = new ResultInfo<object>()
+            {
+                Message = "禁用成功",
+            };
+            _app.DisableRole(req);
+            return Ok(result);
+        }
+
+        /// <summary>
         /// 删除角色
         /// </summary>
         /// <param name="req"></param>

@@ -8,6 +8,7 @@ using Xz.Node.App.Auth.Role.Response;
 using Xz.Node.App.Base;
 using Xz.Node.App.Interface;
 using Xz.Node.Framework.Common;
+using Xz.Node.Framework.Enums;
 using Xz.Node.Framework.Extensions;
 using Xz.Node.Framework.Model;
 using Xz.Node.Repository;
@@ -129,6 +130,22 @@ namespace Xz.Node.App.Auth.Role
                 Name = req.Name,
                 Code = req.Code,
                 Status = req.Status
+            });
+        }
+
+        /// <summary>
+        /// 禁用角色
+        /// </summary>
+        public void DisableRole(BaseIdsReq req)
+        {
+            if(req.Ids == null || req.Ids.Count() == 0)
+            {
+                throw new InfoException("角色Id不能为空");
+            }
+
+            UnitWork.Update<Auth_RoleInfo>(u => req.Ids.Contains(u.Id), u => new Auth_RoleInfo
+            {
+                Status = (int)DisableStatusEnum.Disable
             });
         }
 

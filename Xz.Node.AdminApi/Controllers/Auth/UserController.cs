@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Xz.Node.App.Auth.User;
 using Xz.Node.App.Auth.User.Request;
 using Xz.Node.App.Auth.User.Response;
+using Xz.Node.App.Base;
 using Xz.Node.Framework.Common;
 using Xz.Node.Framework.Model;
 
@@ -76,6 +77,22 @@ namespace Xz.Node.AdminApi.Controllers.Auth
                 throw new Exception("请选择需要删除的用户");
             }
             _app.Delete(req.Ids.ToArray());
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 禁用用户
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult DisableUser([FromBody] BaseIdsReq req)
+        {
+            var result = new ResultInfo<object>()
+            {
+                Message = "禁用成功",
+            };
+            _app.DisableUser(req);
             return Ok(result);
         }
 
