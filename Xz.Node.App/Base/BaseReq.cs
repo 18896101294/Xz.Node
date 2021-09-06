@@ -10,7 +10,7 @@ namespace Xz.Node.App.Base
         /// <summary>
         /// Id
         /// </summary>
-        public List<string> Id { get; set; }
+        public string Id { get; set; }
     }
 
     /// <summary>

@@ -47,6 +47,22 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         }
 
         /// <summary>
+        /// 获取角色绑定的用户列表
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult GetRoleBindUsers([FromBody] BaseIdReq req)
+        {
+            var result = new ResultInfo<List<RoleBindUsersView>>()
+            {
+                Message = "获取成功"
+            };
+            result.Data = _app.GetRoleBindUsers(req);
+            return Ok(result);
+        }
+
+        /// <summary>
         /// 添加角色
         /// </summary>
         /// <param name="req"></param>

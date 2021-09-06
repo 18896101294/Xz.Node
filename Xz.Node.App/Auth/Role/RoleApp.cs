@@ -95,6 +95,22 @@ namespace Xz.Node.App.Auth.Role
         }
 
         /// <summary>
+        /// 获取角色绑定的用户列表
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        public List<RoleBindUsersView> GetRoleBindUsers(BaseIdReq req)
+        {
+            if (string.IsNullOrEmpty(req.Id))
+            {
+                throw new InfoException("角色Id不能为空");
+            }
+            var userIds = _revelanceApp.Get(Define.USERROLE, false, new string[] { req.Id });
+            var userDatas = UnitWork.Find<Auth_UserInfo>(o => userIds.Contains(o.Id)).Select(o => new RoleBindUsersView() { UserId = o.Id, UserAccount = o.Account, UserName = o.Name }).ToList();
+            return userDatas;
+        }
+
+        /// <summary>
         /// 添加角色，如果当前登录用户不是System，则直接把新角色分配给当前登录用户
         /// </summary>
         public void AddRole(Auth_RoleInfo req)
@@ -138,7 +154,7 @@ namespace Xz.Node.App.Auth.Role
         /// </summary>
         public void DisableRole(BaseIdsReq req)
         {
-            if(req.Ids == null || req.Ids.Count() == 0)
+            if (req.Ids == null || req.Ids.Count() == 0)
             {
                 throw new InfoException("角色Id不能为空");
             }
@@ -174,7 +190,7 @@ namespace Xz.Node.App.Auth.Role
         /// <param name="req"></param>
         public void RoleAllocationUsers(AssignRoleUsersReq req)
         {
-            if(string.IsNullOrEmpty(req.RoleId))
+            if (string.IsNullOrEmpty(req.RoleId))
             {
                 throw new InfoException("角色Id不能为空");
             }
