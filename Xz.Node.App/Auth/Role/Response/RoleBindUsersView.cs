@@ -8,16 +8,16 @@
         /// <summary>
         /// 用户Id
         /// </summary>
-        public string UserId { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// 用户账号
         /// </summary>
-        public string UserAccount { get; set; }
+        public string Account { get; set; }
 
         /// <summary>
         /// 用户名称
         /// </summary>
-        public string UserName { get; set; }
+        public string Name { get; set; }
     }
 }

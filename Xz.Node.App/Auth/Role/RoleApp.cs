@@ -106,7 +106,7 @@ namespace Xz.Node.App.Auth.Role
                 throw new InfoException("角色Id不能为空");
             }
             var userIds = _revelanceApp.Get(Define.USERROLE, false, new string[] { req.Id });
-            var userDatas = UnitWork.Find<Auth_UserInfo>(o => userIds.Contains(o.Id)).Select(o => new RoleBindUsersView() { UserId = o.Id, UserAccount = o.Account, UserName = o.Name }).ToList();
+            var userDatas = UnitWork.Find<Auth_UserInfo>(o => userIds.Contains(o.Id)).Select(o => new RoleBindUsersView() { Id = o.Id, Account = o.Account, Name = o.Name }).ToList();
             return userDatas;
         }
 
