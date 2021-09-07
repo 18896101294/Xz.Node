@@ -35,16 +35,14 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         /// <summary>
         /// 加载角色模块
         /// </summary>
-        /// <param name="firstId">The role identifier.</param>
-        /// <returns>System.String.</returns>
         [HttpGet]
         public IActionResult LoadForRole([FromQuery] string firstId)
         {
-            var result = new ResultInfo<IList<Auth_ModuleInfo>>()
+            var result = new ResultInfo<IList<string>>()
             {
                 Message = "获取成功",
             };
-            result.Data = _app.LoadForRole(firstId).ToList();
+            result.Data = _app.LoadForRole(firstId).Select(o => o.Id).ToList();
             return Ok(result);
         }
         /// <summary>
