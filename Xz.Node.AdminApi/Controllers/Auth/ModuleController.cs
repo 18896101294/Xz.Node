@@ -41,7 +41,12 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         [HttpPost]
         public IActionResult GetCheckedModules([FromBody] BaseIdsReq req)
         {
-
+            var result = new ResultInfo<IList<CheckedModulesView>>()
+            {
+                Message = "获取成功"
+            };
+            result.Data = _app.GetCheckedModules(req);
+            return Ok(result);
         }
 
         /// <summary>

@@ -44,8 +44,8 @@ namespace Xz.Node.App.Auth.Module
         {
             var resultData = new List<CheckedModulesView>();
 
-            var modules = UnitWork.Find<Auth_ModuleInfo>(null);
-            var moduleelements = UnitWork.Find<Auth_ModuleElementInfo>(null);
+            var modules = UnitWork.Find<Auth_ModuleInfo>(null).ToList();
+            var moduleelements = UnitWork.Find<Auth_ModuleElementInfo>(null).ToList();
 
             var moduleDatas = modules.Where(o => req.Ids.Contains(o.Id)).OrderBy(o => o.SortNo);
 
@@ -55,20 +55,24 @@ namespace Xz.Node.App.Auth.Module
                 {
                     Id = moduleData.Id,
                     Name = moduleData.Name,
+                    FullName = this.SetFullName(moduleData.Name, moduleData, modules),
                     elements = moduleelements.Where(o => o.ModuleId == moduleData.Id).OrderBy(o => o.Sort).ToList()
                 });
             }
+            return resultData;
         }
 
-        private string SetFullName(Auth_ModuleInfo data, List<Auth_ModuleInfo> modules)
+        private string SetFullName(string name, Auth_ModuleInfo data, List<Auth_ModuleInfo> modules)
         {
-            string fullName = data.Name;
+            string fullName = name;
             if (!string.IsNullOrEmpty(data.ParentId))
             {
-
+                var parentData = modules.FirstOrDefault(o => o.Id == data.ParentId);
+                fullName = parentData.Name + "》" + fullName;
+                this.SetFullName(fullName, parentData, modules);
             }
+            return fullName;
         }
-
 
         /// <summary>
         /// 添加模块
