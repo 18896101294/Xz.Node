@@ -4,6 +4,7 @@ using System.Linq;
 using Xz.Node.App.Auth.Module;
 using Xz.Node.App.Auth.Module.Request;
 using Xz.Node.App.Auth.Module.Response;
+using Xz.Node.App.Base;
 using Xz.Node.App.Interface;
 using Xz.Node.Framework.Extensions;
 using Xz.Node.Framework.Model;
@@ -30,6 +31,17 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         {
             _app = app;
             _authUtil = authUtil;
+        }
+
+        /// <summary>
+        /// 获取勾选模块的信息
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult GetCheckedModules([FromBody] BaseIdsReq req)
+        {
+
         }
 
         /// <summary>

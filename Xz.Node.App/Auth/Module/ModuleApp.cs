@@ -12,6 +12,7 @@ using Xz.Node.Repository.Domain.Auth;
 using Xz.Node.Repository.Interface;
 using System.Linq;
 using Xz.Node.App.Auth.Module.Request;
+using Xz.Node.App.Auth.Module.Response;
 
 namespace Xz.Node.App.Auth.Module
 {
@@ -33,6 +34,41 @@ namespace Xz.Node.App.Auth.Module
         {
             _app = app;
         }
+
+        /// <summary>
+        /// 获取勾选模块的信息
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        public List<CheckedModulesView> GetCheckedModules(BaseIdsReq req)
+        {
+            var resultData = new List<CheckedModulesView>();
+
+            var modules = UnitWork.Find<Auth_ModuleInfo>(null);
+            var moduleelements = UnitWork.Find<Auth_ModuleElementInfo>(null);
+
+            var moduleDatas = modules.Where(o => req.Ids.Contains(o.Id)).OrderBy(o => o.SortNo);
+
+            foreach (var moduleData in moduleDatas)
+            {
+                resultData.Add(new CheckedModulesView()
+                {
+                    Id = moduleData.Id,
+                    Name = moduleData.Name,
+                    elements = moduleelements.Where(o => o.ModuleId == moduleData.Id).OrderBy(o => o.Sort).ToList()
+                });
+            }
+        }
+
+        private string SetFullName(Auth_ModuleInfo data, List<Auth_ModuleInfo> modules)
+        {
+            string fullName = data.Name;
+            if (!string.IsNullOrEmpty(data.ParentId))
+            {
+
+            }
+        }
+
 
         /// <summary>
         /// 添加模块
