@@ -47,7 +47,7 @@ namespace Xz.Node.App
         public List<KeyDescription> GetProperties(string moduleName)
         {
             var result = new List<KeyDescription>();
-            const string domain = "openauth.repository.domain.";
+            const string domain = "Xz.Node.Repository.Domain.";
             IEntityType entity = null;
             _contexts.ForEach(u =>
             {
@@ -56,7 +56,7 @@ namespace Xz.Node.App
             });
             if (entity == null)
             {
-                throw new Exception($"未能找到{moduleName}对应的实体类");
+                throw new InfoException($"未能找到{moduleName}对应的实体类");
             }
 
             foreach (var property in entity.ClrType.GetProperties())

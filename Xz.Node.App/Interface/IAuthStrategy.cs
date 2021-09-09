@@ -28,5 +28,11 @@ namespace Xz.Node.App.Interface
         /// <param name="moduleCode"></param>
         /// <returns></returns>
         List<KeyDescription> GetProperties(string moduleCode);
+
+        /// <summary>
+        /// 根据模块id获取可访问的模块字段
+        /// </summary>
+        /// <returns></returns>
+        List<KeyDescription> GetClassProperties(string className, string moduleId);
     }
 }

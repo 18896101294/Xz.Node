@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Xz.Node.App.Auth.Module.Response;
 using Xz.Node.App.Interface;
 using Xz.Node.Framework.Common;
@@ -78,6 +80,17 @@ namespace Xz.Node.App.AuthStrategies
         public List<KeyDescription> GetProperties(string moduleCode)
         {
             return _strategy.GetProperties(moduleCode);
+        }
+
+        /// <summary>
+        /// 可访问模块字段集合
+        /// </summary>
+        /// <param name="className"></param>
+        /// <param name="moduleId"></param>
+        /// <returns></returns>
+        public List<KeyDescription> GetClassProperties(string className, string moduleId)
+        {
+            return _strategy.GetClassProperties(className, moduleId);
         }
     }
 }

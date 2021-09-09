@@ -51,13 +51,16 @@ namespace Xz.Node.App.Auth.Module
 
             foreach (var moduleData in moduleDatas)
             {
-                resultData.Add(new CheckedModulesView()
+                if (!string.IsNullOrEmpty(moduleData.ParentId))
                 {
-                    Id = moduleData.Id,
-                    Name = moduleData.Name,
-                    FullName = this.SetFullName(moduleData.Name, moduleData, modules),
-                    elements = moduleelements.Where(o => o.ModuleId == moduleData.Id).OrderBy(o => o.Sort).ToList()
-                });
+                    resultData.Add(new CheckedModulesView()
+                    {
+                        Id = moduleData.Id,
+                        Name = moduleData.Name,
+                        FullName = this.SetFullName(moduleData.Name, moduleData, modules),
+                        elements = moduleelements.Where(o => o.ModuleId == moduleData.Id).OrderBy(o => o.Sort).ToList()
+                    });
+                }
             }
             return resultData;
         }

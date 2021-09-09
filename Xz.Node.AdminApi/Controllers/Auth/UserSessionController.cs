@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Xz.Node.App.Auth.Module.Request;
 using Xz.Node.App.Auth.Module.Response;
 using Xz.Node.App.Auth.Org.Response;
+using Xz.Node.App.Auth.Role.Response;
 using Xz.Node.App.AuthStrategies;
 using Xz.Node.App.Interface;
 using Xz.Node.Framework.Common;
@@ -237,6 +239,20 @@ namespace Xz.Node.AdminApi.Controllers.Auth
                 Message = "获取数据成功",
             };
             result.Data = _authStrategyContext.GetProperties(moduleCode);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 获取当前登录用户可访问的字段
+        /// </summary>
+        [HttpGet]
+        public IActionResult GetFunProperties(string className, string moduleId)
+        {
+            var result = new ResultInfo<List<KeyDescription>>()
+            {
+                Message = "获取数据成功",
+            };
+            result.Data = _authStrategyContext.GetClassProperties(className, moduleId);
             return Ok(result);
         }
     }

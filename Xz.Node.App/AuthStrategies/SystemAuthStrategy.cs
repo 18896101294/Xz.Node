@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using Xz.Node.App.Auth.Module.Response;
 using Xz.Node.App.Base;
 using Xz.Node.App.Interface;
 using Xz.Node.Framework.Common;
+using Xz.Node.Framework.Extensions;
 using Xz.Node.Repository;
 using Xz.Node.Repository.Domain.Auth;
 using Xz.Node.Repository.Interface;
@@ -126,6 +129,56 @@ namespace Xz.Node.App.AuthStrategies
         public List<KeyDescription> GetProperties(string moduleCode)
         {
             return _dbExtension.GetProperties(moduleCode);
+        }
+
+        /// <summary>
+        /// 可访问模块字段集合
+        /// </summary>
+        /// <param name="className"></param>
+        /// <param name="moduleId"></param>
+        /// <returns></returns>
+        public List<KeyDescription> GetClassProperties(string className, string moduleId)
+        {
+            var asm = Assembly.GetExecutingAssembly();
+            Type type = null;
+            foreach (var typeItem in asm.GetTypes())
+            {
+                if (typeItem.Name.ToLower().Equals(className.ToLower()))
+                {
+                    type = typeItem;
+                }
+            }
+            if (type == null)
+            {
+                throw new InfoException("获取数据字典失败");
+            }
+            var properties = type.GetProperties().ToList();
+
+            var result = new List<KeyDescription>();
+
+            foreach (var property in properties)
+            {
+                object[] objs = property.GetCustomAttributes(typeof(DescriptionAttribute), true);
+                object[] browsableObjs = property.GetCustomAttributes(typeof(BrowsableAttribute), true);
+                var description = objs.Length > 0 ? ((DescriptionAttribute)objs[0]).Description : property.Name;
+                if (string.IsNullOrEmpty(description)) description = property.Name;
+                //如果没有BrowsableAttribute或 [Browsable(true)]表示可见，其他均为不可见，需要前端配合显示
+                bool browsable = browsableObjs == null || browsableObjs.Length == 0 ||
+                                 ((BrowsableAttribute)browsableObjs[0]).Browsable;
+                var typeName = property.PropertyType.Name;
+                if (Nullable.GetUnderlyingType(property.PropertyType) != null)
+                {
+                    typeName = Nullable.GetUnderlyingType(property.PropertyType).Name;
+                }
+                result.Add(new KeyDescription
+                {
+                    Key = property.Name,
+                    Description = description,
+                    Browsable = browsable,
+                    Type = typeName
+                });
+            }
+            return result;
         }
     }
 }
