@@ -6,6 +6,7 @@ using Xz.Node.App.Auth.Module.Request;
 using Xz.Node.App.Auth.Module.Response;
 using Xz.Node.App.Base;
 using Xz.Node.App.Interface;
+using Xz.Node.Framework.Common;
 using Xz.Node.Framework.Extensions;
 using Xz.Node.Framework.Model;
 using Xz.Node.Repository.Domain.Auth;
@@ -46,6 +47,21 @@ namespace Xz.Node.AdminApi.Controllers.Auth
                 Message = "获取成功"
             };
             result.Data = _app.GetCheckedModules(req);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 获取勾选的模块下的数据字典
+        /// </summary>
+        /// <param name="moduleName">前端页面列表的name</param>
+        [HttpGet]
+        public IActionResult GetCheckedProperties([FromQuery] string moduleName)
+        {
+            var result = new ResultInfo<IList<KeyDescription>>()
+            {
+                Message = "获取成功"
+            };
+            result.Data = _app.GetCheckedProperties(moduleName);
             return Ok(result);
         }
 

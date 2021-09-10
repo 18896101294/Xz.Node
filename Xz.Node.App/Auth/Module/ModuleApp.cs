@@ -13,6 +13,7 @@ using Xz.Node.Repository.Interface;
 using System.Linq;
 using Xz.Node.App.Auth.Module.Request;
 using Xz.Node.App.Auth.Module.Response;
+using Xz.Node.App.System.Configuration;
 
 namespace Xz.Node.App.Auth.Module
 {
@@ -22,6 +23,9 @@ namespace Xz.Node.App.Auth.Module
     public class ModuleApp : BaseTreeApp<Auth_ModuleInfo, XzDbContext>
     {
         private readonly RevelanceApp _app;
+        private readonly SystemConfigurationApp _configurationApp;
+        private readonly DbExtension _dbExtension;
+
         /// <summary>
         /// 模块管理
         /// </summary>
@@ -29,10 +33,16 @@ namespace Xz.Node.App.Auth.Module
         /// <param name="repository"></param>
         /// <param name="app"></param>
         /// <param name="auth"></param>
+        /// <param name="configurationApp"></param>
+        /// <param name="dbExtension"></param>
         public ModuleApp(IUnitWork<XzDbContext> unitWork, IRepository<Auth_ModuleInfo, XzDbContext> repository
-            , RevelanceApp app, IAuth auth) : base(unitWork, repository, auth)
+            , RevelanceApp app, IAuth auth,
+            SystemConfigurationApp configurationApp,
+            DbExtension dbExtension) : base(unitWork, repository, auth)
         {
             _app = app;
+            _configurationApp = configurationApp;
+            _dbExtension = dbExtension;
         }
 
         /// <summary>
@@ -75,6 +85,21 @@ namespace Xz.Node.App.Auth.Module
                 this.SetFullName(fullName, parentData, modules);
             }
             return fullName;
+        }
+
+        /// <summary>
+        /// 获取勾选的模块下的数据字典
+        /// </summary>
+        /// <param name="moduleName">前端页面列表的name</param>
+        public List<KeyDescription> GetCheckedProperties(string moduleName)
+        {
+            var dataPropertyConfig = _configurationApp.GetSysConfigurations("SystemDataProperty").FirstOrDefault(o => o.Text == moduleName);
+            if(dataPropertyConfig == null)
+            {
+                throw new InfoException($"模块名：{moduleName}数据字典关系未配置");
+            }
+            var result = _dbExtension.GetKeyDescription(dataPropertyConfig.Value);
+            return result;
         }
 
         /// <summary>
@@ -190,7 +215,6 @@ namespace Xz.Node.App.Auth.Module
         }
 
         #endregion 用户/角色分配模块
-
 
         #region 菜单操作
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -373,6 +374,56 @@ namespace Xz.Node.App
                 }
             }
             return new List<SysTableColumn>();
+        }
+
+        /// <summary>
+        /// 根据类名获取数据字典
+        /// </summary>
+        /// <param name="className"></param>
+        /// <returns></returns>
+        public List<KeyDescription> GetKeyDescription(string className)
+        {
+            var asm = Assembly.GetExecutingAssembly();
+            Type type = null;
+            foreach (var typeItem in asm.GetTypes())
+            {
+                if (typeItem.Name.ToLower().Equals(className.ToLower()))
+                {
+                    type = typeItem;
+                }
+            }
+            if (type == null)
+            {
+                throw new InfoException("获取数据字典失败");
+            }
+            var properties = type.GetProperties().ToList();
+
+            var result = new List<KeyDescription>();
+
+            foreach (var property in properties)
+            {
+                object[] objs = property.GetCustomAttributes(typeof(DescriptionAttribute), true);
+                object[] browsableObjs = property.GetCustomAttributes(typeof(BrowsableAttribute), true);
+                var description = objs.Length > 0 ? ((DescriptionAttribute)objs[0]).Description : property.Name;
+                if (string.IsNullOrEmpty(description)) description = property.Name;
+                //如果没有BrowsableAttribute或 [Browsable(true)]表示可见，其他均为不可见，需要前端配合显示
+                bool browsable = browsableObjs == null || browsableObjs.Length == 0 ||
+                                 ((BrowsableAttribute)browsableObjs[0]).Browsable;
+                var typeName = property.PropertyType.Name;
+                if (Nullable.GetUnderlyingType(property.PropertyType) != null)
+                {
+                    typeName = Nullable.GetUnderlyingType(property.PropertyType).Name;
+                }
+                result.Add(new KeyDescription
+                {
+                    Key = property.Name,
+                    Description = description,
+                    Browsable = browsable,
+                    Type = typeName
+                });
+            }
+
+            return result;
         }
     }
 }
