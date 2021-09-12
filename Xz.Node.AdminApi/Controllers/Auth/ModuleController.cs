@@ -53,15 +53,15 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         /// <summary>
         /// 获取勾选的模块下的数据字典
         /// </summary>
-        /// <param name="moduleName">前端页面列表的name</param>
-        [HttpGet]
-        public IActionResult GetCheckedProperties([FromQuery] string moduleName)
+        /// <param name="req">前端页面列表的names</param>
+        [HttpPost]
+        public IActionResult GetCheckedProperties([FromBody] List<CheckedPropertiesReq> req)
         {
-            var result = new ResultInfo<IList<KeyDescription>>()
+            var result = new ResultInfo<IList<CheckedPropertiesView>>()
             {
                 Message = "获取成功"
             };
-            result.Data = _app.GetCheckedProperties(moduleName);
+            result.Data = _app.GetCheckedProperties(req);
             return Ok(result);
         }
 
@@ -81,17 +81,16 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         /// <summary>
         /// 获取角色已经分配的字段
         /// </summary>
-        /// <param name="roleId">角色id</param>
-        /// <param name="moduleCode">模块代码，如Category</param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        [HttpGet]
-        public IActionResult LoadPropertiesForRole(string roleId, string moduleCode)
+        [HttpPost]
+        public IActionResult LoadPropertiesForRole([FromBody] LoadPropertiesForRoleReq req)
         {
             var result = new ResultInfo<IList<string>>()
             {
                 Message = "获取成功",
             };
-            result.Data = _app.LoadPropertiesForRole(roleId, moduleCode).ToList();
+            result.Data = _app.LoadPropertiesForRole(req).ToList();
             return Ok(result);
         }
 

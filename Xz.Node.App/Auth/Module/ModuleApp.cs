@@ -90,16 +90,34 @@ namespace Xz.Node.App.Auth.Module
         /// <summary>
         /// 获取勾选的模块下的数据字典
         /// </summary>
-        /// <param name="moduleName">前端页面列表的name</param>
-        public List<KeyDescription> GetCheckedProperties(string moduleName)
+        /// <param name="req"></param>
+        public List<CheckedPropertiesView> GetCheckedProperties(List<CheckedPropertiesReq> req)
         {
-            var dataPropertyConfig = _configurationApp.GetSysConfigurations("SystemDataProperty").FirstOrDefault(o => o.Text == moduleName);
-            if(dataPropertyConfig == null)
+            var resultData = new List<CheckedPropertiesView>();
+
+            var moduleViewNames = req.Select(o => o.ModuleViewName).ToList();
+            var dataPropertyConfigs = _configurationApp.GetSysConfigurations("SystemDataProperty").Where(o => moduleViewNames.Contains(o.Text));
+
+            var moduleIds = req.Select(o => o.ModuleId).ToList();
+            var modules = UnitWork.Find<Auth_ModuleInfo>(null).ToList();
+            var moduleDatas = modules.Where(o => moduleIds.Contains(o.Id)).OrderBy(o => o.SortNo);
+
+            foreach (var moduleData in moduleDatas)
             {
-                throw new InfoException($"模块名：{moduleName}数据字典关系未配置");
+                var moduleReq = req.FirstOrDefault(o => o.ModuleId == moduleData.Id);
+                var dataPropertyConfig = dataPropertyConfigs.FirstOrDefault(o => o.Text == moduleReq.ModuleViewName);
+                if (!string.IsNullOrEmpty(moduleData.ParentId) && dataPropertyConfig != null)
+                {
+                    resultData.Add(new CheckedPropertiesView()
+                    {
+                        Id = moduleData.Id,
+                        Name = moduleData.Name,
+                        FullName = this.SetFullName(moduleData.Name, moduleData, modules),
+                        Keys = _dbExtension.GetKeyDescription(dataPropertyConfig.Value)
+                    });
+                }
             }
-            var result = _dbExtension.GetKeyDescription(dataPropertyConfig.Value);
-            return result;
+            return resultData;
         }
 
         /// <summary>
@@ -192,12 +210,19 @@ namespace Xz.Node.App.Auth.Module
         /// <summary>
         /// 获取角色可访问的模块字段
         /// </summary>
-        /// <param name="roleId"></param>
-        /// <param name="moduleCode"></param>
+        /// <param name="req"></param>
         /// <returns></returns>
-        public IEnumerable<string> LoadPropertiesForRole(string roleId, string moduleCode)
+        public IList<string> LoadPropertiesForRole(LoadPropertiesForRoleReq req)
         {
-            return _app.Get(Define.ROLEDATAPROPERTY, roleId, moduleCode);
+            if (string.IsNullOrEmpty(req.RoleId))
+            {
+                throw new InfoException("角色Id不能为空");
+            }
+            if (req.ModuleIds == null || req.ModuleIds.Count() == 0)
+            {
+                return new List<string>();
+            }
+            return _app.Get(Define.ROLEDATAPROPERTY, req.RoleId, req.ModuleIds);
         }
 
         /// <summary>

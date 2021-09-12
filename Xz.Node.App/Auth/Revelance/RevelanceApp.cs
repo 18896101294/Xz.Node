@@ -148,6 +148,19 @@ namespace Xz.Node.App.Auth.Revelance
         }
 
         /// <summary>
+        /// 根据key ,firstId,secondIds获取thirdId
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="firstId"></param>
+        /// <param name="secondIds"></param>
+        /// <returns></returns>
+        public List<string> Get(string key, string firstId, List<string> secondIds)
+        {
+            return Repository.Find(u => u.Key == key && u.FirstId == firstId && secondIds.Contains(u.SecondId))
+                .Select(u => u.ThirdId).ToList();
+        }
+
+        /// <summary>
         /// 分配数据字段权限
         /// </summary>
         /// <param name="requests"></param>
@@ -168,15 +181,15 @@ namespace Xz.Node.App.Auth.Revelance
                     continue;
                 }
                 addDatas.AddRange((from thirdId in request.Properties
-                                    select new Auth_RelevanceInfo
-                                    {
-                                        Key = Define.ROLEDATAPROPERTY,
-                                        FirstId = request.RoleId,
-                                        SecondId = request.ModuleId,
-                                        ThirdId = thirdId,
-                                        OperatorId = operatorId,
-                                        OperateTime = DateTime.Now
-                                    }).ToArray());
+                                   select new Auth_RelevanceInfo
+                                   {
+                                       Key = Define.ROLEDATAPROPERTY,
+                                       FirstId = request.RoleId,
+                                       SecondId = request.ModuleId,
+                                       ThirdId = thirdId,
+                                       OperatorId = operatorId,
+                                       OperateTime = DateTime.Now
+                                   }).ToArray());
             }
 
             UnitWork.ExecuteWithTransaction(() =>
@@ -304,14 +317,14 @@ namespace Xz.Node.App.Auth.Revelance
                 //批量分配角色菜单
                 addDatas.AddRange((from thirdId in request.MenuIds
                                    select new Auth_RelevanceInfo
-                                    {
-                                        Key = Define.ROLEELEMENT,
-                                        FirstId = request.RoleId,
-                                        SecondId = request.ModuleId,
-                                        ThirdId = thirdId,
-                                        OperatorId = operatorId,
-                                        OperateTime = DateTime.Now
-                                    }).ToArray());
+                                   {
+                                       Key = Define.ROLEELEMENT,
+                                       FirstId = request.RoleId,
+                                       SecondId = request.ModuleId,
+                                       ThirdId = thirdId,
+                                       OperatorId = operatorId,
+                                       OperateTime = DateTime.Now
+                                   }).ToArray());
             }
 
             UnitWork.ExecuteWithTransaction(() =>
