@@ -35,7 +35,7 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         }
 
         /// <summary>
-        /// 获取勾选模块的信息
+        /// 获取勾选模块的菜单
         /// </summary>
         /// <param name="req"></param>
         /// <returns></returns>
@@ -55,7 +55,7 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         /// </summary>
         /// <param name="req">前端页面列表的names</param>
         [HttpPost]
-        public IActionResult GetCheckedProperties([FromBody] List<CheckedPropertiesReq> req)
+        public IActionResult GetCheckedProperties([FromBody] BaseIdsReq req)
         {
             var result = new ResultInfo<IList<CheckedPropertiesView>>()
             {
@@ -95,17 +95,17 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         }
 
         /// <summary>
-        /// 根据某角色ID获取可访问某模块的菜单项
+        /// 根据某角色ID获取可访问的菜单项
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult LoadMenusForRole(string moduleId, string firstId)
+        public IActionResult LoadMenusForRole(string firstId)
         {
-            var result = new ResultInfo<IList<Auth_ModuleElementInfo>>()
+            var result = new ResultInfo<IList<string>>()
             {
                 Message = "获取成功",
             };
-            result.Data = _app.LoadMenusForRole(moduleId, firstId).ToList();
+            result.Data = _app.LoadMenusForRole(firstId).ToList();
             return Ok(result);
         }
 

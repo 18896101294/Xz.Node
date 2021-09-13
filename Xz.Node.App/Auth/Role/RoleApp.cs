@@ -215,11 +215,24 @@ namespace Xz.Node.App.Auth.Role
         /// <summary>
         /// 为角色分配菜单
         /// </summary>
-        /// <param name="reqs"></param>
-        public void RoleAllocationMenus(List<AssignRoleMenusReq> reqs)
+        /// <param name="req"></param>
+        public void RoleAllocationMenus(AssignRoleMenusReq req)
         {
+            var requests = new List<AssignRoleMenusReq>();
+            //根据菜单id获取模块id
+            var memuDatas = UnitWork.Find<Auth_ModuleElementInfo>(o => req.MenuIds.Contains(o.Id)).ToList();
+            var groups = memuDatas.GroupBy(o => o.ModuleId);
+            foreach (var group in groups)
+            {
+                requests.Add(new AssignRoleMenusReq()
+                {
+                    RoleId = req.RoleId,
+                    ModuleId = group.Key,
+                    MenuIds = group.Select(o => o.Id).ToArray()
+                });
+            }
             //为角色分配菜单
-            _revelanceApp.AssignRoleMenus(reqs);
+            _revelanceApp.AssignRoleMenus(requests);
         }
 
         /// <summary>

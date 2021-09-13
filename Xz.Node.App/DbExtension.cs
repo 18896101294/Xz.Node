@@ -394,7 +394,8 @@ namespace Xz.Node.App
             }
             if (type == null)
             {
-                throw new InfoException("获取数据字典失败");
+                return new List<KeyDescription>();
+                //throw new InfoException("获取数据字典失败");
             }
             var properties = type.GetProperties().ToList();
 
@@ -414,13 +415,16 @@ namespace Xz.Node.App
                 {
                     typeName = Nullable.GetUnderlyingType(property.PropertyType).Name;
                 }
-                result.Add(new KeyDescription
+                if (browsable) //暂时只开启需要显示的字段，这块目前还没想好具体怎么样去实现
                 {
-                    Key = property.Name,
-                    Description = description,
-                    Browsable = browsable,
-                    Type = typeName
-                });
+                    result.Add(new KeyDescription
+                    {
+                        Key = property.Name,
+                        Description = description,
+                        Browsable = browsable,
+                        Type = typeName
+                    });
+                }
             }
 
             return result;

@@ -127,13 +127,13 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult RoleAllocationMenus([FromBody] List<AssignRoleMenusReq> reqs)
+        public IActionResult RoleAllocationMenus([FromBody] AssignRoleMenusReq req)
         {
             var result = new ResultInfo<object>()
             {
                 Message = "分配成功",
             };
-            _app.RoleAllocationMenus(reqs);
+            _app.RoleAllocationMenus(req);
             return Ok(result);
         }
 

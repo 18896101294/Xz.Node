@@ -180,16 +180,19 @@ namespace Xz.Node.App.Auth.Revelance
                 {
                     continue;
                 }
-                addDatas.AddRange((from thirdId in request.Properties
-                                   select new Auth_RelevanceInfo
-                                   {
-                                       Key = Define.ROLEDATAPROPERTY,
-                                       FirstId = request.RoleId,
-                                       SecondId = request.ModuleId,
-                                       ThirdId = thirdId,
-                                       OperatorId = operatorId,
-                                       OperateTime = DateTime.Now
-                                   }).ToArray());
+                if (request.Properties != null && request.Properties.Length > 0)
+                {
+                    addDatas.AddRange((from thirdId in request.Properties
+                                       select new Auth_RelevanceInfo
+                                       {
+                                           Key = Define.ROLEDATAPROPERTY,
+                                           FirstId = request.RoleId,
+                                           SecondId = request.ModuleId,
+                                           ThirdId = thirdId,
+                                           OperatorId = operatorId,
+                                           OperateTime = DateTime.Now
+                                       }).ToArray());
+                }
             }
 
             UnitWork.ExecuteWithTransaction(() =>
@@ -304,7 +307,6 @@ namespace Xz.Node.App.Auth.Revelance
             {
                 return;
             }
-
             List<Auth_RelevanceInfo> addDatas = new List<Auth_RelevanceInfo>();
             var operatorId = _auth.GetCurrentUser().User.Id;
 
@@ -314,17 +316,20 @@ namespace Xz.Node.App.Auth.Revelance
                 {
                     continue;
                 }
-                //批量分配角色菜单
-                addDatas.AddRange((from thirdId in request.MenuIds
-                                   select new Auth_RelevanceInfo
-                                   {
-                                       Key = Define.ROLEELEMENT,
-                                       FirstId = request.RoleId,
-                                       SecondId = request.ModuleId,
-                                       ThirdId = thirdId,
-                                       OperatorId = operatorId,
-                                       OperateTime = DateTime.Now
-                                   }).ToArray());
+                if (request.MenuIds != null && request.MenuIds.Length > 0)
+                {
+                    //批量分配角色菜单
+                    addDatas.AddRange((from thirdId in request.MenuIds
+                                       select new Auth_RelevanceInfo
+                                       {
+                                           Key = Define.ROLEELEMENT,
+                                           FirstId = request.RoleId,
+                                           SecondId = request.ModuleId,
+                                           ThirdId = thirdId,
+                                           OperatorId = operatorId,
+                                           OperateTime = DateTime.Now
+                                       }).ToArray());
+                }
             }
 
             UnitWork.ExecuteWithTransaction(() =>

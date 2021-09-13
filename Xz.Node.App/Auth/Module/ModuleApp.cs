@@ -91,21 +91,19 @@ namespace Xz.Node.App.Auth.Module
         /// 获取勾选的模块下的数据字典
         /// </summary>
         /// <param name="req"></param>
-        public List<CheckedPropertiesView> GetCheckedProperties(List<CheckedPropertiesReq> req)
+        public List<CheckedPropertiesView> GetCheckedProperties(BaseIdsReq req)
         {
             var resultData = new List<CheckedPropertiesView>();
 
-            var moduleViewNames = req.Select(o => o.ModuleViewName).ToList();
-            var dataPropertyConfigs = _configurationApp.GetSysConfigurations("SystemDataProperty").Where(o => moduleViewNames.Contains(o.Text));
-
-            var moduleIds = req.Select(o => o.ModuleId).ToList();
             var modules = UnitWork.Find<Auth_ModuleInfo>(null).ToList();
-            var moduleDatas = modules.Where(o => moduleIds.Contains(o.Id)).OrderBy(o => o.SortNo);
+            var moduleDatas = modules.Where(o => req.Ids.Contains(o.Id) && o.IsSys == false).OrderBy(o => o.SortNo);
 
+            var moduleViewNames = moduleDatas.Select(o => o.Code).ToList();
+            var dataPropertyConfigs = _configurationApp.GetSysConfigurations("SystemDataProperty").Where(o => moduleViewNames.Contains(o.Text));
+           
             foreach (var moduleData in moduleDatas)
             {
-                var moduleReq = req.FirstOrDefault(o => o.ModuleId == moduleData.Id);
-                var dataPropertyConfig = dataPropertyConfigs.FirstOrDefault(o => o.Text == moduleReq.ModuleViewName);
+                var dataPropertyConfig = dataPropertyConfigs.FirstOrDefault(o => o.Text == moduleData.Code);
                 if (!string.IsNullOrEmpty(moduleData.ParentId) && dataPropertyConfig != null)
                 {
                     resultData.Add(new CheckedPropertiesView()
@@ -228,15 +226,10 @@ namespace Xz.Node.App.Auth.Module
         /// <summary>
         /// 根据某角色ID获取可访问某模块的菜单项
         /// </summary>
-        public IEnumerable<Auth_ModuleElementInfo> LoadMenusForRole(string moduleId, string roleId)
+        public IEnumerable<string> LoadMenusForRole(string roleId)
         {
             var elementIds = _app.Get(Define.ROLEELEMENT, true, roleId);
-            var query = UnitWork.Find<Auth_ModuleElementInfo>(u => elementIds.Contains(u.Id));
-            if (!string.IsNullOrEmpty(moduleId))
-            {
-                query = query.Where(u => u.ModuleId == moduleId);
-            }
-            return query;
+            return elementIds;
         }
 
         #endregion 用户/角色分配模块

@@ -126,15 +126,29 @@ namespace Xz.Node.AdminApi.Controllers.Test
         [HttpPost]
         public IActionResult GetPageData([FromBody] BaseDto.PageDataModel dto)
         {
-            //throw new InfoException("我是一个自定义异常");
-
-            var result = new ResultInfo<PageInfo<Test_OpInfo>>()
+            var result = new ResultInfo<PageInfo<PageDataView>>()
             {
                 Message = "获取数据成功",
             };
 
-            result.Data = _app.GetPageDatas(dto.Conditions.ToConditions(), dto.Sorts.ToSorts(), dto.PageIndex ?? 1, dto.PageSize ?? 20);
+            var pageData = _app.GetPageDatas(dto.Conditions.ToConditions(), dto.Sorts.ToSorts(), dto.PageIndex ?? 1, dto.PageSize ?? 20);
 
+            result.Data.Datas = pageData.Datas.Select(o => new PageDataView()
+            {
+                Id = o.Id,
+                IsDelete = o.IsDelete,
+                Creater = o.Creater,
+                CreateUserId = o.CreateUserId,
+                CreateTime = o.CreateTime,
+                Updater = o.Updater,
+                UpdateUserId = o.UpdateUserId,
+                UpdateTime = o.UpdateTime,
+                Name = o.Name,
+                AppSecret = o.AppSecret,
+                Description = o.Description,
+                Icon = o.Icon,
+                Disable = o.Disable
+            }).ToList();
             return Ok(result);
         }
         #endregion
