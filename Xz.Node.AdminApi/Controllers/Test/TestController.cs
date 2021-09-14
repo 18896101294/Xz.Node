@@ -129,11 +129,16 @@ namespace Xz.Node.AdminApi.Controllers.Test
             var result = new ResultInfo<PageInfo<PageDataView>>()
             {
                 Message = "获取数据成功",
+                Data = new PageInfo<PageDataView>()
+                {
+                    PageIndex = dto.PageIndex ?? 1,
+                    PageSize = dto.PageSize ?? 20
+                }
             };
 
             var pageData = _app.GetPageDatas(dto.Conditions.ToConditions(), dto.Sorts.ToSorts(), dto.PageIndex ?? 1, dto.PageSize ?? 20);
 
-            result.Data.Datas = pageData.Datas.Select(o => new PageDataView()
+            var datas = pageData.Datas.Select(o => new PageDataView()
             {
                 Id = o.Id,
                 IsDelete = o.IsDelete,
@@ -149,6 +154,9 @@ namespace Xz.Node.AdminApi.Controllers.Test
                 Icon = o.Icon,
                 Disable = o.Disable
             }).ToList();
+
+            result.Data.Datas = datas;
+            result.Data.Total = datas.Count();
             return Ok(result);
         }
         #endregion

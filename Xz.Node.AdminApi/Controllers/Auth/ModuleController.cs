@@ -98,14 +98,14 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         /// 根据某角色ID获取可访问的菜单项
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
-        public IActionResult LoadMenusForRole(string firstId)
+        [HttpPost]
+        public IActionResult LoadMenusForRole([FromBody] LoadMenusForRoleReq req)
         {
             var result = new ResultInfo<IList<string>>()
             {
                 Message = "获取成功",
             };
-            result.Data = _app.LoadMenusForRole(firstId).ToList();
+            result.Data = _app.LoadMenusForRole(req).ToList();
             return Ok(result);
         }
 

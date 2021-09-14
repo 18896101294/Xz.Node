@@ -226,9 +226,9 @@ namespace Xz.Node.App.Auth.Module
         /// <summary>
         /// 根据某角色ID获取可访问某模块的菜单项
         /// </summary>
-        public IEnumerable<string> LoadMenusForRole(string roleId)
+        public IEnumerable<string> LoadMenusForRole(LoadMenusForRoleReq req)
         {
-            var elementIds = _app.Get(Define.ROLEELEMENT, true, roleId);
+            var elementIds = _app.Get(Define.ROLEELEMENT, req.RoleId, req.ModuleIds);
             return elementIds;
         }
 
@@ -262,7 +262,7 @@ namespace Xz.Node.App.Auth.Module
                 //删除菜单
                 UnitWork.Delete<Auth_ModuleElementInfo>(o => o.Id == req.Id);
                 //删除菜单角色关联
-                UnitWork.Delete<Auth_RelevanceInfo>(o => req.Id == o.SecondId && o.Key == Define.ROLEELEMENT);
+                UnitWork.Delete<Auth_RelevanceInfo>(o => req.Id == o.ThirdId && o.Key == Define.ROLEELEMENT);
                 UnitWork.Save();
             });
         }
@@ -279,7 +279,6 @@ namespace Xz.Node.App.Auth.Module
             {
                 throw new InfoException("登录已过期", Define.INVALID_TOKEN);
             }
-
             UnitWork.ExecuteWithTransaction(() =>
             {
                 UnitWork.Add(model);
@@ -287,12 +286,7 @@ namespace Xz.Node.App.Auth.Module
                 //当前登录用户的所有角色自动分配菜单
                 loginContext.Roles.ForEach(u =>
                 {
-                    _app.Assign(new AssignReq
-                    {
-                        type = Define.ROLEELEMENT,
-                        firstId = u.Id,
-                        secIds = new[] { model.Id }
-                    });
+                    _app.Assign(Define.ROLEELEMENT, u.Id, model.ModuleId, new string[] { model.Id });
                 });
                 UnitWork.Save();
             });

@@ -78,7 +78,7 @@ namespace Xz.Node.App.AuthStrategies
         {
             get
             {
-                var elementIds = UnitWork.Find<Auth_RelevanceInfo>(u => (u.Key == Define.ROLEELEMENT && _userRoleIds.Contains(u.FirstId))).Select(u => u.SecondId).ToList();
+                var elementIds = UnitWork.Find<Auth_RelevanceInfo>(u => (u.Key == Define.ROLEELEMENT && _userRoleIds.Contains(u.FirstId))).Select(u => u.ThirdId).ToList();
                 var usermoduleelements = UnitWork.Find<Auth_ModuleElementInfo>(u => elementIds.Contains(u.Id));
                 return usermoduleelements.ToList();
             }

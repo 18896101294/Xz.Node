@@ -14,7 +14,7 @@ namespace Xz.Node.AdminApi.Controllers.System.Configuration
     /// </summary>
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [ApiExplorerSettings(GroupName = "系统配管理")]
+    [ApiExplorerSettings(GroupName = "配置管理")]
     public class SystemConfigurationController : ControllerBase
     {
         private readonly SystemConfigurationApp _app;

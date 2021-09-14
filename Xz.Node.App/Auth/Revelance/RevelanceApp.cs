@@ -63,6 +63,35 @@ namespace Xz.Node.App.Auth.Revelance
         }
 
         /// <summary>
+        /// 添加关联，需要人工删除以前的关联
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="firstId"></param>
+        /// <param name="secondId"></param>
+        /// <param name="threeIds"></param>
+        public void Assign(string key, string firstId, string secondId, string[] threeIds)
+        {
+            var addData = new List<Auth_RelevanceInfo>();
+            foreach (var threeId in threeIds)
+            {
+                addData.Add(new Auth_RelevanceInfo()
+                {
+                    Key = key,
+                    FirstId = firstId,
+                    SecondId = secondId,
+                    ThirdId = threeId,
+                    OperatorId = _auth.GetCurrentUser().User.Id,
+                    OperateTime = DateTime.Now
+                });
+            }
+            if (addData.Count > 0)
+            {
+                UnitWork.BatchAdd(addData.ToArray());
+                UnitWork.Save();
+            }
+        }
+
+        /// <summary>
         /// 取消关联
         /// </summary>
         public void UnAssign(AssignReq req)
