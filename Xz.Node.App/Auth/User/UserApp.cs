@@ -178,7 +178,7 @@ namespace Xz.Node.App.Auth.User
                     //部门关联
                     _revelanceApp.Assign(Define.USERORG, req.OrgIds.ToLookup(u => requser.Id));
                     //角色关联
-                    if (req.OrgIds.Count() > 0)
+                    if (req.RoleIds.Count() > 0)
                     {
                         _revelanceApp.Assign(Define.USERROLE, req.OrgIds.ToLookup(u => requser.Id));
                     }
@@ -200,7 +200,7 @@ namespace Xz.Node.App.Auth.User
                     _revelanceApp.DeleteBy(Define.USERORG, requser.Id);
                     _revelanceApp.Assign(Define.USERORG, req.OrgIds.ToLookup(u => requser.Id));
                     //角色关联
-                    if (req.OrgIds.Count() > 0)
+                    if (req.RoleIds.Count() > 0)
                     {
                         _revelanceApp.DeleteBy(Define.USERROLE, requser.Id);
                         _revelanceApp.Assign(Define.USERROLE, req.RoleIds.ToLookup(u => requser.Id));
