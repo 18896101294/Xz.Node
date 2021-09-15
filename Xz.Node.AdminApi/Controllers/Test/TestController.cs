@@ -156,7 +156,7 @@ namespace Xz.Node.AdminApi.Controllers.Test
             }).ToList();
 
             result.Data.Datas = datas;
-            result.Data.Total = datas.Count();
+            result.Data.Total = pageData.Total;
             return Ok(result);
         }
         #endregion
