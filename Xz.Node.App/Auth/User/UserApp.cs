@@ -10,6 +10,7 @@ using Xz.Node.App.Auth.User.Response;
 using Xz.Node.App.Base;
 using Xz.Node.App.Interface;
 using Xz.Node.Framework.Common;
+using Xz.Node.Framework.Encryption;
 using Xz.Node.Framework.Enums;
 using Xz.Node.Framework.Extensions;
 using Xz.Node.Framework.Model;
@@ -250,7 +251,7 @@ namespace Xz.Node.App.Auth.User
         {
             Repository.Update(o => o.Id == req.Id, user => new Auth_UserInfo
             {
-                Password = Define.INITIAL_PWD
+                Password = EncryptionHelper.Encrypt(Define.INITIAL_PWD)
             });
         }
 

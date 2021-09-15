@@ -48,6 +48,9 @@ namespace Xz.Node.AdminApi.Controllers
             };
             try
             {
+                //解密前端的加密密码
+                loginReq.PassWord = EncryptionHelper.DecryptByAES(loginReq.PassWord);
+                //再次加密为后台通用密码
                 var encryptPassWord = EncryptionHelper.Encrypt(loginReq.PassWord);
 
                 var loginResult = _authUtil.Login(_appKey, loginReq.UserName, encryptPassWord);
