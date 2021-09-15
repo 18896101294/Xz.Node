@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Xz.Node.App.Auth.Module.Response;
 using Xz.Node.App.Auth.Revelance.Request;
 using Xz.Node.App.Base;
 using Xz.Node.App.Interface;
@@ -190,51 +190,58 @@ namespace Xz.Node.App.Auth.Revelance
         }
 
         /// <summary>
+        /// 获取角色已分配的字段
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="firstId"></param>
+        /// <param name="secondIds"></param>
+        /// <returns></returns>
+        public List<LoadPropertiesForRoleView> GetRoleProp(string key, string firstId, List<string> secondIds)
+        {
+            return Repository.Find(u => u.Key == key && u.FirstId == firstId && secondIds.Contains(u.SecondId))
+                .Select(u => new LoadPropertiesForRoleView()
+                {
+                    ModuleId = u.SecondId,
+                    KeyId = $"{u.SecondId}_{u.ThirdId}" //防止key重复
+                }).ToList();
+        }
+
+        /// <summary>
         /// 分配数据字段权限
         /// </summary>
-        /// <param name="requests"></param>
-        public void AssignData(List<AssignDataReq> requests)
+        /// <param name="request"></param>
+        public void AssignData(AssignDataReq request)
         {
-            if (requests == null || requests.Count() == 0)
+            if (request == null)
             {
                 return;
             }
 
             var operatorId = _auth.GetCurrentUser().User.Id;
-            List<Auth_RelevanceInfo> addDatas = new List<Auth_RelevanceInfo>();
 
-            foreach (var request in requests)
+            if (!request.Properties.Any())
             {
-                if (!request.Properties.Any())
-                {
-                    continue;
-                }
-                if (request.Properties != null && request.Properties.Length > 0)
-                {
-                    addDatas.AddRange((from thirdId in request.Properties
-                                       select new Auth_RelevanceInfo
-                                       {
-                                           Key = Define.ROLEDATAPROPERTY,
-                                           FirstId = request.RoleId,
-                                           SecondId = request.ModuleId,
-                                           ThirdId = thirdId,
-                                           OperatorId = operatorId,
-                                           OperateTime = DateTime.Now
-                                       }).ToArray());
-                }
+                return;
             }
+            var addDatas = (from prop in request.Properties
+                                select new Auth_RelevanceInfo
+                                {
+                                    Key = Define.ROLEDATAPROPERTY,
+                                    FirstId = request.RoleId,
+                                    SecondId = prop.Split("_")[0],
+                                    ThirdId = prop.Split("_")[1],
+                                    OperatorId = operatorId,
+                                    OperateTime = DateTime.Now
+                                }).ToArray();
 
             UnitWork.ExecuteWithTransaction(() =>
             {
-                var roleIds = requests.Select(o => o.RoleId).Distinct().ToArray();
                 //删除以前的所有字段
-                UnitWork.Delete<Auth_RelevanceInfo>(u => roleIds.Contains(u.FirstId) && u.Key == Define.ROLEDATAPROPERTY);
+                UnitWork.Delete<Auth_RelevanceInfo>(u => request.RoleId == u.FirstId && u.Key == Define.ROLEDATAPROPERTY);
 
                 //批量分配角色字段
-                if (addDatas.Count > 0)
-                {
-                    UnitWork.BatchAdd(addDatas.ToArray());
-                }
+                UnitWork.BatchAdd(addDatas.ToArray());
+
                 UnitWork.Save();
             });
         }

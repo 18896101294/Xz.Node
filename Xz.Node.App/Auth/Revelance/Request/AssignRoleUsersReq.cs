@@ -50,6 +50,6 @@ namespace Xz.Node.App.Auth.Revelance.Request
         /// <summary>
         /// 菜单id列表
         /// </summary>
-        public string[] MenuIds { get; set; }
+        public string[] MenuIds { get; set; } = new string[0];
     }
 }

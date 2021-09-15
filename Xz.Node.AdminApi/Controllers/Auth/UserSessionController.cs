@@ -246,13 +246,14 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         /// 获取当前登录用户可访问的字段
         /// </summary>
         [HttpGet]
-        public IActionResult GetFunProperties(string className, string moduleId)
+        public IActionResult GetFunProperties(string moduleCode)
         {
-            var result = new ResultInfo<List<KeyDescription>>()
+            var result = new ResultInfo<List<string>>()
             {
                 Message = "获取数据成功",
             };
-            result.Data = _authStrategyContext.GetClassProperties(className, moduleId);
+
+            result.Data = _authStrategyContext.GetClassProperties(moduleCode);
             return Ok(result);
         }
     }

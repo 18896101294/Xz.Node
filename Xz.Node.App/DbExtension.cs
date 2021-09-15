@@ -380,8 +380,9 @@ namespace Xz.Node.App
         /// 根据类名获取数据字典
         /// </summary>
         /// <param name="className"></param>
+        /// <param name="moduleId"></param>
         /// <returns></returns>
-        public List<KeyDescription> GetKeyDescription(string className)
+        public List<KeyDescription> GetKeyDescription(string className, string moduleId)
         {
             var asm = Assembly.GetExecutingAssembly();
             Type type = null;
@@ -419,7 +420,8 @@ namespace Xz.Node.App
                 {
                     result.Add(new KeyDescription
                     {
-                        Key = property.Name,
+                        ModuleId = moduleId,
+                        Key = $"{moduleId}_{property.Name}",//这里防止key重复加了一个模块Id的标识来拼接
                         Description = description,
                         Browsable = browsable,
                         Type = typeName

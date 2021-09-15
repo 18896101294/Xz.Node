@@ -8,6 +8,7 @@ using Xz.Node.Framework.Common;
 using Xz.Node.Framework.Extensions;
 using Xz.Node.Repository;
 using Xz.Node.Repository.Domain.Auth;
+using Xz.Node.Repository.Domain.System;
 using Xz.Node.Repository.Interface;
 
 namespace Xz.Node.App.AuthStrategies
@@ -22,7 +23,7 @@ namespace Xz.Node.App.AuthStrategies
         /// </summary>
         protected Auth_UserInfo _user;
         private List<string> _userRoleIds;    //用户角色GUID
-        private DbExtension _dbExtension;
+        private readonly DbExtension _dbExtension;
         /// <summary>
         /// 普通用户授权策略
         /// </summary>
@@ -155,18 +156,35 @@ namespace Xz.Node.App.AuthStrategies
         /// <summary>
         /// 获取用户可访问的字段列表
         /// </summary>
-        /// <param name="className">类名</param>
-        /// <param name="moduleId">模块id</param>
+        /// <param name="moduleCode">模块code</param>
         /// <returns></returns>
-        public List<KeyDescription> GetClassProperties(string className, string moduleId)
+        public List<string> GetClassProperties(string moduleCode)
         {
-            var result = _dbExtension.GetKeyDescription(className);
+            var resultData = new List<string>();
+            if (string.IsNullOrEmpty(moduleCode))
+            {
+                return resultData;
+            }
+            var module = UnitWork.FirstOrDefault<Auth_ModuleInfo>(o => o.Code == moduleCode);
+            if (module != null)
+            {
+                var dataPropertyConfig = UnitWork.FirstOrDefault<System_ConfigurationInfo>(o => o.Category == "SystemDataProperty" && o.Text == module.Code);
+                if (dataPropertyConfig != null)
+                {
+                    var result = _dbExtension.GetKeyDescription(dataPropertyConfig.Value, module.Id);
+                    var props = UnitWork.Find<Auth_RelevanceInfo>(u =>
+                            u.Key == Define.ROLEDATAPROPERTY && _userRoleIds.Contains(u.FirstId) && u.SecondId == module.Id)
+                        .Select(u => u.ThirdId);
 
-            var props = UnitWork.Find<Auth_RelevanceInfo>(u =>
-                    u.Key == Define.ROLEDATAPROPERTY && _userRoleIds.Contains(u.FirstId) && u.SecondId == moduleId)
-               .Select(u => u.ThirdId);
-
-            var resultData = result.Where(u => props.Contains(u.Key)).ToList();
+                    foreach (var item in result)
+                    {
+                        if (props.Contains(item.Key))
+                        {
+                            resultData.Add(item.Key);
+                        }
+                    }
+                }
+            }
             return resultData;
         }
     }

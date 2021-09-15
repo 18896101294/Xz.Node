@@ -86,7 +86,7 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         [HttpPost]
         public IActionResult LoadPropertiesForRole([FromBody] LoadPropertiesForRoleReq req)
         {
-            var result = new ResultInfo<IList<string>>()
+            var result = new ResultInfo<IList<LoadPropertiesForRoleView>>()
             {
                 Message = "获取成功",
             };

@@ -142,13 +142,13 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult RoleAllocationDatas([FromBody] List<AssignDataReq> reqs)
+        public IActionResult RoleAllocationDatas([FromBody] AssignDataReq req)
         {
             var result = new ResultInfo<object>()
             {
                 Message = "分配成功",
             };
-            _app.RoleAllocationDatas(reqs);
+            _app.RoleAllocationDatas(req);
             return Ok(result);
         }
 

@@ -111,7 +111,7 @@ namespace Xz.Node.App.Auth.Module
                         Id = moduleData.Id,
                         Name = moduleData.Name,
                         FullName = this.SetFullName(moduleData.Name, moduleData, modules),
-                        Keys = _dbExtension.GetKeyDescription(dataPropertyConfig.Value)
+                        Keys = _dbExtension.GetKeyDescription(dataPropertyConfig.Value, moduleData.Id)
                     });
                 }
             }
@@ -210,7 +210,7 @@ namespace Xz.Node.App.Auth.Module
         /// </summary>
         /// <param name="req"></param>
         /// <returns></returns>
-        public IList<string> LoadPropertiesForRole(LoadPropertiesForRoleReq req)
+        public IList<LoadPropertiesForRoleView> LoadPropertiesForRole(LoadPropertiesForRoleReq req)
         {
             if (string.IsNullOrEmpty(req.RoleId))
             {
@@ -218,9 +218,9 @@ namespace Xz.Node.App.Auth.Module
             }
             if (req.ModuleIds == null || req.ModuleIds.Count() == 0)
             {
-                return new List<string>();
+                return new List<LoadPropertiesForRoleView>();
             }
-            return _app.Get(Define.ROLEDATAPROPERTY, req.RoleId, req.ModuleIds);
+            return _app.GetRoleProp(Define.ROLEDATAPROPERTY, req.RoleId, req.ModuleIds);
         }
 
         /// <summary>

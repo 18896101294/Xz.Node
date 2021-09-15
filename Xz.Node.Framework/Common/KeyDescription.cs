@@ -3,6 +3,10 @@
     public class KeyDescription
     {
         /// <summary>
+        /// 所属模块id
+        /// </summary>
+        public string ModuleId { get; set; }
+        /// <summary>
         /// 键值
         /// </summary>
         public string Key { get; set; }

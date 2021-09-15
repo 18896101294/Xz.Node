@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using Xz.Node.App.Auth.Module.Response;
 using Xz.Node.App.Base;
 using Xz.Node.App.Interface;
@@ -10,6 +8,7 @@ using Xz.Node.Framework.Common;
 using Xz.Node.Framework.Extensions;
 using Xz.Node.Repository;
 using Xz.Node.Repository.Domain.Auth;
+using Xz.Node.Repository.Domain.System;
 using Xz.Node.Repository.Interface;
 
 namespace Xz.Node.App.AuthStrategies
@@ -25,7 +24,8 @@ namespace Xz.Node.App.AuthStrategies
         /// 用户信息
         /// </summary>
         protected Auth_UserInfo _user;
-        private DbExtension _dbExtension;
+        private readonly DbExtension _dbExtension;
+
         /// <summary>
         /// 超级管理员权限
         /// </summary>
@@ -134,13 +134,29 @@ namespace Xz.Node.App.AuthStrategies
         /// <summary>
         /// 可访问模块字段集合
         /// </summary>
-        /// <param name="className"></param>
-        /// <param name="moduleId"></param>
+        /// <param name="moduleCode"></param>
         /// <returns></returns>
-        public List<KeyDescription> GetClassProperties(string className, string moduleId)
+        public List<string> GetClassProperties(string moduleCode)
         {
-            var result = _dbExtension.GetKeyDescription(className);
-            return result;
+            var resultData = new List<string>();
+            if (string.IsNullOrEmpty(moduleCode))
+            {
+                return resultData;
+            }
+            var module = UnitWork.FirstOrDefault<Auth_ModuleInfo>(o => o.Code == moduleCode);
+            if (module != null)
+            {
+                var dataPropertyConfig = UnitWork.FirstOrDefault<System_ConfigurationInfo>(o => o.Category == "SystemDataProperty" && o.Text == module.Code);
+                if (dataPropertyConfig != null)
+                {
+                    var result = _dbExtension.GetKeyDescription(dataPropertyConfig.Value, module.Id);
+                    if (result != null && result.Count() > 0)
+                    {
+                        resultData = result.Select(o => o.Key).ToList();
+                    }
+                }
+            }
+            return resultData;
         }
     }
 }
