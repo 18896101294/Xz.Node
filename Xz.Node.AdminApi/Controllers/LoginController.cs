@@ -5,6 +5,7 @@ using System;
 using Xz.Node.App.Interface;
 using Xz.Node.App.SSO.Request;
 using Xz.Node.App.SSO.Response;
+using Xz.Node.Framework.Common;
 using Xz.Node.Framework.Encryption;
 using Xz.Node.Framework.Extensions;
 using Xz.Node.Framework.Model;
@@ -76,6 +77,28 @@ namespace Xz.Node.AdminApi.Controllers
                 result.Code = 500;
                 result.Message = e.Message;
             }
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// 获取验证码
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult GetCaptcha()
+        {
+            var result = new ResultInfo<CaptchaViewModel>()
+            {
+                Message = "获取成功",
+            };
+            var data = SkiaSharpHlper.GetCaptcha();
+            result.Data = new CaptchaViewModel()
+            { 
+                ImgData = data.Item1,
+                Code = data.Item2
+            };
+            //return File(bytes, "image/png");
             return Ok(result);
         }
 
