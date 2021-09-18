@@ -33,6 +33,6 @@ namespace Xz.Node.App.Interface
         /// 根据模块id获取可访问的模块字段
         /// </summary>
         /// <returns></returns>
-        List<string> GetClassProperties(string moduleCode);
+        List<string> GetClassProperties();
     }
 }

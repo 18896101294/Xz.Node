@@ -85,11 +85,10 @@ namespace Xz.Node.App.AuthStrategies
         /// <summary>
         /// 可访问模块字段集合
         /// </summary>
-        /// <param name="moduleCode"></param>
         /// <returns></returns>
-        public List<string> GetClassProperties(string moduleCode)
+        public List<string> GetClassProperties()
         {
-            return _strategy.GetClassProperties(moduleCode);
+            return _strategy.GetClassProperties();
         }
     }
 }

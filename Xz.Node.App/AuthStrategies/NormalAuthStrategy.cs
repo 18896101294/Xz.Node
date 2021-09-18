@@ -156,31 +156,30 @@ namespace Xz.Node.App.AuthStrategies
         /// <summary>
         /// 获取用户可访问的字段列表
         /// </summary>
-        /// <param name="moduleCode">模块code</param>
         /// <returns></returns>
-        public List<string> GetClassProperties(string moduleCode)
+        public List<string> GetClassProperties()
         {
             var resultData = new List<string>();
-            if (string.IsNullOrEmpty(moduleCode))
-            {
-                return resultData;
-            }
-            var module = UnitWork.FirstOrDefault<Auth_ModuleInfo>(o => o.Code == moduleCode);
-            if (module != null)
-            {
-                var dataPropertyConfig = UnitWork.FirstOrDefault<System_ConfigurationInfo>(o => o.Category == "SystemDataProperty" && o.Text == module.Code);
-                if (dataPropertyConfig != null)
-                {
-                    var result = _dbExtension.GetKeyDescription(dataPropertyConfig.Value, module.Id);
-                    var props = UnitWork.Find<Auth_RelevanceInfo>(u =>
-                            u.Key == Define.ROLEDATAPROPERTY && _userRoleIds.Contains(u.FirstId) && u.SecondId == module.Id)
-                        .Select(u => u.ThirdId);
+            var modules = UnitWork.Find<Auth_ModuleInfo>(null).ToList();
+            var dataPropertyConfigs = UnitWork.Find<System_ConfigurationInfo>(o => o.Category == "SystemDataProperty").ToList();
 
-                    foreach (var item in result)
+            var allProps = UnitWork.Find<Auth_RelevanceInfo>(u =>
+                                u.Key == Define.ROLEDATAPROPERTY && _userRoleIds.Contains(u.FirstId)).ToList();
+            if (modules != null)
+            {
+                foreach (var module in modules)
+                {
+                    var dataPropertyConfig = dataPropertyConfigs.FirstOrDefault(o=> o.Text == module.Code);
+                    if (dataPropertyConfig != null)
                     {
-                        if (props.Contains(item.Key))
+                        var result = _dbExtension.GetKeyDescription(dataPropertyConfig.Value, module.Id);
+                        var props = allProps.Where(u => u.SecondId == module.Id).Select(u => $"{module.Id}_{u.ThirdId}");
+                        foreach (var item in result)
                         {
-                            resultData.Add(item.Key);
+                            if (props.Contains(item.Key))
+                            {
+                                resultData.Add($"{module.Id}_{item.Key}");
+                            }
                         }
                     }
                 }

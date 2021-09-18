@@ -134,25 +134,24 @@ namespace Xz.Node.App.AuthStrategies
         /// <summary>
         /// 可访问模块字段集合
         /// </summary>
-        /// <param name="moduleCode"></param>
         /// <returns></returns>
-        public List<string> GetClassProperties(string moduleCode)
+        public List<string> GetClassProperties()
         {
             var resultData = new List<string>();
-            if (string.IsNullOrEmpty(moduleCode))
+            var modules = UnitWork.Find<Auth_ModuleInfo>(null).ToList();
+            var dataPropertyConfigs = UnitWork.Find<System_ConfigurationInfo>(o => o.Category == "SystemDataProperty").ToList();
+            if (modules != null)
             {
-                return resultData;
-            }
-            var module = UnitWork.FirstOrDefault<Auth_ModuleInfo>(o => o.Code == moduleCode);
-            if (module != null)
-            {
-                var dataPropertyConfig = UnitWork.FirstOrDefault<System_ConfigurationInfo>(o => o.Category == "SystemDataProperty" && o.Text == module.Code);
-                if (dataPropertyConfig != null)
+                foreach (var module in modules)
                 {
-                    var result = _dbExtension.GetKeyDescription(dataPropertyConfig.Value, module.Id);
-                    if (result != null && result.Count() > 0)
+                    var dataPropertyConfig = dataPropertyConfigs.FirstOrDefault(o => o.Text == module.Code);
+                    if (dataPropertyConfig != null)
                     {
-                        resultData = result.Select(o => o.Key).ToList();
+                        var result = _dbExtension.GetKeyDescription(dataPropertyConfig.Value, module.Id);
+                        if (result != null && result.Count() > 0)
+                        {
+                            resultData = result.Select(o => $"{module.Id}_{o.Key}").ToList();
+                        }
                     }
                 }
             }

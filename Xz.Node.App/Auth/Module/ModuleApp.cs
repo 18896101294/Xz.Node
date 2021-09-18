@@ -14,6 +14,7 @@ using System.Linq;
 using Xz.Node.App.Auth.Module.Request;
 using Xz.Node.App.Auth.Module.Response;
 using Xz.Node.App.System.Configuration;
+using Xz.Node.Repository.Domain.System;
 
 namespace Xz.Node.App.Auth.Module
 {
@@ -157,6 +158,19 @@ namespace Xz.Node.App.Auth.Module
         /// <param name="obj"></param>
         public void Update(Auth_ModuleInfo obj)
         {
+            var oldObj = UnitWork.FirstOrDefault<Auth_ModuleInfo>(o => o.Id == obj.Id);
+            if(oldObj.Code != obj.Code)
+            {
+                //同步更新模块字段配置
+                var dataPropertyConfig = UnitWork.FirstOrDefault<System_ConfigurationInfo>(o => o.Category == "SystemDataProperty");
+                if (dataPropertyConfig != null)
+                {
+                    UnitWork.Update<System_ConfigurationInfo>(u => u.Id == dataPropertyConfig.Id, u => new System_ConfigurationInfo
+                    {
+                        Text = obj.Code
+                    });
+                }
+            }
             UpdateTreeObj(obj);
         }
 
