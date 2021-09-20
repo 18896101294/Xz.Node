@@ -231,6 +231,10 @@ namespace Xz.Node.Repository
         /// 系统配置
         /// </summary>
         public virtual DbSet<System_ConfigurationInfo> System_ConfigurationInfos { get; set; }
+        /// <summary>
+        /// 系统通知
+        /// </summary>
+        public virtual DbSet<System_NoticeInfo> System_NoticeInfos { get; set; }
         #endregion
 
         #region Auth

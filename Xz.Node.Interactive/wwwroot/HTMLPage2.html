@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="signalr.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+    <button id="submit">提交</button>
+    <ul id="msgs"></ul>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            var hub = new signalR.HubConnectionBuilder().withUrl("http://localhost:52600/hubs").build();
+            hub.start().then(function () {
+                /*  hub.invoke("AddToGroup", "bdc1");*/
+            }).catch(err => console.error(err.toString()));
+
+            hub.on("GetHubTime", function(msg) {
+                console.log(msg);
+                let li = document.createElement("li");
+                li.innerHTML = msg;
+                console.log(li);
+                document.querySelector("#msgs").appendChild(li)
+            });
+        });
+    </script>
+</body>
+</html>

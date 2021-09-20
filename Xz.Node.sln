@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xz.Node.IdentityServer", "X
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xz.Node.HttpReports", "Xz.Node.HttpReports\Xz.Node.HttpReports.csproj", "{F3334B70-604E-4527-AE67-093951C2B267}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xz.Node.ApiGateway", "Xz.Node.ApiGateway\Xz.Node.ApiGateway.csproj", "{D2BC09E7-EBFB-46FE-B699-85BEC7FCA552}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xz.Node.ApiGateway", "Xz.Node.ApiGateway\Xz.Node.ApiGateway.csproj", "{D2BC09E7-EBFB-46FE-B699-85BEC7FCA552}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xz.Node.Interactive", "Xz.Node.Interactive\Xz.Node.Interactive.csproj", "{57848FE6-9980-4C8B-AD8D-86E02B5193A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{D2BC09E7-EBFB-46FE-B699-85BEC7FCA552}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2BC09E7-EBFB-46FE-B699-85BEC7FCA552}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2BC09E7-EBFB-46FE-B699-85BEC7FCA552}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57848FE6-9980-4C8B-AD8D-86E02B5193A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57848FE6-9980-4C8B-AD8D-86E02B5193A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57848FE6-9980-4C8B-AD8D-86E02B5193A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57848FE6-9980-4C8B-AD8D-86E02B5193A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

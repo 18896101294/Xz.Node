@@ -1,0 +1,13 @@
+{
+  "Redis": {
+    "ConnectionStrings": "1.116.5.70:9000,password=eq123!@#",
+    "ServiceName": "mymaster",
+    "Password": "eq123!@#",
+    //…⁄±¯≈‰÷√
+    "Sentinel": [
+      "1.116.5.70:29000",
+      "1.116.5.70:29001",
+      "1.116.5.70:29002"
+    ]
+  }
+}
