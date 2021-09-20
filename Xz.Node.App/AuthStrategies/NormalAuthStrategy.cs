@@ -178,7 +178,7 @@ namespace Xz.Node.App.AuthStrategies
                         {
                             if (props.Contains(item.Key))
                             {
-                                resultData.Add($"{module.Id}_{item.Key}");
+                                resultData.Add(item.Key);
                             }
                         }
                     }

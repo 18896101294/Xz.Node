@@ -150,7 +150,7 @@ namespace Xz.Node.App.AuthStrategies
                         var result = _dbExtension.GetKeyDescription(dataPropertyConfig.Value, module.Id);
                         if (result != null && result.Count() > 0)
                         {
-                            resultData = result.Select(o => $"{module.Id}_{o.Key}").ToList();
+                            resultData = result.Select(o => o.Key).ToList();
                         }
                     }
                 }
