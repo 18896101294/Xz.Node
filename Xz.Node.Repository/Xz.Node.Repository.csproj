@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20210920132455_AddNotice1.cs" />
+    <Compile Remove="Migrations\20210920132455_AddNotice1.Designer.cs" />
+    <Compile Remove="Migrations\20210920132631_AddNotice.cs" />
+    <Compile Remove="Migrations\20210920132631_AddNotice.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.14" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.14" />

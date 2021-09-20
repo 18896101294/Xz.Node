@@ -38,6 +38,11 @@ namespace Xz.Node.Repository.Domain.System
         [Description("分类")]
         public int Type { get; set; }
         /// <summary>
+        /// 执行类型 1.立马执行，2.稍后执行
+        /// </summary>
+        [Description("执行类型 1.立马执行，2.稍后执行")]
+        public int ExecType { get; set; }
+        /// <summary>
         /// 执行时间
         /// </summary>
         [Description("执行时间")]
@@ -53,10 +58,10 @@ namespace Xz.Node.Repository.Domain.System
         [Description("通知人 逗号拼接")]
         public string RangeIds { get; set; }
         /// <summary>
-        /// 通知样式 1.纯文本，2.HTML
+        /// 是否HTML通知样式 
         /// </summary>
-        [Description("通知人 逗号拼接")]
-        public int NoticeStyle { get; set; }
+        [Description("是否HTML通知样式 ")]
+        public bool IsHtml { get; set; }
         /// <summary>
         /// 是否已执行
         /// </summary>
