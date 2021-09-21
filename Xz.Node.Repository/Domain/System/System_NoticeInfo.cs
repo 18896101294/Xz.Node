@@ -68,6 +68,11 @@ namespace Xz.Node.Repository.Domain.System
         [Description("是否已执行")]
         public bool IsExec { get; set; }
         /// <summary>
+        /// 状态 0.启用，1.禁用
+        /// </summary>
+        [Description("状态 0.启用，1.禁用")]
+        public int Status { get; set; }
+        /// <summary>
         /// 租户Id
         /// </summary>
         [Description("租户Id")]
