@@ -47,6 +47,22 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         }
 
         /// <summary>
+        /// 获取所有用户，用于下拉框等，不可用作列表
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult LoadAll()
+        {
+            var result = new ResultInfo<IList<LoadUserView>>()
+            {
+                Message = "获取成功",
+            };
+            var orgs = _app.LoadAll();
+            result.Data = orgs;
+            return Ok(result);
+        }
+
+        /// <summary>
         /// 保存用户信息
         /// </summary>
         /// <param name="req"></param>

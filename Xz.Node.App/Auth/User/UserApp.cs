@@ -153,6 +153,45 @@ namespace Xz.Node.App.Auth.User
         }
 
         /// <summary>
+        /// 获取所有用户，用于下拉框等，不可用作列表
+        /// </summary>
+        public List<LoadUserView> LoadAll()
+        {
+            var resultData = new List<LoadUserView>();
+
+            var query = UnitWork.Find<Auth_OrgInfo>(null).Join(UnitWork.Find<Auth_RelevanceInfo>(o => o.Key == Define.USERORG), a => a.Id, b => b.SecondId, (a, b) => new
+            {
+                OrgId = a.Id,
+                OrgName = a.Name,
+                FirstId = b.FirstId
+            }).Join(UnitWork.Find<Auth_UserInfo>(null), a => a.FirstId, b => b.Id, (a, b) => new
+            {
+                Lable = a.OrgName,
+                Account = b.Account,
+                Name = b.Name,
+                Id = b.Id
+            }).ToList();
+            if (query != null || query.Count() > 0)
+            {
+                var groups = query.GroupBy(o => o.Lable);
+
+                foreach (var group in groups)
+                {
+                    resultData.Add(new LoadUserView()
+                    {
+                        Lable = group.Key,
+                        Options = group.ToList().Select(o=> new LoadUserModel()
+                        { 
+                            Id = o.Id,
+                            Name = o.Name,
+                        }).ToList()
+                    });
+                }
+            }
+            return resultData;
+        }
+
+        /// <summary>
         /// 保存用户信息
         /// </summary>
         /// <param name="req"></param>

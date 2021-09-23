@@ -181,5 +181,18 @@ namespace Xz.Node.App.Auth.Org
                          select org;
             return result.ToList();
         }
+
+        /// <summary>
+        /// 获取所有部门，用于下拉框等，不可用作列表
+        /// </summary>
+        public List<OrgLoadAllView> LoadAll()
+        {
+            var result = UnitWork.Find<Auth_OrgInfo>(null).Select(o => new OrgLoadAllView()
+            {
+                Id = o.Id,
+                Name = o.Name
+            }).ToList();
+            return result;
+        }
     }
 }

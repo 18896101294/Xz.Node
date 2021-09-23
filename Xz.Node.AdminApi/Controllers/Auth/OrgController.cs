@@ -35,6 +35,22 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         }
 
         /// <summary>
+        /// 获取所有部门，用于下拉框等，不可用作列表
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult LoadAll()
+        {
+            var result = new ResultInfo<IList<OrgLoadAllView>>()
+            {
+                Message = "获取成功",
+            };
+            var orgs = _app.LoadAll();
+            result.Data = orgs;
+            return Ok(result);
+        }
+
+        /// <summary>
         /// 获取指定用户所能访问的部门
         /// </summary>
         /// <param name="req">用户入参</param>
