@@ -95,6 +95,19 @@ namespace Xz.Node.App.Auth.Role
         }
 
         /// <summary>
+        /// 获取所有角色，用于下拉框等，不可用作列表
+        /// </summary>
+        public List<LoadAllView> LoadAll()
+        {
+            var result = UnitWork.Find<Auth_RoleInfo>(null).Select(o => new LoadAllView()
+            {
+                Id = o.Id,
+                Name = o.Name
+            }).ToList();
+            return result;
+        }
+
+        /// <summary>
         /// 获取角色绑定的用户列表
         /// </summary>
         /// <param name="req"></param>

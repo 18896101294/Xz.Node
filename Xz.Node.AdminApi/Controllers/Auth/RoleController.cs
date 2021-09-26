@@ -31,6 +31,22 @@ namespace Xz.Node.AdminApi.Controllers.Auth
         }
 
         /// <summary>
+        /// 获取所有角色，用于下拉框等，不可用作列表
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult LoadAll()
+        {
+            var result = new ResultInfo<IList<LoadAllView>>()
+            {
+                Message = "获取成功",
+            };
+            var orgs = _app.LoadAll();
+            result.Data = orgs;
+            return Ok(result);
+        }
+
+        /// <summary>
         /// 获取分页数据
         /// </summary>
         /// <param name="req"></param>
