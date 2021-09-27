@@ -192,6 +192,15 @@ namespace Xz.Node.App.Auth.User
         }
 
         /// <summary>
+        /// 获取所有用户，不可用作列表
+        /// </summary>
+        public List<Auth_UserInfo> LoadUserAll()
+        {
+            var query = UnitWork.Find<Auth_UserInfo>(o => o.Status == 0).ToList();
+            return query;
+        }
+
+        /// <summary>
         /// 保存用户信息
         /// </summary>
         /// <param name="req"></param>

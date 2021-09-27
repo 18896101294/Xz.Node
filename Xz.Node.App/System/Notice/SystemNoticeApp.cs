@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xz.Node.App.Base;
 using Xz.Node.App.Interface;
 using Xz.Node.App.System.Notice.Request;
+using Xz.Node.Framework.Cache;
+using Xz.Node.Framework.Common;
 using Xz.Node.Framework.Extensions;
 using Xz.Node.Framework.Model;
 using Xz.Node.Repository;
@@ -16,14 +19,19 @@ namespace Xz.Node.App.System.Notice
     /// </summary>
     public class SystemNoticeApp : BaseGuidApp<System_NoticeInfo, XzDbContext>
     {
+        private readonly static object _lockObj = new object();
+        private readonly ICacheContext _cacheContext;
         /// <summary>
         /// 系统配置构造函数
         /// </summary>
         /// <param name="unitWork"></param>
         /// <param name="repository"></param>
         /// <param name="auth"></param>
-        public SystemNoticeApp(IUnitWork<XzDbContext> unitWork, IRepository<System_NoticeInfo, XzDbContext> repository, IAuth auth) : base(unitWork, repository, auth)
+        /// <param name="cacheContext"></param>
+        public SystemNoticeApp(IUnitWork<XzDbContext> unitWork, IRepository<System_NoticeInfo, XzDbContext> repository, IAuth auth,
+            ICacheContext cacheContext) : base(unitWork, repository, auth)
         {
+            _cacheContext = cacheContext;
         }
 
         /// <summary>
@@ -35,6 +43,55 @@ namespace Xz.Node.App.System.Notice
         {
             var data = base.GetPageDatas(dto.Conditions.ToConditions(), dto.Sorts.ToSorts(), dto.PageIndex ?? 1, dto.PageSize ?? 20);
             return data;
+        }
+
+        /// <summary>
+        /// 获取所有的数据
+        /// </summary>
+        /// <returns></returns>
+        public IList<System_NoticeInfo> GetAllDatas()
+        {
+            var datas = _cacheContext.Get<IList<System_NoticeInfo>>(Define.SystemNoticeCacheKey);
+            if (datas == null)
+            {
+                lock (_lockObj)
+                {
+                    datas = base.GetDatas().OrderBy(o => o.CreateTime).ToList();
+                    if (datas != null && datas.Count() > 0)
+                    {
+                        _cacheContext.Set(Define.SystemNoticeCacheKey, datas, null);
+                    }
+                }
+            }
+            return datas;
+        }
+
+        /// <summary>
+        /// 获取需要执行的通知
+        /// </summary>
+        /// <returns></returns>
+        public IList<System_NoticeInfo> GetExecDats()
+        {
+            var resultData = new List<System_NoticeInfo>();
+            //获取需要执行的系统通知配置
+            var noticeDatas = this.GetAllDatas();
+            var execDatas = noticeDatas.Where(o => o.IsExec == false && o.Status == 0 && o.IsDelete == false);
+            foreach (var data in execDatas)
+            {
+                if(data.ExecType == 1)
+                {
+                    resultData.Add(data);
+                    continue;
+                }
+                if(data.ExecType == 2)
+                {
+                    if(data.ExecTime <= DateTime.Now)
+                    {
+                        resultData.Add(data);
+                    }
+                }
+            }
+            return resultData;
         }
 
         /// <summary>
@@ -87,6 +144,41 @@ namespace Xz.Node.App.System.Notice
             oldData.Status = req.Status;
             oldData.TenantId = req.TenantId;
             base.Update(oldData);
+        }
+
+        /// <summary>
+        /// 删除后清除缓存
+        /// </summary>
+        /// <param name="ids"></param>
+        protected override void AfterDelete(IList<Guid> ids)
+        {
+            RemoveCache();
+        }
+
+        /// <summary>
+        /// 添加后清除缓存
+        /// </summary>
+        /// <param name="model"></param>
+        protected override void AfterInsert(System_NoticeInfo model)
+        {
+            RemoveCache();
+        }
+
+        /// <summary>
+        /// 修改后清除缓存
+        /// </summary>
+        /// <param name="model"></param>
+        protected override void AfterUpdate(System_NoticeInfo model)
+        {
+            RemoveCache();
+        }
+
+        /// <summary>
+        /// 删除缓存的数据
+        /// </summary>
+        private void RemoveCache()
+        {
+            _cacheContext.Remove(Define.SystemNoticeCacheKey);
         }
     }
 }

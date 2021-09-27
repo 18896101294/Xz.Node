@@ -85,5 +85,10 @@ namespace Xz.Node.Framework.Common
         /// 系统配置缓存key
         /// </summary>
         public const string SystemConfigurationCacheKey = "xznode_SystemConfiguration";
+        /// <summary>
+        /// 系统通知缓存key
+        /// </summary>
+        public const string SystemNoticeCacheKey = "xznode_SystemNotice";
+
     }
 }

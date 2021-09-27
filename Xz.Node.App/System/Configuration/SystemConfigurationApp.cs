@@ -70,14 +70,10 @@ namespace Xz.Node.App.System.Configuration
             {
                 lock (_lockObj)
                 {
-                    datas = _cacheContext.Get<IList<System_ConfigurationInfo>>(Define.SystemConfigurationCacheKey);
-                    if (datas == null)
+                    datas = base.GetDatas().OrderBy(o => o.DisplayNo).ToList();
+                    if (datas != null && datas.Count() > 0)
                     {
-                        datas = base.GetDatas().OrderBy(o => o.DisplayNo).ToList();
-                        if (datas != null && datas.Count() > 0)
-                        {
-                            _cacheContext.Set(Define.SystemConfigurationCacheKey, datas, null);
-                        }
+                        _cacheContext.Set(Define.SystemConfigurationCacheKey, datas, null);
                     }
                 }
             }

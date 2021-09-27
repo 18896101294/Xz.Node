@@ -2,8 +2,6 @@ using Autofac;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -81,8 +79,6 @@ namespace Xz.Node.Interactive
             //    options.Filters.Add(new RequireHttpsAttribute());//所有请求都使用HTTPS
             //});
 
-            services.AddCors();
-
             //在startup里面只能通过这种方式获取到appsettings里面的值，不能用IOptions
             var dbtypes = ((ConfigurationSection)Configuration.GetSection("AppSetting:DbTypes")).GetChildren()
                 .ToDictionary(x => x.Key, x => x.Value);
@@ -96,9 +92,11 @@ namespace Xz.Node.Interactive
             //数据保护DataProtection
             services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo(Configuration["DataProtection"]));
 
-            this.AfterStartup(services, Configuration);
             //单例注入
             services.AddHostedService<SendTimeJob>();
+            services.AddHostedService<SendNoticeJob>();
+
+            this.AfterStartup(services, Configuration);
         }
 
         /// <summary>
