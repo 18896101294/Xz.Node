@@ -81,14 +81,26 @@ namespace Xz.Node.AdminApi.Controllers.System.Notice
         /// </summary>
         /// <param name="req"></param>
         [HttpPost]
-        public IActionResult Add([FromBody] System_NoticeInfo req)
+        public IActionResult Add([FromBody] SaveNoticeReq req)
         {
             var result = new ResultInfo<bool>()
             {
                 Message = "添加成功"
             };
 
-            _app.Insert(req);
+            _app.Insert(new System_NoticeInfo()
+            {
+                Titile = req.Titile,
+                Content = req.Content,
+                Type = req.Type,
+                ExecType = req.ExecType,
+                RangeType = req.RangeType,
+                ExecTime = req.ExecTime,
+                RangeIds = string.Join(',', req.RangeIds),
+                IsHtml = req.IsHtml,
+                Status = req.Status,
+                TenantId = req.TenantId
+            });
 
             return Ok(result);
         }
@@ -98,7 +110,7 @@ namespace Xz.Node.AdminApi.Controllers.System.Notice
         /// </summary>
         /// <param name="req"></param>
         [HttpPost]
-        public IActionResult Update([FromBody] System_NoticeInfo req)
+        public IActionResult Update([FromBody] SaveNoticeReq req)
         {
             var result = new ResultInfo<bool>()
             {

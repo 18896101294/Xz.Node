@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Xz.Node.App.Base;
 using Xz.Node.App.Interface;
 using Xz.Node.App.System.Notice.Request;
+using Xz.Node.Framework.Extensions;
 using Xz.Node.Framework.Model;
 using Xz.Node.Repository;
 using Xz.Node.Repository.Domain.System;
@@ -67,10 +68,25 @@ namespace Xz.Node.App.System.Notice
         /// <summary>
         /// 修改
         /// </summary>
-        /// <param name="obj"></param>
-        public override void Update(System_NoticeInfo obj)
+        /// <param name="req"></param>
+        public void Update(SaveNoticeReq req)
         {
-            base.Update(obj);
+            var oldData = Repository.FirstOrDefault(o => o.Id == req.Id);
+            if(oldData == null)
+            {
+                throw new InfoException("需要修改的数据不存在");
+            }
+            oldData.Titile = req.Titile;
+            oldData.Content = req.Content;
+            oldData.Type = req.Type;
+            oldData.ExecType = req.ExecType;
+            oldData.ExecTime = req.ExecTime;
+            oldData.RangeType = req.RangeType;
+            oldData.RangeIds = string.Join(',', req.RangeIds);
+            oldData.IsHtml = req.IsHtml;
+            oldData.Status = req.Status;
+            oldData.TenantId = req.TenantId;
+            base.Update(oldData);
         }
     }
 }

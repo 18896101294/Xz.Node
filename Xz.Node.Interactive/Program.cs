@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
+using System.Net;
 using Winton.Extensions.Configuration.Consul;
 using Xz.Node.Framework.Common;
 
@@ -118,7 +119,14 @@ namespace Xz.Node.Interactive
                {
                    var configuration = ConfigHelper.GetDefaultConfigRoot();
                    var httpHost = configuration["ConfigSetting:HttpHost"];
-
+                   //webBuilder.UseKestrel(options =>//设置Kestrel服务器
+                   // {
+                   //     options.Listen(IPAddress.Parse("1.116.5.70"), 52600, listenOptions =>
+                   //     {
+                   //         //填入之前iis中生成的pfx文件路径和指定的密码　　　　　　　　　　　　
+                   //         listenOptions.UseHttps(@"C:\lan\xznode_publish\admin.xznode.club_SSL\IIS\admin52788.xznode.club.pfx", "yiy5tli3toi9r");
+                   //     });
+                   // }).UseStartup<Startup>();
                    webBuilder.UseUrls(httpHost).UseStartup<Startup>();
                });
     }

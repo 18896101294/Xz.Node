@@ -3,15 +3,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Xz.Node.App;
 using Xz.Node.Framework.Common;
 using Xz.Node.Framework.Extensions.AutofacManager;
@@ -52,7 +51,6 @@ namespace Xz.Node.Interactive
 
             services.AddConnections();
 
-            //services.AddSignalR();
             services.AddSignalR().AddJsonProtocol(options =>
             {
                 //Json序列化属性名不修改大小写：
@@ -72,6 +70,16 @@ namespace Xz.Node.Interactive
             });
 
             services.AddControllers();
+
+            //services.AddControllers(options =>
+            //{ 
+            //    options.Filters.Add(new RequireHttpsAttribute());//所有请求都使用HTTPS
+            //});
+
+            //services.AddMvc(options =>
+            //{
+            //    options.Filters.Add(new RequireHttpsAttribute());//所有请求都使用HTTPS
+            //});
 
             services.AddCors();
 
@@ -137,6 +145,10 @@ namespace Xz.Node.Interactive
             app.UseCors("Everything");
 
             app.UseRouting();
+
+            //所有请求都强制转为https
+            //app.UseRewriter(new RewriteOptions().AddRedirectToHttps());
+            //app.UseHttpsRedirection();
 
             app.UseEndpoints(endpoints =>
             {
