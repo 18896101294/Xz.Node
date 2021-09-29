@@ -101,7 +101,7 @@ namespace Xz.Node.Repository
 
             sorts = FiltrationSort(sorts);
             var expression = EFSQLHelpr.QueryConditionCreate<T>(conditions);
-            var query = Entity.Where(expression);
+            var query = Entity.AsNoTracking().Where(expression);
             if (sorts != null && sorts.Count() > 0)
             {
                 query = EFSQLHelpr.SortConditionCreate<T>(query, sorts);

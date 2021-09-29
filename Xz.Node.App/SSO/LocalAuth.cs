@@ -64,6 +64,10 @@ namespace Xz.Node.App.SSO
         /// <returns></returns>
         private string GetToken()
         {
+            if (_httpContextAccessor.HttpContext == null)
+            {
+                return string.Empty;
+            }
             //如果是Identity，则返回信息为用户账号
             if (_isEnabledId4)
             {

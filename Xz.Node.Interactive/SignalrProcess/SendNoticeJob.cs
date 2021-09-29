@@ -33,102 +33,117 @@ namespace Xz.Node.Interactive.SignalrProcess
         public SendNoticeJob(IHubContext<ServiceHub> hubContext,
             ILogger<SendNoticeJob> log,
             SystemNoticeApp systemNoticeApp,
-            UserApp userApp)
-            //, RevelanceApp revelanceApp)
+            UserApp userApp,
+            RevelanceApp revelanceApp)
         {
             _hubContext = hubContext;
             _log = log;
             _systemNoticeApp = systemNoticeApp;
             _userApp = userApp;
-            //_revelanceApp = revelanceApp;
+            _revelanceApp = revelanceApp;
         }
-        ///// <summary>
-        ///// 推送系统通知
-        ///// </summary>
-        //void SendNotice()
-        //{
-        //    while (true)
-        //    {
-        //        try
-        //        {
-        //            //获取需要执行的系统通知配置
-        //            var execDatas = _systemNoticeApp.GetExecDats();
-        //            //获取所有用户
-        //            var allUser = _userApp.LoadUserAll();
+        /// <summary>
+        /// 推送系统通知
+        /// </summary>
+        void SendNotice()
+        {
+            while (true)
+            {
+                try
+                {
+                    //获取需要执行的系统通知配置
+                    var execDatas = _systemNoticeApp.GetExecDats();
+                    if (execDatas.Count() > 0)
+                    {
+                        //获取所有用户
+                        var allUser = _userApp.LoadUserAll();
 
-        //            var updateDatas = new List<System_NoticeInfo>();
-        //            foreach (var item in execDatas)
-        //            {
-        //                var data = new
-        //                {
-        //                    Title = item.Titile,
-        //                    Content = $"{item.Type}：{item.Content}",
-        //                    IsHtml = item.IsHtml,
-        //                };
-        //                switch (item.RangeType)
-        //                {
-        //                    //通知所有人
-        //                    case 0:
-        //                        _hubContext.Clients.All.SendAsync("SendNoticeAll", data);
-        //                        item.IsExec = true;
-        //                        updateDatas.Add(item);
-        //                        break;
-        //                    //按部门通知
-        //                    case 1:
-        //                        var orgIds = item.RangeIds.Split(',');
-        //                        if (orgIds.Length > 0)
-        //                        {
-        //                            var orgUserIds = _revelanceApp.Get(Define.USERORG, false, orgIds);
-        //                            var sendUsers = allUser.Where(o => orgUserIds.Contains(o.Id));
-        //                            foreach (var sendUser in sendUsers)
-        //                            {
-        //                                _hubContext.Clients.All.SendAsync($"SendUserNotice_{sendUser.Account}", data);
-        //                            }
-        //                        }
-        //                        item.IsExec = true;
-        //                        updateDatas.Add(item);
-        //                        break;
-        //                    //按角色通知
-        //                    case 2:
-        //                        var roleIds = item.RangeIds.Split(',');
-        //                        if (roleIds.Length > 0)
-        //                        {
-        //                            var roleUserIds = _revelanceApp.Get(Define.USERROLE, false, roleIds);
-        //                            var sendUsers = allUser.Where(o => roleUserIds.Contains(o.Id));
-        //                            foreach (var sendUser in sendUsers)
-        //                            {
-        //                                _hubContext.Clients.All.SendAsync($"SendUserNotice_{sendUser.Account}", data);
-        //                            }
-        //                        }
-        //                        item.IsExec = true;
-        //                        updateDatas.Add(item);
-        //                        break;
-        //                    //按用户通知
-        //                    case 3:
-        //                        var userIds = item.RangeIds.Split(',');
-        //                        if (userIds.Length > 0)
-        //                        {
-        //                            var sendUsers = allUser.Where(o => userIds.Contains(o.Id));
-        //                            foreach (var sendUser in sendUsers)
-        //                            {
-        //                                _hubContext.Clients.All.SendAsync($"SendUserNotice_{sendUser.Account}", data);
-        //                            }
-        //                        }
-        //                        item.IsExec = true;
-        //                        updateDatas.Add(item);
-        //                        break;
-        //                    default:
-        //                        break;
-        //                }
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            _log.LogError(ex.Message);
-        //        }
-        //        Thread.Sleep(50000);
-        //    }
-        //}
+                        var updateDatas = new List<System_NoticeInfo>();
+                        foreach (var item in execDatas)
+                        {
+                            var typeName = "系统通知";
+                            switch(item.Type)
+                            {
+                                case 1:
+                                    typeName = "系统通知";
+                                    break;
+                                case 2:
+                                    typeName = "更新通知";
+                                    break;
+                                default:
+                                    break;
+                            }
+                            var data = new
+                            {
+                                Title = item.Titile,
+                                Content = $"{typeName}：{item.Content}",
+                                IsHtml = item.IsHtml,
+                            };
+                            switch (item.RangeType)
+                            {
+                                //通知所有人
+                                case 0:
+                                    _hubContext.Clients.All.SendAsync("SendNoticeAll", data);
+                                    //item.IsExec = true;
+                                    //updateDatas.Add(item);
+                                    break;
+                                //按部门通知
+                                case 1:
+                                    var orgIds = item.RangeIds.Split(',');
+                                    if (orgIds.Length > 0)
+                                    {
+                                        var orgUserIds = _revelanceApp.Get(Define.USERORG, false, orgIds);
+                                        var sendUsers = allUser.Where(o => orgUserIds.Contains(o.Id));
+                                        foreach (var sendUser in sendUsers)
+                                        {
+                                            _hubContext.Clients.All.SendAsync($"SendUserNotice_{sendUser.Account}", data);
+                                        }
+                                    }
+                                    //item.IsExec = true;
+                                    //updateDatas.Add(item);
+                                    break;
+                                //按角色通知
+                                case 2:
+                                    var roleIds = item.RangeIds.Split(',');
+                                    if (roleIds.Length > 0)
+                                    {
+                                        var roleUserIds = _revelanceApp.Get(Define.USERROLE, false, roleIds);
+                                        var sendUsers = allUser.Where(o => roleUserIds.Contains(o.Id));
+                                        foreach (var sendUser in sendUsers)
+                                        {
+                                            _hubContext.Clients.All.SendAsync($"SendUserNotice_{sendUser.Account}", data);
+                                        }
+                                    }
+                                    //item.IsExec = true;
+                                    //updateDatas.Add(item);
+                                    break;
+                                //按用户通知
+                                case 3:
+                                    var userIds = item.RangeIds.Split(',');
+                                    if (userIds.Length > 0)
+                                    {
+                                        var sendUsers = allUser.Where(o => userIds.Contains(o.Id));
+                                        foreach (var sendUser in sendUsers)
+                                        {
+                                            _hubContext.Clients.All.SendAsync($"SendUserNotice_{sendUser.Account}", data);
+                                        }
+                                    }
+                                    //item.IsExec = true;
+                                    //updateDatas.Add(item);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _log.LogError(ex.Message);
+                }
+                Thread.Sleep(5000);
+            }
+        }
 
         /// <summary>
         /// 执行
@@ -145,9 +160,9 @@ namespace Xz.Node.Interactive.SignalrProcess
         {
             try
             {
-                //Task taskSendNotice = new Task(SendNotice);
+                Task taskSendNotice = new Task(SendNotice);
 
-                //taskSendNotice.Start();
+                taskSendNotice.Start();
 
                 _log.LogInformation("SendNoticeJob服务启动成功");
             }

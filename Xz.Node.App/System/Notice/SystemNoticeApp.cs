@@ -78,14 +78,14 @@ namespace Xz.Node.App.System.Notice
             var execDatas = noticeDatas.Where(o => o.IsExec == false && o.Status == 0 && o.IsDelete == false);
             foreach (var data in execDatas)
             {
-                if(data.ExecType == 1)
+                if (data.ExecType == 1)
                 {
                     resultData.Add(data);
                     continue;
                 }
-                if(data.ExecType == 2)
+                if (data.ExecType == 2)
                 {
-                    if(data.ExecTime <= DateTime.Now)
+                    if (data.ExecTime <= DateTime.Now)
                     {
                         resultData.Add(data);
                     }
@@ -110,7 +110,11 @@ namespace Xz.Node.App.System.Notice
         /// <param name="req"></param>
         public void ReExecute(ReExecuteReq req)
         {
-            Repository.Update(o => req.Id == o.Id, o => new System_NoticeInfo { IsExec = false, ExecTime = req.ExecTime });
+            if (req.Ids != null && req.Ids.Count() > 0)
+            {
+                Repository.Update(o => req.Ids.Contains(o.Id), o => new System_NoticeInfo { IsExec = false, ExecTime = req.ExecTime });
+                RemoveCache();
+            }
         }
 
         /// <summary>
@@ -129,7 +133,7 @@ namespace Xz.Node.App.System.Notice
         public void Update(SaveNoticeReq req)
         {
             var oldData = Repository.FirstOrDefault(o => o.Id == req.Id);
-            if(oldData == null)
+            if (oldData == null)
             {
                 throw new InfoException("需要修改的数据不存在");
             }

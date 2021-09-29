@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Xz.Node.App.System.Notice.Request
 {
@@ -10,7 +11,7 @@ namespace Xz.Node.App.System.Notice.Request
         /// <summary>
         /// 通知Id
         /// </summary>
-        public Guid Id { get; set; }
+        public List<Guid> Ids { get; set; }
         /// <summary>
         /// 执行时间
         /// </summary>

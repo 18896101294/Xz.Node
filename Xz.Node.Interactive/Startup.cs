@@ -55,6 +55,11 @@ namespace Xz.Node.Interactive
                 options.PayloadSerializerOptions.PropertyNamingPolicy = null;
             });
 
+            //可视化监控
+            services.AddHttpReports().AddHttpTransport();// WDTMD，这里不写上这个，会直接注入失败！
+
+            services.AddMemoryCache();
+
             //允许跨域
             services.AddCors(o =>
             {
