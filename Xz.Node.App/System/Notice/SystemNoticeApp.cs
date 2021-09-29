@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Xz.Node.App.Base;
 using Xz.Node.App.Interface;
+using Xz.Node.App.System.Notice.Enums;
 using Xz.Node.App.System.Notice.Request;
 using Xz.Node.Framework.Cache;
 using Xz.Node.Framework.Common;
+using Xz.Node.Framework.Enums;
 using Xz.Node.Framework.Extensions;
 using Xz.Node.Framework.Model;
 using Xz.Node.Repository;
@@ -75,15 +77,15 @@ namespace Xz.Node.App.System.Notice
             var resultData = new List<System_NoticeInfo>();
             //获取需要执行的系统通知配置
             var noticeDatas = this.GetAllDatas();
-            var execDatas = noticeDatas.Where(o => o.IsExec == false && o.Status == 0 && o.IsDelete == false);
+            var execDatas = noticeDatas.Where(o => o.IsExec == false && o.Status == DisableStatusEnum.Enable.GetValue() && o.IsDelete == false);
             foreach (var data in execDatas)
             {
-                if (data.ExecType == 1)
+                if (data.ExecType == NoticeExecTypeEnum.RunNow.GetValue())
                 {
                     resultData.Add(data);
                     continue;
                 }
-                if (data.ExecType == 2)
+                if (data.ExecType == NoticeExecTypeEnum.RunLater.GetValue())
                 {
                     if (data.ExecTime <= DateTime.Now)
                     {

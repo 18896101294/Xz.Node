@@ -9,7 +9,9 @@ using System.Threading.Tasks;
 using Xz.Node.App.Auth.Revelance;
 using Xz.Node.App.Auth.User;
 using Xz.Node.App.System.Notice;
+using Xz.Node.App.System.Notice.Enums;
 using Xz.Node.Framework.Common;
+using Xz.Node.Framework.Extensions;
 using Xz.Node.Interactive.Hubs;
 using Xz.Node.Repository.Domain.System;
 
@@ -62,13 +64,13 @@ namespace Xz.Node.Interactive.SignalrProcess
                         foreach (var item in execDatas)
                         {
                             var typeName = "系统通知";
-                            switch(item.Type)
+                            switch (item.Type)
                             {
-                                case 1:
-                                    typeName = "系统通知";
+                                case (int)NoticeTypeEnum.BySystem:
+                                    typeName = NoticeTypeEnum.BySystem.GetDescription();
                                     break;
-                                case 2:
-                                    typeName = "更新通知";
+                                case (int)NoticeTypeEnum.ByUpdate:
+                                    typeName = NoticeTypeEnum.ByUpdate.GetDescription();
                                     break;
                                 default:
                                     break;
@@ -82,13 +84,13 @@ namespace Xz.Node.Interactive.SignalrProcess
                             switch (item.RangeType)
                             {
                                 //通知所有人
-                                case 0:
+                                case (int)NoticeRangeTypeEnum.All:
                                     _hubContext.Clients.All.SendAsync("SendNoticeAll", data);
-                                    //item.IsExec = true;
-                                    //updateDatas.Add(item);
+                                    item.IsExec = true;
+                                    updateDatas.Add(item);
                                     break;
                                 //按部门通知
-                                case 1:
+                                case (int)NoticeRangeTypeEnum.ByOrgs:
                                     var orgIds = item.RangeIds.Split(',');
                                     if (orgIds.Length > 0)
                                     {
@@ -99,11 +101,11 @@ namespace Xz.Node.Interactive.SignalrProcess
                                             _hubContext.Clients.All.SendAsync($"SendUserNotice_{sendUser.Account}", data);
                                         }
                                     }
-                                    //item.IsExec = true;
-                                    //updateDatas.Add(item);
+                                    item.IsExec = true;
+                                    updateDatas.Add(item);
                                     break;
                                 //按角色通知
-                                case 2:
+                                case (int)NoticeRangeTypeEnum.ByRoles:
                                     var roleIds = item.RangeIds.Split(',');
                                     if (roleIds.Length > 0)
                                     {
@@ -114,11 +116,11 @@ namespace Xz.Node.Interactive.SignalrProcess
                                             _hubContext.Clients.All.SendAsync($"SendUserNotice_{sendUser.Account}", data);
                                         }
                                     }
-                                    //item.IsExec = true;
-                                    //updateDatas.Add(item);
+                                    item.IsExec = true;
+                                    updateDatas.Add(item);
                                     break;
                                 //按用户通知
-                                case 3:
+                                case (int)NoticeRangeTypeEnum.ByUsers:
                                     var userIds = item.RangeIds.Split(',');
                                     if (userIds.Length > 0)
                                     {
@@ -128,12 +130,16 @@ namespace Xz.Node.Interactive.SignalrProcess
                                             _hubContext.Clients.All.SendAsync($"SendUserNotice_{sendUser.Account}", data);
                                         }
                                     }
-                                    //item.IsExec = true;
-                                    //updateDatas.Add(item);
+                                    item.IsExec = true;
+                                    updateDatas.Add(item);
                                     break;
                                 default:
                                     break;
                             }
+                        }
+                        if (updateDatas.Count() > 0)
+                        {
+                            _systemNoticeApp.Update(updateDatas);
                         }
                     }
                 }
@@ -143,14 +149,6 @@ namespace Xz.Node.Interactive.SignalrProcess
                 }
                 Thread.Sleep(5000);
             }
-        }
-
-        /// <summary>
-        /// 执行
-        /// </summary>
-        private void exec(System_NoticeInfo item)
-        {
-
         }
 
         /// <summary>
