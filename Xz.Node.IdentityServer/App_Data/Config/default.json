@@ -1,7 +1,7 @@
 {
   "ConfigSetting": {
     "AppId": "IdentityServer4", //程序名称
-    "ConsulAddress": "http://1.116.5.70:8600", //是否启用Consul配置中心，不启用则为空即可
+    //"ConsulAddress": "http://1.116.5.70:8600", //是否启用Consul配置中心，不启用则为空即可
     "ServiceHealthCheck": "http://1.116.5.70:12796/Account/HealthCheck", //健康检查地址,如果健康检查失败，一段时间后，会将注册的服务移除掉
     "HttpHost": "http://*:12796" //启动绑定地址及端口
   }
