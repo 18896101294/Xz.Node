@@ -53,7 +53,9 @@ namespace Xz.Node.IdentityServer
             //获取token的方式，启动id4项目后根据config配置获取
             //http://localhost:12796/connect/authorize?client_id=XzNode.AdminApi&redirect_uri=http://localhost:52787/swagger/oauth2-redirect.html&response_type=token&scope=xznodeapi
 
-            var host = "http://xznode.club";// "http://xznode.club" "http://localhost"
+            //var host = "http://xznode.club";
+            var host = "http://localhost";
+
             if (isProduction)
             {
                 host = "http://xznode.club";//生产环境时，切换为正式服务器地址,这里发布的时候一定要记得改呀
@@ -74,6 +76,7 @@ namespace Xz.Node.IdentityServer
                         $"{host}:52789/swagger/oauth2-redirect.html",
                         $"{host}:52788/swagger/oauth2-redirect.html",
                         $"{host}:52787/swagger/oauth2-redirect.html",
+                        "https://xznode.club/swagger/oauth2-redirect.html",
                     },
                     AllowedScopes = { "xznodeapi" }//指定允许客户端请求的api范围,这个就是登录之后的拥有者，不同的客户端token共用就是通过这个控制
                 },
@@ -86,17 +89,15 @@ namespace Xz.Node.IdentityServer
                     AllowAccessTokensViaBrowser = true,
                     RedirectUris = 
                     {
-                        "http://192.168.1.109/#/IdentityServerCallBack?",
-                        //"http://localhost:8081/#/IdentityServerCallBack?"
+                        "http://192.168.1.111/#/IdentityServerCallBack?",
+                        "https://xznode.club/#/IdentityServerCallBack?",
                     },
                     PostLogoutRedirectUris = 
                     {
-                        "http://xznode.club",
-                        //"http://localhost:8081"
+                        "https://xznode.club",
                     },
                     AllowedCorsOrigins = {
-                        "http://xznode.club",
-                        //"http://localhost:8081"
+                        "https://xznode.club",
                     },
                     AllowedScopes = { "xznodeapi" },
                 },

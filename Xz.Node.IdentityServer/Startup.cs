@@ -1,6 +1,8 @@
 using Autofac;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +28,16 @@ namespace Xz.Node.IdentityServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            //services.AddControllers(options =>
+            //{
+            //    options.Filters.Add(new RequireHttpsAttribute());//所有请求都使用HTTPS
+            //});
+
+            //services.AddMvc(options =>
+            //{
+            //    options.Filters.Add(new RequireHttpsAttribute());//所有请求都使用HTTPS
+            //});
 
             var builder = services.AddIdentityServer()
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
@@ -117,6 +129,10 @@ namespace Xz.Node.IdentityServer
 
             app.UseStaticFiles();
             app.UseRouting();
+
+            //所有请求都强制转为https
+            //app.UseRewriter(new RewriteOptions().AddRedirectToHttps());
+            //app.UseHttpsRedirection();
 
             app.UseIdentityServer();
             app.UseAuthorization();

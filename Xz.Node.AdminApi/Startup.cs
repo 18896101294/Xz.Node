@@ -91,7 +91,7 @@ namespace Xz.Node.AdminApi
                     .AddJwtBearer(options =>
                     {
                         options.Authority = identityServer;
-                        options.RequireHttpsMetadata = false; // 指定是否为HTTPS
+                        options.RequireHttpsMetadata = Environment.IsProduction(); // 指定是否为HTTPS，开发环境必须指定为false
                         options.Audience = "xznodeapi";//这里的options.ApiName 需要和网关服务中的Api 资源配置中的ApiName 一致
                     });
             }
