@@ -18,5 +18,15 @@ namespace Xz.Node.App.SSO.Request
         /// 密码
         /// </summary>
         public string PassWord { get; set; }
+
+        /// <summary>
+        /// 票据
+        /// </summary>
+        public string Ticket { get; set; }
+
+        /// <summary>
+        /// 验证回调的随机串
+        /// </summary>
+        public string Randstr { get; set; }
     }
 }

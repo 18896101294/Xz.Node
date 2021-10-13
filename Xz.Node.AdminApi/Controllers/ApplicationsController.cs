@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Xz.Node.App.AppManagers;
 using Xz.Node.App.Base;
+using Xz.Node.Framework.Extensions;
 using Xz.Node.Framework.Model;
 using Xz.Node.Repository.Domain.System;
 
@@ -17,9 +20,19 @@ namespace Xz.Node.AdminApi.Controllers
     public class ApplicationsController : ControllerBase
     {
         private readonly AppManager _app;
-        public ApplicationsController(AppManager app)
+        private readonly IConfiguration _configuration;
+        private readonly bool _isEnabledId4 = false;
+        /// <summary>
+        /// 应用管理
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="configuration"></param>
+        public ApplicationsController(AppManager app,
+            IConfiguration configuration)
         {
             _app = app;
+            _configuration = configuration;
+            _isEnabledId4 = _configuration["AppSetting:IdentityServer4:Enabled"].ToBool();
         }
 
         /// <summary>
@@ -38,22 +51,20 @@ namespace Xz.Node.AdminApi.Controllers
             return Ok(result);
         }
 
-        ///// <summary>
-        ///// 获取分页数据
-        ///// </summary>
-        ///// <param name="dto"></param>
-        ///// <returns></returns>
-        //[HttpPost]
-        //public IActionResult GetPageData(BaseDto.PageDataModel dto)
-        //{
-        //    var result = new ResultInfo<PageInfo<System_ApplicationInfo>>()
-        //    {
-        //        Message = "获取数据成功",
-        //    };
-
-        //    result.Data = _app.GetPageDatas(dto.Conditions.ToConditions(), dto.Sorts.ToSorts(), dto.PageIndex ?? 1, dto.PageSize ?? 20);
-
-        //    return Ok(result);
-        //}
+        /// <summary>
+        /// 获取系统是否启用了Id4的登录方式
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult EnabledId4LoginWay()
+        {
+            var result = new ResultInfo<bool>()
+            {
+                Message = "获取数据成功",
+                Data = _isEnabledId4
+            };
+            return Ok(result);
+        }
     }
 }
