@@ -15,6 +15,7 @@ using Xz.Node.Framework.Cache;
 using Xz.Node.Framework.Elasticsearch;
 using Xz.Node.Framework.Extensions.AutofacManager;
 using Xz.Node.Framework.Jwt;
+using Xz.Node.Framework.Qiniu;
 using Xz.Node.Framework.Queue.RabbitMQ;
 using Xz.Node.Framework.Queue.RedisQueue;
 using Xz.Node.Repository;
@@ -98,6 +99,9 @@ namespace Xz.Node.App
 
             //注入ElasticSearch
             builder.RegisterType(typeof(ElasticSearchServer)).As(typeof(IElasticSearchServer));
+
+            //注入Qiniu CDN
+            builder.RegisterType(typeof(QiniuHelper)).As(typeof(IQiniuHelper));
 
             InitDependency(builder);
 

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Filters;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System;
 using System.Collections.Generic;
@@ -147,7 +149,8 @@ namespace Xz.Node.AdminApi
                     {
                         Version = "v1",
                         Title = controller.Name.Replace("Controller", ""),
-                        Description = "by xz"
+                        Description = "by xz",
+                        Contact = new OpenApiContact { Url = new Uri("https://xznode.club/"), Name = "XzNode System", Email = "18896101294@163.com" }
                     });
                 }
 
@@ -160,7 +163,8 @@ namespace Xz.Node.AdminApi
                     //logger.LogInformation($"find api file{name}");
                 }
 
-                option.OperationFilter<GlobalHttpHeaderOperationFilter>(); // 添加httpHeader参数
+                option.OperationFilter<GlobalHttpHeaderOperationFilter>();  //添加操作过滤骑
+                option.DocumentFilter<HiddenDocumentFilter>();  //添加文档过滤器
 
 
                 if (identityServerEnabled)
@@ -364,6 +368,9 @@ namespace Xz.Node.AdminApi
                 c.DocExpansion(DocExpansion.List);//默认展开列表
                 c.OAuthClientId("XzNode.AdminApi");//客户端名称
                 c.OAuthAppName("xz.node.adminapi认证");//客户端描述
+
+                //设置swagger地址为 http://localhost:<port>/ ，如果不设置为string.Empty则为http://localhost:<port>/swagger
+                //c.RoutePrefix = string.Empty;
             });
 
         }

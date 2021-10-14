@@ -156,6 +156,10 @@ namespace Xz.Node.Interactive
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                /* 
+                 * 这里需要注意一下，如果客户端方面用了正向代理
+                 * 比如翻墙VPN等，可能会造成连接器握手信号不稳定，导致客户端一直断线重连
+                 */
                 endpoints.MapHub<ServiceHub>("/hubs");//启用SignalR，指定连接器
             });
 

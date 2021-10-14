@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Xz.Node.AdminApi.Model;
 using Xz.Node.App.AppManagers;
-using Xz.Node.App.Base;
 using Xz.Node.Framework.Extensions;
 using Xz.Node.Framework.Model;
 using Xz.Node.Repository.Domain.System;
@@ -57,6 +56,7 @@ namespace Xz.Node.AdminApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
+        [Hidden]
         public IActionResult EnabledId4LoginWay()
         {
             var result = new ResultInfo<bool>()
