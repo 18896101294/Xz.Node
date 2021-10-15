@@ -196,7 +196,11 @@ namespace Xz.Node.App.SSO
         {
             if (_isEnabledId4)
             {
-                return _httpContextAccessor.HttpContext.User.Identity.Name;
+                if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+                {
+                    return _httpContextAccessor.HttpContext.User.Identity.Name;
+                }
+                return string.Empty;
             }
 
             var token = GetToken();
