@@ -257,8 +257,8 @@ namespace Xz.Node.AdminApi
             //{
             //    origins = new []
             //    {
-            //        "http://demo.openauth.me:1803",
-            //        "http://demo.openauth.me:52789"
+            //        "http://demo.xznode.me:1803",
+            //        "http://demo.xznode.me:52789"
             //    };
             //}
             //services.AddCors(option=>option.AddPolicy("cors", policy => policy.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins(origins)));
