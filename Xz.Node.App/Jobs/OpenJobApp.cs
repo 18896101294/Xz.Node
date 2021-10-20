@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Quartz;
 using System;
 using System.Collections.Generic;
@@ -22,9 +23,11 @@ namespace Xz.Node.App.Jobs
     /// </summary>
     public class OpenJobApp : BaseStringApp<System_OpenJobInfo, XzDbContext>
     {
-        private SysLogApp _sysLogApp;
-        private IScheduler _scheduler;
-        private ILogger<OpenJobApp> _logger;
+        private readonly SysLogApp _sysLogApp;
+        private readonly IScheduler _scheduler;
+        private readonly ILogger<OpenJobApp> _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
         /// <summary>
         /// 系统定时任务管理构造函数
         /// </summary>
@@ -34,13 +37,15 @@ namespace Xz.Node.App.Jobs
         /// <param name="sysLogApp"></param>
         /// <param name="scheduler"></param>
         /// <param name="logger"></param>
+        /// <param name="httpContextAccessor"></param>
         public OpenJobApp(IUnitWork<XzDbContext> unitWork, IRepository<System_OpenJobInfo, XzDbContext> repository,
-            IAuth auth, SysLogApp sysLogApp, IScheduler scheduler, ILogger<OpenJobApp> logger) : base(unitWork,
+            IAuth auth, SysLogApp sysLogApp, IScheduler scheduler, ILogger<OpenJobApp> logger, IHttpContextAccessor httpContextAccessor) : base(unitWork,
             repository, auth)
         {
             _sysLogApp = sysLogApp;
             _scheduler = scheduler;
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -174,7 +179,7 @@ namespace Xz.Node.App.Jobs
                 {
                     TypeName = "定时任务",
                     TypeId = "AUTOJOB",
-                    Ip = "127.0.0.1",
+                    Ip = _httpContextAccessor.HttpContext.GetClientUserIp(),
                     Content = $"未能找到定时任务：{jobId}"
                 });
                 return;
@@ -189,7 +194,7 @@ namespace Xz.Node.App.Jobs
                 CreateName = "Quartz",
                 CreateId = "Quartz",
                 TypeName = "定时任务",
-                Ip = "127.0.0.1",
+                Ip = _httpContextAccessor.HttpContext.GetClientUserIp(),
                 TypeId = "AUTOJOB",
                 Content = $"运行了自动任务：{job.JobName}"
             });
