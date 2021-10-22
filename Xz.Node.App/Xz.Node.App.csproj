@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="CodeGeneration\Response\" />
     <Folder Include="System\Configuration\Request\" />
     <Folder Include="System\Configuration\Response\" />
   </ItemGroup>

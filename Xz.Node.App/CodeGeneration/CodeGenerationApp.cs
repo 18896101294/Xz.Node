@@ -49,8 +49,11 @@ namespace Xz.Node.App.CodeGeneration
         /// </summary>
         /// <param name="req"></param>
         public void CreateCode(CreateCodeReq req)
-        { 
-            
+        {
+            //根据数据库表名获取表结构
+            var resultData = _dbExtension.GetDbTableStructure(req.TableName);
+
+
         }
     }
 }
