@@ -8,6 +8,22 @@ namespace Xz.Node.App.CodeGeneration.Model
     /// <summary>
     /// 数据库表实体相关信息
     /// </summary>
+    public class EntityModel
+    {
+        /// <summary>
+        /// 表名
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
+        /// 描述
+        /// </summary>
+        public string Description { get; set; }
+        /// <summary>
+        /// 字段属性
+        /// </summary>
+        public IList<PropertyInfo> Properties { get; set; } = new List<PropertyInfo>();
+    }
+
     public class EntityInfo
     {
         public EntityInfo()
@@ -18,7 +34,6 @@ namespace Xz.Node.App.CodeGeneration.Model
             Properties = new List<PropertyInfo>();
 
         }
-        public string Conn { get; set; }
         public string CreateUser { get; set; }
         public string Output
         {

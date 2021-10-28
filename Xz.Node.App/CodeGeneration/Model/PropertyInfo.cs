@@ -50,7 +50,7 @@ namespace Xz.Node.App.CodeGeneration.Model
         /// <summary>
         /// 长度
         /// </summary>
-        public int Length { get; set; }
+        public int? Length { get; set; }
         /// <summary>
         /// 是否可空
         /// </summary>
