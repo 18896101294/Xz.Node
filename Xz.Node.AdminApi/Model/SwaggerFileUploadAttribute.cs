@@ -3,9 +3,9 @@
 namespace Xz.Node.AdminApi.Model
 {
     /// <summary>
-    /// 上传文件接口
+    /// 标上此参数swagger将会显示上传文件功能
     /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Method)]//此特性可以在方法上和方法参数上使用
     public class SwaggerFileUploadAttribute : Attribute
     {
         /// <summary>

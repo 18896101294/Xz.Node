@@ -56,7 +56,7 @@ namespace Xz.Node.AdminApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        [Hidden]
+        [SwaggerHidden]
         public IActionResult EnabledId4LoginWay()
         {
             var result = new ResultInfo<bool>()

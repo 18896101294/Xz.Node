@@ -180,14 +180,14 @@ namespace Xz.Node.AdminApi.Model
                 var isPass = true;
                 MethodInfo methodInfo;
                 if (apiDescription.TryGetMethodInfo(out methodInfo)
-                    && methodInfo.GetCustomAttribute<HiddenAttribute>() != null)
+                    && methodInfo.GetCustomAttribute<SwaggerHiddenAttribute>() != null)
                 {
                     isPass = false;
                 }
 
                 if (isPass)
                 {
-                    if (apiDescription.CustomAttributes().OfType<HiddenAttribute>().Count() > 0)
+                    if (apiDescription.CustomAttributes().OfType<SwaggerHiddenAttribute>().Count() > 0)
                     {
                         isPass = false;
                     }

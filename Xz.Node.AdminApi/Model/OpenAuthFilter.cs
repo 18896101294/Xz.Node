@@ -6,6 +6,7 @@ using Xz.Node.App.Interface;
 using Xz.Node.App.SysLogs;
 using Xz.Node.Framework.Common;
 using Xz.Node.Framework.Extensions;
+using Xz.Node.Framework.Model;
 using Xz.Node.Repository.Domain.System;
 
 namespace Xz.Node.AdminApi.Model
@@ -51,10 +52,16 @@ namespace Xz.Node.AdminApi.Model
             if (!_authUtil.CheckLogin())
             {
                 context.HttpContext.Response.StatusCode = 401;
-                context.Result = new JsonResult(new Response
+                //context.Result = new JsonResult(new Response
+                //{
+                //    Code = 401,
+                //    Message = "认证失败，请提供认证信息"
+                //});
+                context.Result = new JsonResult(new ResultInfo<bool>()
                 {
                     Code = 401,
-                    Message = "认证失败，请提供认证信息"
+                    Message = "认证失败，请提供认证信息",
+                    Data = false
                 });
                 return;
             }
